@@ -1,25 +1,26 @@
-from unittest import TestCase
-import unittest
-import os
+import datetime
 import logging
+import os
+import unittest
+from unittest import TestCase
 
 from benchmark import workload_gen
-from common.utils import kube_config
+from common.utils.json import read_json_file
 
 
 class WorkloadGenTest(TestCase):
 
     def setUp(self) -> None:
-        kube_config.load_kube_config()
         self.out_dir = 'results/workloads/'
         os.makedirs(self.out_dir, exist_ok=True)
         logging.basicConfig(
             level=logging.INFO,
             format='%(asctime)s %(levelname)s %(funcName)s: %(message)s'
         )
+        self.now = ''
 
     def test_trace_data(self):
-        data = workload_gen.read_json(workload_gen.WorkloadGenerator.ALIBABA_TRACE_JOBS_JSON)
+        data = read_json_file(workload_gen.WorkloadGenerator.ALIBABA_TRACE_JOBS_JSON)
         print('job cnt:', len(data))
         print('job tasks:', [len(job['job.tasks']) for job in data])
 
@@ -43,22 +44,25 @@ class WorkloadGenTest(TestCase):
         print('task avg io', avg(io), 'max', max(io), 'min', min(io))
 
     def test_generate_workload(self):
-        #self.dump('云到边', 'cloud_edge')
-        #self.dump('边到云', 'edge_cloud')
+        self.now = datetime.datetime.now().strftime('%Y-%m-%d %H-%M-%S')
+        self.dump('云到边', 'cloud_edge')
+        self.dump('边到云', 'edge_cloud')
         self.dump('边到云到边', 'edge_cloud_edge')
 
     def dump(self, name: str,  workload_type: str):
         generator = workload_gen.create_workload_generator(workload_type)
         pod_dicts = generator.generate()
-        workload_gen.save_as_yaml(pod_dicts, self.out_dir + name + '.yaml')
+        out_dir = os.path.join(self.out_dir, self.now)
+        os.makedirs(out_dir, exist_ok=True)
+        workload_gen.save_as_yaml(pod_dicts, os.path.join(out_dir, '%s-ds.yaml' % (name, )))
         self.replace_scheduler(pod_dicts, 'linc-scheduler-configuration-1')
-        workload_gen.save_as_yaml(pod_dicts, self.out_dir + name + '-c61.yaml')
+        workload_gen.save_as_yaml(pod_dicts,  os.path.join(out_dir, '%s-ep.yaml' % (name, )))
         self.replace_scheduler(pod_dicts, 'linc-scheduler-configuration-2')
-        workload_gen.save_as_yaml(pod_dicts, self.out_dir + name + '-c71.yaml')
+        workload_gen.save_as_yaml(pod_dicts,  os.path.join(out_dir, '%s-lrp.yaml' % (name, )))
         self.replace_scheduler(pod_dicts, 'linc-scheduler-configuration-3')
-        workload_gen.save_as_yaml(pod_dicts, self.out_dir + name + '-c81.yaml')
+        workload_gen.save_as_yaml(pod_dicts,  os.path.join(out_dir, '%s-mrp.yaml' % (name, )))
         self.replace_scheduler(pod_dicts, 'aladdin-scheduler')
-        workload_gen.save_as_yaml(pod_dicts, self.out_dir + name + '-c91.yaml')
+        workload_gen.save_as_yaml(pod_dicts,  os.path.join(out_dir, '%s-as.yaml' % (name, )))
 
     def replace_scheduler(self, pods_dicts, scheduler_name):
         for job in pods_dicts:

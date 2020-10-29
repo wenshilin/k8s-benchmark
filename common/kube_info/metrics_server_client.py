@@ -1,10 +1,10 @@
-from common.utils.json_client import JsonClient
+from common.utils.json_http_client import JsonHttpClient
 
 
 class MetricsServerClient(object):
 
     def __init__(self, base_url: str):
-        self.client = JsonClient(base_url)
+        self.client = JsonHttpClient(base_url)
 
     def list_nodes(self):
         return self.client.get_json('nodes')

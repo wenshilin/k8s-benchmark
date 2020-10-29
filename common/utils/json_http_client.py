@@ -1,10 +1,11 @@
-import requests
 import json
 import logging
 import time
 
+import requests
 
-class JsonClient(object):
+
+class JsonHttpClient(object):
 
     def __init__(self, host: str):
         self.host = host

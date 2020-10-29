@@ -22,12 +22,6 @@ pod:
           - "$MEMORY_MB"
           - --iter-factor
           - "$ITER_FACTOR"
-          - --server-url
-          - "$SERVER_URL"
-          - --send-size-mb
-          - "$SEND_SIZE_MB"
-          - --write-size-mb
-          - "$WRITE_SIZE_MB"
         resources:
           requests:
             memory: "$REQUEST_MEM_MBMi"
