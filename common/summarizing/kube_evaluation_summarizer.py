@@ -1,0 +1,130 @@
+from .evaluation_summarizer import EvaluationSummarizer
+from ..utils import kube as utils
+from .. import global_arguments
+
+import prettytable
+import pandas as pd
+import os
+import datetime
+import logging
+from kubernetes.client import CoreV1Api
+
+
+class KubeEvaluationSummarizer(EvaluationSummarizer):
+
+    def __init__(self, client: CoreV1Api):
+        self.client = client
+        self.save_dir = global_arguments.get_argument('evaluation_summary_dir')
+        self.succeed_headers = ['名称', 'Job', '创建时间', 'WaitTime(s)', 'ExecutionTime(s)', 'SumTime(s)', '负载类型', '选择调度器', '选择节点']
+        self.failed_headers = ['名称', 'Job', '创建时间', '负载类型', '选择调度器', '选择节点']
+        self.now = datetime.datetime.now()
+
+    def write_summary(self, summary_name: str = ''):
+        self.now = datetime.datetime.now()
+        pods = self.client.list_namespaced_pod('default').items
+        tts, succeed, failed = [], [], []
+        succeed_table = prettytable.PrettyTable(self.succeed_headers)
+        failed_table = prettytable.PrettyTable(self.failed_headers)
+
+        pods.sort(key=lambda pod: utils.get_obj_name(pod))
+        for p in pods:
+            if utils.pod_succeeded(p):
+                ct = p.metadata.creation_timestamp
+                st = p.status.start_time
+                ft = p.status.container_statuses[0].state.terminated.finished_at
+                wt = utils.get_pod_waiting_time(p)
+                rt = (ft - st).total_seconds()
+                tt = wt + rt
+                job = p.metadata.labels.get('job', 'None')
+                row = [p.metadata.name, job, ct, wt, rt, tt,
+                       p.metadata.labels.get('taskType'),
+                       p.metadata.labels.get('linc/schedulerName', utils.get_pod_scheduler_name(p)),
+                       p.spec.node_name]
+                succeed.append(row)
+                succeed_table.add_row(row)
+                tts.append(tt)
+            elif utils.pod_failed(p):
+                ct = p.metadata.creation_timestamp
+                job = p.metadata.labels.get('job', 'None')
+                row = [
+                    p.metadata.name, job, ct,
+                    p.metadata.labels.get('taskType'),
+                    p.metadata.labels.get('linc/schedulerName', utils.get_pod_scheduler_name(p)),
+                    p.spec.node_name
+                ]
+                failed.append(row)
+                failed_table.add_row(row)
+        print(succeed_table)
+        print(failed_table)
+
+        save_dir = os.path.join(self.save_dir, '%s-%s' % (str(self.now), summary_name))
+        os.makedirs(save_dir, exist_ok=True)
+        if len(tts):
+            summary = '平均时长：%.2fs，最小时长：%.2fs，最大时长：%.2fs。' % (sum(tts) / len(tts), min(tts), max(tts))
+            logging.info(summary)
+            df = pd.DataFrame(succeed, columns=self.succeed_headers)
+            filename = os.path.join(save_dir, 'summary-succeed.csv')
+            df.to_csv(filename)
+            df = pd.DataFrame(failed, columns=self.failed_headers)
+            filename = os.path.join(save_dir, 'summary-failed.csv')
+            df.to_csv(filename)
+            s = self._print_summary(succeed, failed)
+            self._save(summary_name, save_dir, succeed_table, failed_table, summary, s)
+        else:
+            logging.info('获取总结失败（负载列表为空）')
+
+    def _save(self, name, save_dir, *args):
+        save_filename = os.path.join(save_dir, 'summary.md')
+        with open(save_filename, 'w') as f:
+            f.write(SUMMARY_TEMPLATE.format(name, *args))
+        logging.info('实验数据已保存 (%s)' % save_filename)
+
+    def _print_summary(self, succeed, failed):
+        cloud, edge1, edge2 = [], [], []
+        nodes = [['k8s2-54', 'k8s3-54'], ['k8s4-54', 'k8s5-54'], ['k8s6-54', 'k8s7-54']]
+
+        for row in succeed:
+            time = float(row[5])
+            task_type = row[6]
+            node = row[8]
+
+            if node in nodes[0]:
+                cloud.append(time)
+            elif node in nodes[1]:
+                edge1.append(time)
+            else:
+                edge2.append(time)
+
+        s = '总计启动了%d个负载，%d个运行于云端，其中%d个运行于边缘端1，其中%d个运行于边缘端2。\n' % (len(cloud + edge1 + edge2), len(cloud), len(edge1), len(edge2))
+        if len(cloud):
+            s += '云端负载平均时长：%.1fs，最小时长：%.1fs，最大时长：%.1fs。\n' % (sum(cloud) / len(cloud), min(cloud), max(cloud))
+
+        if len(edge1):
+            s += '边缘端1端负载平均时长：%.1fs，最小时长：%.1fs，最大时长：%.1fs。\n' % (sum(edge1) / len(edge1), min(edge1), max(edge1))
+
+        if len(edge2):
+            s += '边缘端2端负载平均时长：%.1fs，最小时长：%.1fs，最大时长：%.1fs。\n' % (sum(edge2) / len(edge2), min(edge2), max(edge2))
+
+        if len(failed):
+            s += f'共{len(failed)}个负载运行失败。\n'
+
+        return s
+
+
+SUMMARY_TEMPLATE = """ \
+# {0}
+
+Succeed Pods:
+```
+{1}
+```
+
+Failed Pods:
+```
+{2}
+```
+
+Summary:
+{3}
+{4}
+"""

@@ -1,0 +1,42 @@
+pod:
+  apiVersion: v1
+  kind: Pod
+  metadata:
+    name: $NAME
+    namespace: default
+    labels:
+      app: linc-workload
+      job: $JOB_NAME
+      taskType: $TASK_TYPE
+  spec:
+    schedulerName: $SCHEDULER_NAME
+    restartPolicy: OnFailure
+    imagePullPolicy: IfNotPresent
+    containers:
+      - name: task
+        image: $CONTAINER_IMAGE
+        args:
+          - --cpu-count
+          - "$CPU_COUNT"
+          - --memory-mb
+          - "$MEMORY_MB"
+          - --iter-factor
+          - "$ITER_FACTOR"
+          - --server-url
+          - "$SERVER_URL"
+          - --send-size-mb
+          - "$SEND_SIZE_MB"
+          - --write-size-mb
+          - "$WRITE_SIZE_MB"
+        resources:
+          requests:
+            memory: "$REQUEST_MEM_MBMi"
+            cpu: "$REQUEST_CPU"
+          limits:
+            memory: "$LIMIT_MEM_MBMi"
+            cpu: "$LIMIT_CPU"
+
+    nodeSelector:
+      linc/nodeType: $NODE_TYPE
+
+startTime: $START_TIME
