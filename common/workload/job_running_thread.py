@@ -1,11 +1,12 @@
 import logging
+import queue
+import threading
+import time
+import typing
+
 import kubernetes
 from kubernetes import client
 from kubernetes.client import rest
-import time
-import threading
-import queue
-import typing
 
 
 class WorkloadRunner(object):
@@ -13,7 +14,7 @@ class WorkloadRunner(object):
     def __init__(self, core_api: client.CoreV1Api, dry_run: bool = False):
         self.client = core_api
         self.api_client = self.client.api_client
-        self.run_threads: typing.List[JobRunnerThread] = []
+        self.run_threads: typing.List[JobRunningThread] = []
         self.dry_run = dry_run
 
     def has_done(self) -> bool:
@@ -33,7 +34,7 @@ class WorkloadRunner(object):
 
     def start(self, workload):
         for job in workload:
-            run_thread = JobRunnerThread(self.client, job, self.dry_run, daemon=True)
+            run_thread = JobRunningThread(self.client, job, self.dry_run, daemon=True)
             run_thread.start()
             self.run_threads.append(run_thread)
 
@@ -58,7 +59,7 @@ class WorkloadRunner(object):
         return len(self.client.list_namespaced_pod('default').items) == 0
 
 
-class JobRunnerThread(threading.Thread):
+class JobRunningThread(threading.Thread):
 
     def __init__(self, api_client: client.CoreV1Api, job: dict, dry_run: bool, *args, **kwargs):
         super().__init__(*args, **kwargs)
