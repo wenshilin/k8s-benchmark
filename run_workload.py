@@ -7,13 +7,13 @@ import warnings
 
 import kubernetes
 
-from benchmark import workload_gen
-from benchmark.workload_runner import WorkloadRunner
 from common import global_arguments
 from common.kube_info.metrics_server_client import MetricsServerClient
 from common.summarizing.kube_evaluation_summarizer import KubeEvaluationSummarizer
 from common.utils import kube as utils
 from common.utils import kube_config
+from common.workload import load_from_file
+from common.workload.workload_runner import WorkloadRunner
 
 
 class WorkloadTest(unittest.TestCase):
@@ -50,7 +50,7 @@ class WorkloadTest(unittest.TestCase):
 
         for name in tests:
             print("----------------------------------------------------------------------")
-            jobs = workload_gen.load_from_file(os.path.join(workload_dir, '%s.yaml' % (name, )))
+            jobs = load_from_file(os.path.join(workload_dir, '%s.yaml' % (name, )))
             print('Running %s' % name)
             print('loaded job number: %d' % len(jobs))
             self.start(jobs)
