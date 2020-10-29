@@ -22,8 +22,8 @@ class JobSummaryPlugin(SummaryPlugin):
         JCT_table = prettytable.PrettyTable(self.JCTheaders)
         JCT_dir = os.path.join(self.save_dir, '%s-%s' % (str(self.now), name))
         os.makedirs(JCT_dir, exist_ok=True)
-        savefilename = os.path.join(JCT_dir, 'coutJCT.md')
-        savefile = os.path.join(JCT_dir, 'coutJCT.csv')
+        savefilename = os.path.join(JCT_dir, 'coutJCT.csv')
+        savefile = os.path.join(JCT_dir, 'coutJCT.md')
 
         joblist = []
         allpodlist = []
