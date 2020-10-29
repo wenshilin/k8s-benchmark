@@ -1,5 +1,6 @@
 import datetime
 import logging
+import os
 import time
 import unittest
 import warnings
@@ -37,17 +38,19 @@ class WorkloadTest(unittest.TestCase):
             self.run_once()
 
     def run_once(self):
-        #tests = ['云到边-c10', '云到边-c11', '云到边-c12','云到边-c13']
-        # tests = ['云到边-c61', '云到边-c71', '云到边-c81', '云到边-c91']
-        #tests = ['云到边-c2', '云到边-c3', '云到边-c4', '云到边-c5']
-        #tests = ['云到边-c44', '云到边-c54', '云到边-c64', '云到边-c74']
-        #tests = ['边到云-c61', '边到云-c71', '边到云-c81', '边到云-c91']
-        #tests = ['边到云到边-c46', '边到云到边-c56', '边到云到边-c66', '边到云到边-c76']
-        tests = ['云到边-c6']
+        # 负载的类型
+        workload_type = '云到边'
+        # 负载生成时间/负载所在文件夹
+        workload_generated_time = '2020-10-29 19-55-52'
+
+        scheduling_algorithms = ['lrp', 'mrp', 'ep', 'as']
+        tests = ['%s-%s' % (workload_type, scheduling_algorithm, ) for scheduling_algorithm in scheduling_algorithms]
+
+        workload_dir = os.path.join('results/workloads', workload_generated_time)
 
         for name in tests:
             print("----------------------------------------------------------------------")
-            jobs = workload_gen.load_from_file('results/workloads/%s.yaml' % name)
+            jobs = workload_gen.load_from_file(os.path.join(workload_dir, '%s.yaml' % (name, )))
             print('Running %s' % name)
             print('loaded job number: %d' % len(jobs))
             self.start(jobs)
