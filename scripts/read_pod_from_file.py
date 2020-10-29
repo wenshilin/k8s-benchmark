@@ -11,4 +11,6 @@ def read_pod_from_file(filename: str):
 
 
 if __name__ == '__main__':
-    read_pod_from_file('../results/pods/2020-10-29 08:02:29-边到云-c61.pk')
+    pods=read_pod_from_file('../results/pods/2020-10-29 09-29-07-云到边-c6.pk')
+    for pod in pods:
+        print(pod.metadata.creation)

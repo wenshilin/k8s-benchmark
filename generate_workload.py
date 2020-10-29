@@ -54,7 +54,7 @@ class WorkloadGenTest(TestCase):
         pod_dicts = generator.generate()
         out_dir = os.path.join(self.out_dir, self.now)
         os.makedirs(out_dir, exist_ok=True)
-        workload_gen.save_as_yaml(pod_dicts, os.path.join(out_dir, '%s-ds.yaml' % (name, )))
+        workload_gen.save_as_yaml(pod_dicts, os.path.join(out_dir, '%s-ORIGIN.yaml' % (name, )))
         self.replace_scheduler(pod_dicts, 'linc-scheduler-configuration-1')
         workload_gen.save_as_yaml(pod_dicts,  os.path.join(out_dir, '%s-ep.yaml' % (name, )))
         self.replace_scheduler(pod_dicts, 'linc-scheduler-configuration-2')
@@ -62,7 +62,7 @@ class WorkloadGenTest(TestCase):
         self.replace_scheduler(pod_dicts, 'linc-scheduler-configuration-3')
         workload_gen.save_as_yaml(pod_dicts,  os.path.join(out_dir, '%s-mrp.yaml' % (name, )))
         self.replace_scheduler(pod_dicts, 'aladdin-scheduler')
-        workload_gen.save_as_yaml(pod_dicts,  os.path.join(out_dir, '%s-as.yaml' % (name, )))
+        workload_gen.save_as_yaml(pod_dicts,  os.path.join(out_dir, '%s-aladdin.yaml' % (name, )))
 
     def replace_scheduler(self, pods_dicts, scheduler_name):
         for job in pods_dicts:
