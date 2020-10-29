@@ -80,9 +80,7 @@ class TaskSummaryPlugin(SummaryPlugin):
 
     def _print_summary(self, succeed, failed):
         cloud, edge1, edge2 = [], [], []
-        # FIXME:
-        # nodes = [['k8s2-54', 'k8s3-54'], ['k8s4-54', 'k8s5-54'], ['k8s6-54', 'k8s7-54']]
-        nodes = [['k8s2-55', 'k8s3-55'], ['k8s4-55', 'k8s5-55'], ['k8s6-55', 'k8s7-55']]
+        nodes = [['k8s2-54', 'k8s3-54'], ['k8s4-54', 'k8s5-54'], ['k8s6-54', 'k8s7-54']]
 
         for row in succeed:
             time = float(row[5])

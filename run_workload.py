@@ -23,7 +23,6 @@ class WorkloadTest(unittest.TestCase):
             format='%(asctime)s %(levelname)s %(funcName)s: %(message)s'
         )
         global_arguments.init_empty_arguments()
-        global_arguments.set_argument('evaluation_summary_dir', 'results/summary')
         self.client = kubernetes.client.CoreV1Api()
         self.summarizer = KubeEvaluationSummarizer()
 
@@ -39,8 +38,7 @@ class WorkloadTest(unittest.TestCase):
         # tests = ['云到边-c61', '云到边-c71', '云到边-c81', '云到边-c91']
         #tests = ['云到边-c2', '云到边-c3', '云到边-c4', '云到边-c5']
         #tests = ['云到边-c44', '云到边-c54', '云到边-c64', '云到边-c74']
-        # FIXME:
-        tests = ['边到云-c61']
+        tests = ['边到云-c61', '边到云-c71', '边到云-c81', '边到云-c91']
         #tests = ['边到云到边-c46', '边到云到边-c56', '边到云到边-c66', '边到云到边-c76']
         #tests = ['云到边-c44']
 

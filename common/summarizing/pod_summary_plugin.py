@@ -1,4 +1,5 @@
 import os
+import pickle
 
 from .summary_plugin import SummaryPlugin
 
@@ -14,6 +15,6 @@ class PodSummaryPlugin(SummaryPlugin):
     def write_summary(self, pods, now: str, name: str):
         self.now = now
         os.makedirs(self.save_dir, exist_ok=True)
-        save_dir = os.path.join(self.save_dir, '%s-%s.yaml' % (str(self.now), name))
-        with open(save_dir, 'w') as f:
-            f.write(str(pods))
+        save_dir = os.path.join(self.save_dir, '%s-%s.pk' % (str(self.now), name))
+        with open(save_dir, 'wb') as f:
+            pickle.dump(pods, f)
