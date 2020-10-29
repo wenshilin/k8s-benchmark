@@ -376,7 +376,7 @@ class Edge2Cloud2EdgeWorkloadGenerator(WorkloadGenerator):
                 else:
                     task.request_mem_mb *= 40
                     task.limit_mem_mb *= 40
-                    task.memory_mb = max(int(task.request_mem_mb), int(task.limit_mem_mb))
+                    task.memory_mb = max(int(task.request_mem_mb), int(task.limit_mem_mb*0.9))
                     task.task_type = 'memory'
                 cloud_task_cnt += 1
 
@@ -394,7 +394,7 @@ class Edge2Cloud2EdgeWorkloadGenerator(WorkloadGenerator):
                 else:
                     task.request_mem_mb *= 10
                     task.limit_mem_mb *= 10
-                    task.memory_mb = max(int(task.request_mem_mb), int(task.limit_mem_mb))
+                    task.memory_mb = max(int(task.request_mem_mb), int(task.limit_mem_mb*0.9))
                     task.task_type = 'memory'
                 edge_task_cnt += 1
 
