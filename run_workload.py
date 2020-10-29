@@ -69,7 +69,7 @@ class WorkloadTest(unittest.TestCase):
         self.workload_runner.restart(workload)
 
     def write_summary(self, name, pods):
-        self.now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        self.now = datetime.datetime.now().strftime('%Y-%m-%d %H-%M-%S')
         self.summarizer.write_summary(pods, self.now, name)
 
 

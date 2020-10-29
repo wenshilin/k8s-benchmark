@@ -163,10 +163,6 @@ class WorkloadGenerator(object):
     def _build_dicts(self, tasks: typing.List[Task]) -> typing.List[dict]:
         for i, task in enumerate(tasks):
             # To solve OOMKilled
-            #need_mem_mb = (task.write_size_mb % 128) + (task.write_size_mb / 128) + task.memory_mb + 10
-            #task.limit_mem_mb = max(task.limit_mem_mb, need_mem_mb) + 50
-
-            #need_mem_mb = (task.write_size_mb % 128) + (task.write_size_mb / 128) + task.memory_mb + 250
             #200,100
             need_mem_mb = task.write_size_mb + task.memory_mb + 200
             task.limit_mem_mb = max(task.limit_mem_mb, need_mem_mb) + 50
