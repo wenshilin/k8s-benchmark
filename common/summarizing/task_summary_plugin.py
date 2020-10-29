@@ -15,8 +15,8 @@ class TaskSummaryPlugin(SummaryPlugin):
     def __init__(self):
         self.save_dir = 'results/tasks'
 
-        self.succeed_headers = ['名称', 'Job', '创建时间', 'WaitTime(s)', 'ExecutionTime(s)', 'SumTime(s)', '负载类型', '选择调度器', '选择节点']
-        self.failed_headers = ['名称', 'Job', '创建时间', '负载类型', '选择调度器', '选择节点']
+        self.succeed_headers = ['名称', 'Job', '创建时间', '结束时间', 'WaitTime(s)', 'ExecutionTime(s)', 'SumTime(s)', '负载类型', '选择调度器', '选择节点']
+        self.failed_headers = ['名称', 'Job', '创建时间', '结束时间', '负载类型', '选择调度器', '选择节点']
         self.now = ''
 
     def write_summary(self, pods, now: str, summary_name: str):
@@ -35,7 +35,7 @@ class TaskSummaryPlugin(SummaryPlugin):
                 rt = (ft - st).total_seconds()
                 tt = wt + rt
                 job = p.metadata.labels.get('job', 'None')
-                row = [p.metadata.name, job, ct, wt, rt, tt,
+                row = [p.metadata.name, job, ct, ft, wt, rt, tt,
                        p.metadata.labels.get('taskType'),
                        p.metadata.labels.get('linc/schedulerName', utils.get_pod_scheduler_name(p)),
                        p.spec.node_name]
@@ -46,7 +46,7 @@ class TaskSummaryPlugin(SummaryPlugin):
                 ct = p.metadata.creation_timestamp
                 job = p.metadata.labels.get('job', 'None')
                 row = [
-                    p.metadata.name, job, ct,
+                    p.metadata.name, job, ct, ft,
                     p.metadata.labels.get('taskType'),
                     p.metadata.labels.get('linc/schedulerName', utils.get_pod_scheduler_name(p)),
                     p.spec.node_name
@@ -83,9 +83,9 @@ class TaskSummaryPlugin(SummaryPlugin):
         nodes = [['k8s2-54', 'k8s3-54'], ['k8s4-54', 'k8s5-54'], ['k8s6-54', 'k8s7-54']]
 
         for row in succeed:
-            time = float(row[5])
-            task_type = row[6]
-            node = row[8]
+            time = float(row[6])
+            task_type = row[7]
+            node = row[9]
 
             if node in nodes[0]:
                 cloud.append(time)

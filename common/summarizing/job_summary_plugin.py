@@ -18,7 +18,7 @@ class JobSummaryPlugin(SummaryPlugin):
 
     def write_summary(self, pods, now: str, name: str):
         self.now = now
-        print("---------------------------------------------------------------------------")
+        print("----------------------------------------------------------------------")
         JCT_table = prettytable.PrettyTable(self.JCTheaders)
         JCT_dir = os.path.join(self.save_dir, '%s-%s' % (str(self.now), name))
         os.makedirs(JCT_dir, exist_ok=True)
