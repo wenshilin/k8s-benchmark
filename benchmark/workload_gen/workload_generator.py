@@ -108,10 +108,19 @@ class WorkloadGenerator(object):
 
             #need_mem_mb = (task.write_size_mb % 128) + (task.write_size_mb / 128) + task.memory_mb + 250
             #200,100
-            need_mem_mb = task.write_size_mb + task.memory_mb + 200
-            task.request_mem_mb = task.memory_mb + 200
-            task.memory_mb = task.request_mem_mb + 150
-            task.limit_mem_mb = max(task.limit_mem_mb, need_mem_mb) + 500
+            #need_mem_mb = task.write_size_mb + task.memory_mb + 200
+            #task.request_mem_mb = need_mem_mb
+            #task.memory_mb = task.request_mem_mb + 200
+            #task.limit_mem_mb = max(task.limit_mem_mb, need_mem_mb) + 600
+
+            task.request_mem_mb = task.write_size_mb + task.memory_mb
+            task.limit_mem_mb = max(task.limit_mem_mb, task.request_mem_mb) + 600
+            task.memory_mb = task.request_mem_mb + 300
+
+            if task.limit_mem_mb > 16384 and task.node_type == 'cloud':
+                task.limit_mem_mb = 16000
+            elif (task.node_type == 'edge1' or task.node_type == 'edge2') and task.limit_mem_mb > 4096:
+                task.limit_mem_mb = 4000
 
             # Reduces working time
             task.time_ms *= (task.limit_cpu + 1)
