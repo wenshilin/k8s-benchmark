@@ -72,7 +72,6 @@ class JobSummaryPlugin(SummaryPlugin):
             JCTsummary += 'Job平均时长：%.2fs，最小时长：%.2fs，最大时长：%.2fs。' % (sum(countJCT) / len(countJCT), min(countJCT), max(countJCT))
             logging.info(JCTsummary)
             logging.info('Jobs的MakeSpan is：%.2fs。' % (job_makespan))
-            #f.write(JCTsummary)
         f.close()
 
         f1 = open(savefile, 'a')

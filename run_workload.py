@@ -43,7 +43,8 @@ class WorkloadTest(unittest.TestCase):
         # 负载生成时间/负载所在文件夹
         workload_generated_time = '2020-10-30 20-56-50'
 
-        scheduling_algorithms = ['ep', 'lrp', 'mrp', 'aladdin']
+        #scheduling_algorithms = ['ep', 'lrp', 'mrp', 'aladdin']
+        scheduling_algorithms = ['ds']
         tests = ['%s-%s' % (workload_type, scheduling_algorithm, ) for scheduling_algorithm in scheduling_algorithms]
 
         workload_dir = os.path.join('results/workloads', workload_generated_time)

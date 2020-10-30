@@ -123,9 +123,23 @@ class TaskSummaryPlugin(SummaryPlugin):
         if len(edge2):
             s += '边缘端2Task平均时长：%.1fs，最小时长：%.1fs，最大时长：%.1fs。\n' % (sum(edge2) / len(edge2), min(edge2), max(edge2))
 
-        for nodename in nodeslist:
-            if len(nodename):
-                s += '节点Task平均时长：%.1fs，最小时长：%.1fs，最大时长：%.1fs。\n' % (sum(nodename) / len(nodename), min(nodename), max(nodename))
+        if len(k8s2):
+            s += 'k8s2节点Task平均时长：%.1fs，最小时长：%.1fs，最大时长：%.1fs。\n' % (sum(k8s2) / len(k8s2), min(k8s2), max(k8s2))
+
+        if len(k8s3):
+            s += 'k8s3节点Task平均时长：%.1fs，最小时长：%.1fs，最大时长：%.1fs。\n' % (sum(k8s3) / len(k8s3), min(k8s3), max(k8s3))
+
+        if len(k8s4):
+            s += 'k8s4节点Task平均时长：%.1fs，最小时长：%.1fs，最大时长：%.1fs。\n' % (sum(k8s4) / len(k8s4), min(k8s4), max(k8s4))
+
+        if len(k8s5):
+            s += 'k8s5节点Task平均时长：%.1fs，最小时长：%.1fs，最大时长：%.1fs。\n' % (sum(k8s5) / len(k8s5), min(k8s5), max(k8s5))
+
+        if len(k8s6):
+            s += 'k8s6节点Task平均时长：%.1fs，最小时长：%.1fs，最大时长：%.1fs。\n' % (sum(k8s6) / len(k8s6), min(k8s6), max(k8s6))
+
+        if len(k8s7):
+            s += 'k8s7节点Task平均时长：%.1fs，最小时长：%.1fs，最大时长：%.1fs。\n' % (sum(k8s7) / len(k8s7), min(k8s7), max(k8s7))
 
         if len(failed):
             s += f'共{len(failed)}个负载运行失败。\n'
