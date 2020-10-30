@@ -48,9 +48,9 @@ class JobRunningThread(threading.Thread):
         while True:
             try:
                 if self.dry_run:
-                    kubernetes.utils.create_from_dict(self.client.api_client, pod, dry_run='All')
+                    kubernetes.utils.create_from_dict(self.client.api_client, pod, dry_run='All', async_req=True)
                 else:
-                    kubernetes.utils.create_from_dict(self.client.api_client, pod)
+                    kubernetes.utils.create_from_dict(self.client.api_client, pod,  async_req=True)
                 return
             except Exception as e:
                 if 'AlreadyExists' in str(e):

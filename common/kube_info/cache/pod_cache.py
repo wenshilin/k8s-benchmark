@@ -1,16 +1,15 @@
-import logging
 import queue
-import time
-from datetime import datetime
 from typing import Optional
-
+from datetime import datetime
 from dateutil.tz import tz
 from kubernetes.client import V1Pod
+import time
+import logging
 
 from .cache import Cache
-from .event_handler_impl import EventHandlerImpl
+from .. import utils
 from .informer import Informer
-from ...utils import kube as utils
+from .event_handler_impl import EventHandlerImpl
 
 
 def create_pod_cache_and_start_listening(client, need_process_func, timeout=None, wait_init_seconds: int = 0):

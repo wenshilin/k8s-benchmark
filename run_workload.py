@@ -7,13 +7,13 @@ import warnings
 
 import kubernetes
 
+from benchmark import workload_gen
+from benchmark.workload_runner import WorkloadRunner
 from common import global_arguments
 from common.kube_info.metrics_server_client import MetricsServerClient
 from common.summarizing.kube_evaluation_summarizer import KubeEvaluationSummarizer
 from common.utils import kube as utils
 from common.utils import kube_config
-from common.workload import load_from_file
-from common.workload.workload_runner import WorkloadRunner
 
 
 class WorkloadTest(unittest.TestCase):
@@ -39,18 +39,18 @@ class WorkloadTest(unittest.TestCase):
 
     def run_once(self):
         # 负载的类型
-        workload_type = '云到边'
+        workload_type = '边到云到边'
         # 负载生成时间/负载所在文件夹
-        workload_generated_time = '2020-10-29 19-55-52'
+        workload_generated_time = '2020-10-30 18-00-12'
 
-        scheduling_algorithms = ['lrp', 'mrp', 'ep', 'as']
+        scheduling_algorithms = ['ep', 'lrp', 'mrp', 'aladdin']
         tests = ['%s-%s' % (workload_type, scheduling_algorithm, ) for scheduling_algorithm in scheduling_algorithms]
 
         workload_dir = os.path.join('results/workloads', workload_generated_time)
 
         for name in tests:
             print("----------------------------------------------------------------------")
-            jobs = load_from_file(os.path.join(workload_dir, '%s.yaml' % (name, )))
+            jobs = workload_gen.load_from_file(os.path.join(workload_dir, '%s.yaml' % (name, )))
             print('Running %s' % name)
             print('loaded job number: %d' % len(jobs))
             self.start(jobs)

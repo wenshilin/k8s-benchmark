@@ -1,8 +1,7 @@
+from kubernetes import client, utils
 from datetime import datetime
 
-from kubernetes import client, utils
-
-from .. import consts
+from common import consts
 
 GB = 1024 ** 3
 
@@ -153,7 +152,3 @@ def responsible_for_pod(pod: client.V1Pod, scheduler_name: str):
 
 def action_valid(action: int):
     return action is not None and action != 0
-
-
-def convert_action_to_scheduler_name(action: int):
-    return consts.ACTIONS[action]

@@ -1,10 +1,9 @@
 from typing import *
-
 import kubernetes
 
 from .models.node import Node
+from . import utils
 from ..consts import GB
-from ..utils import kube as utils
 
 
 class KubeInformer(object):
@@ -21,7 +20,7 @@ class KubeInformer(object):
         nodes = []
         for n in self.client.list_node().items:
             node_name = n.metadata.name
-            if 'linc/nodeType' not in n.metadata.labels:
+            if node_name == 'linc':
                 continue
 
             cpu_cap = float(kubernetes.utils.parse_quantity(n.status.allocatable['cpu']))

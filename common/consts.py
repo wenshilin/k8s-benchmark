@@ -1,10 +1,8 @@
 # names of scheduler configurations
 ACTIONS = [
     'DUMMY_SCHEDULER',
-    'linc-scheduler-configuration-1',
-    'linc-scheduler-configuration-2',
-    'linc-scheduler-configuration-3',
-    'aladdin-scheduler',
+    'zb-bit',
+    'ls'
 ]
 
 # identity in pod's label

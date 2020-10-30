@@ -13,7 +13,7 @@ class Edge2Cloud2EdgeWorkloadGenerator(WorkloadGenerator):
 
     def __init__(self):
         super().__init__(consts.TASK_TYPES)
-        self.poisson_dist = stats.poisson.rvs(mu=5000, size=20, random_state=1)
+        self.poisson_dist = stats.poisson.rvs(mu=3000, size=20, random_state=1)
 
     def _generate_job(self):
         job_dict = self._random_choose_job()
@@ -55,9 +55,9 @@ class Edge2Cloud2EdgeWorkloadGenerator(WorkloadGenerator):
                     task.task_type = 'cpu'
                 # Memory
                 else:
-                    task.request_mem_mb *= 40
-                    task.limit_mem_mb *= 40
-                    task.memory_mb = max(int(task.request_mem_mb), int(task.limit_mem_mb))
+                    task.request_mem_mb *= 50
+                    task.limit_mem_mb *= 50
+                    task.memory_mb = max(int(task.request_mem_mb), int(task.limit_mem_mb*0.9))
                     task.task_type = 'memory'
                 cloud_task_cnt += 1
 
@@ -73,9 +73,9 @@ class Edge2Cloud2EdgeWorkloadGenerator(WorkloadGenerator):
                     task.task_type = 'cpu'
                 # Memory
                 else:
-                    task.request_mem_mb *= 10
-                    task.limit_mem_mb *= 10
-                    task.memory_mb = max(int(task.request_mem_mb), int(task.limit_mem_mb))
+                    task.request_mem_mb *= 12.5
+                    task.limit_mem_mb *= 12.5
+                    task.memory_mb = max(int(task.request_mem_mb), int(task.limit_mem_mb*0.9))
                     task.task_type = 'memory'
                 edge_task_cnt += 1
 

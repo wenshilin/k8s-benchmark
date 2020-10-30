@@ -1,4 +1,4 @@
-from ..utils.json_http_client import JsonHttpClient
+from common.utils.json_http_client import JsonHttpClient
 
 
 class MetricsServerClient(object):
