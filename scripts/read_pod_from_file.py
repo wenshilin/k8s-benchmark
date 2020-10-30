@@ -13,4 +13,4 @@ def read_pod_from_file(filename: str):
 if __name__ == '__main__':
     pods=read_pod_from_file('../results/pods/2020-10-29 09-29-07-云到边-c6.pk')
     for pod in pods:
-        print(pod.metadata.creation)
+        print(pod.metadata.creation_timestamp)
