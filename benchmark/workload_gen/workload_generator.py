@@ -41,8 +41,8 @@ class WorkloadGenerator(object):
             'start_ms': start_ms,
             'end_ms': end_ms,
             'cpu_count': max(1, int(cpu * 16)),
-            'memory_mb': int(max_ram * 1024 * 32),
-            'time_ms': max(1, int((end_ms - start_ms) * max_cpu * 100)),
+            'memory_mb': int(ram * 1024 * 32),
+            'time_ms': int((end_ms - start_ms) * max_cpu * 100),
             'send_size_mb': int(random.random() * 0.0),
             'write_size_mb': int(io * 1024 * 0.0),
             'request_cpu': cpu * 16,
@@ -66,7 +66,7 @@ class WorkloadGenerator(object):
         for _ in range(job_num):
             #while self.prev_job_last_start_time<=400000:
             print(self.task_count)
-            if self.task_count<=150:
+            if self.task_count <= 150:
                 job = self._generate_job()
                 jobs.append(job)
                 self.job_count += 1
@@ -109,14 +109,16 @@ class WorkloadGenerator(object):
             #need_mem_mb = (task.write_size_mb % 128) + (task.write_size_mb / 128) + task.memory_mb + 250
             #200,100
             need_mem_mb = task.write_size_mb + task.memory_mb + 200
-            task.limit_mem_mb = max(task.limit_mem_mb, need_mem_mb) + 50
+            task.request_mem_mb = task.memory_mb + 200
+            task.memory_mb = task.request_mem_mb + 150
+            task.limit_mem_mb = max(task.limit_mem_mb, need_mem_mb) + 500
 
             # Reduces working time
-            task.time_ms *= task.limit_cpu
+            task.time_ms *= (task.limit_cpu + 1)
             while task.time_ms >= 300000:
                 task.time_ms = int(task.time_ms / 2)
             if task.limit_cpu < 1:
-                task.time_ms *= task.limit_cpu
+                task.time_ms *= (task.limit_cpu + 1)
 
             # Build dictionary
             tasks[i] = build_task_dict(task)
