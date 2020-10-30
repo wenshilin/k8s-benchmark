@@ -156,4 +156,4 @@ def action_valid(action: int):
 
 
 def convert_action_to_scheduler_name(action: int):
-    return consts.ACTIONS.index(action)
+    return consts.ACTIONS[action]
