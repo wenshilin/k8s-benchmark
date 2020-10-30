@@ -2,7 +2,7 @@ from datetime import datetime
 
 from kubernetes import client, utils
 
-from common import consts
+from .. import consts
 
 GB = 1024 ** 3
 
