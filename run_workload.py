@@ -8,7 +8,7 @@ import warnings
 import kubernetes
 
 from benchmark import workload_gen
-from benchmark.workload_runner import WorkloadRunner
+from common.workload.workload_runner import WorkloadRunner
 from common import global_arguments
 from common.kube_info.metrics_server_client import MetricsServerClient
 from common.summarizing.kube_evaluation_summarizer import KubeEvaluationSummarizer
