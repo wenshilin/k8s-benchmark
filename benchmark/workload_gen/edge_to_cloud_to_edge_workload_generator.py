@@ -51,18 +51,18 @@ class Edge2Cloud2EdgeWorkloadGenerator(WorkloadGenerator):
                     task.limit_cpu *= 6
                     task.cpu_count = max(1, math.ceil(task.limit_cpu))
 
-                    if task.cpu_count > 16:
-                        task.cpu_count = 16
+                    if task.cpu_count > 8:
+                        task.cpu_count = 8
                     task.task_type = 'cpu'
                 # Memory
                 else:
                     task.request_mem_mb *= 50
                     task.limit_mem_mb *= 50
-                    task.memory_mb = max(int(task.request_mem_mb), int(task.limit_mem_mb*0.9))
+                    task.memory_mb = max(int(task.request_mem_mb), int(task.limit_mem_mb))
                     task.task_type = 'memory'
 
-                    if task.limit_mem_mb > 16384:
-                        task.limit_mem_mb = 16000
+                    #if task.limit_mem_mb > 16384:
+                    #    task.limit_mem_mb = 15000
                 cloud_task_cnt += 1
 
             elif task.node_type == 'edge1' or task.node_type == 'edge2':
@@ -73,18 +73,18 @@ class Edge2Cloud2EdgeWorkloadGenerator(WorkloadGenerator):
                     task.limit_cpu *= 2
                     task.cpu_count = max(1, math.ceil(task.limit_cpu))
 
-                    if task.cpu_count > 4:
-                        task.cpu_count = 4
+                    if task.cpu_count > 2:
+                        task.cpu_count = 2
                     task.task_type = 'cpu'
                 # Memory
                 else:
                     task.request_mem_mb *= 12.5
                     task.limit_mem_mb *= 12.5
-                    task.memory_mb = max(int(task.request_mem_mb), int(task.limit_mem_mb*0.9))
+                    task.memory_mb = max(int(task.request_mem_mb), int(task.limit_mem_mb))
                     task.task_type = 'memory'
 
-                    if task.limit_mem_mb > 4096:
-                        task.limit_mem_mb = 4000
+                    #if task.limit_mem_mb > 4096:
+                    #    task.limit_mem_mb = 3000
                 edge_task_cnt += 1
 
         tasks = self._build_dicts(tasks)
