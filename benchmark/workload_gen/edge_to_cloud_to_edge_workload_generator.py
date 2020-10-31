@@ -1,4 +1,4 @@
-import math
+import math,random
 
 from scipy import stats
 
@@ -25,6 +25,7 @@ class Edge2Cloud2EdgeWorkloadGenerator(WorkloadGenerator):
         if first_3:
             tasks = self._generate_general_tasks(job_dict, 3)
         else:
+            #random.seed(0)
             tasks = self._generate_general_tasks(job_dict)
 
         #if self.task_count<=300:

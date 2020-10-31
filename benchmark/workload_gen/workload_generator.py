@@ -66,15 +66,16 @@ class WorkloadGenerator(object):
         for _ in range(job_num):
             #while self.prev_job_last_start_time<=400000:
             print(self.task_count)
-            if self.task_count <= 150:
+            if self.task_count <= 30:
                 job = self._generate_job()
                 jobs.append(job)
                 self.job_count += 1
         return jobs
 
-    def _generate_general_tasks(self, job_dict: dict, first_n: int = 30) -> list:
+    def _generate_general_tasks(self, job_dict: dict, first_n: int = 3) -> list:
         task_dict = job_dict['job.tasks']
         tasks = []
+        #random.seed(0)
         for i, task in enumerate(task_dict):
             if i == first_n:
                 break
@@ -114,22 +115,26 @@ class WorkloadGenerator(object):
             #task.limit_mem_mb = max(task.limit_mem_mb, need_mem_mb) + 600
 
             # edge-cloud-edge
-            task.request_mem_mb = task.write_size_mb + task.memory_mb + 500
-            task.memory_mb = task.request_mem_mb
-            task.limit_mem_mb = task.request_mem_mb + 300
+            #1
+            if task.node_type == 'cloud':
+                task.request_mem_mb = task.write_size_mb + task.memory_mb + 2000
+                task.memory_mb = task.request_mem_mb
+                task.limit_mem_mb = task.request_mem_mb + 1000
 
-            # edge-cloud
-            #cloud-edge
+                if (task.limit_mem_mb > 80000 or task.memory_mb > 80000 or task.request_mem_mb > 80000):
+                    task.limit_mem_mb = 80000
+                    task.request_mem_mb = 3000
+                    task.memory_mb = 3000
 
-            if (task.limit_mem_mb > 10000 or task.memory_mb > 10000 or task.request_mem_mb > 10000) and task.node_type == 'cloud':
-                task.limit_mem_mb = 10000
-                task.request_mem_mb = 8000
-                task.memory_mb = 8000
+            elif (task.node_type == 'edge1' or task.node_type == 'edge2'):
+                task.request_mem_mb = task.write_size_mb + task.memory_mb + 500
+                task.memory_mb = task.request_mem_mb
+                task.limit_mem_mb = task.request_mem_mb + 300
 
-            elif (task.node_type == 'edge1' or task.node_type == 'edge2') and (task.limit_mem_mb > 2500 or task.memory_mb > 2500 or task.request_mem_mb > 2500):
-                task.limit_mem_mb = 2500
-                task.request_mem_mb = 1500
-                task.memory_mb = 1500
+                if (task.limit_mem_mb > 2000 or task.memory_mb > 2000 or task.request_mem_mb > 2000):
+                    task.limit_mem_mb = 2000
+                    task.request_mem_mb = 800
+                    task.memory_mb = 800
 
             # Reduces working time
             task.time_ms *= (task.limit_cpu + 1)

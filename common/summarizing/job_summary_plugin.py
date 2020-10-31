@@ -35,7 +35,6 @@ class JobSummaryPlugin(SummaryPlugin):
             allpodlist.append(p.metadata.name)
             alljobstarttime.append(p.metadata.creation_timestamp)
             alljobendtime.append(p.status.container_statuses[0].state.terminated.finished_at)
-            job_makespan = (max(alljobendtime) - min(alljobstarttime)).total_seconds()
 
             # all job list
             job = p.metadata.labels.get('job', 'None')
@@ -43,6 +42,7 @@ class JobSummaryPlugin(SummaryPlugin):
                 if job == 'job-' + str(j):
                     joblist.append(job)
         joblist1 = list(np.unique(joblist))
+        job_makespan = (max(alljobendtime) - min(alljobstarttime)).total_seconds()
 
         with open(savefilename, 'w') as f:
             f.write('Jobname,'+'Job Start Time,'+'Job End Time,'+'Job Completed Time(s)'+'\n')
