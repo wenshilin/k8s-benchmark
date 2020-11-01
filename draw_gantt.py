@@ -1,5 +1,5 @@
 import datetime
-import datetime
+import os
 
 import plotly as py
 import pytz
@@ -10,12 +10,13 @@ from scripts.read_pod_from_file import read_pod_from_file
 
 def main():
     pickle_filenames = [
-        # 'results/pods/2020-11-01 10-40-54-边到云到边-ep.pk',
-        'results/pods/2020-11-01 10-49-52-边到云到边-lrp.pk',
-        'results/pods/2020-11-01 10-58-56-边到云到边-mrp.pk',
-        # 'results/pods/2020-11-01 11-08-31-边到云到边-aladdin.pk',
-        # 'results/pods/2020-11-01 11-17-50-边到云到边-ds.pk',
+        '2020-11-01 07-24-44-w-ep.pk',
+        '2020-11-01 07-39-58-w-lrp.pk',
+        '2020-11-01 07-55-02-w-mrp.pk',
+        '2020-11-01 08-10-51-w-as.pk'
     ]
+    pickle_dir = 'results/pods'
+    pickle_filenames = [os.path.join(pickle_dir, pf) for pf in pickle_filenames]
     gantt_data = []
     colors = {}
     default_colors = py.colors.DEFAULT_PLOTLY_COLORS
