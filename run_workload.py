@@ -41,7 +41,7 @@ class WorkloadTest(unittest.TestCase):
         # 负载的类型
         workload_type = '云到边'
         # 负载生成时间/负载所在文件夹
-        workload_generated_time = '2020-11-01 21-01-45'
+        workload_generated_time = '2020-11-01 21-30-23'
 
         scheduling_algorithms = ['ep', 'lrp', 'mrp', 'aladdin', 'bra']
         # scheduling_algorithms = ['mrp']
