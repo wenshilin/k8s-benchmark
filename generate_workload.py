@@ -67,6 +67,8 @@ class WorkloadGenTest(TestCase):
         workload_gen.save_as_yaml(pod_dicts,  os.path.join(out_dir, '%s-mrp.yaml' % (name, )))
         self.replace_scheduler(pod_dicts, 'aladdin-scheduler')
         workload_gen.save_as_yaml(pod_dicts,  os.path.join(out_dir, '%s-aladdin.yaml' % (name, )))
+        self.replace_scheduler(pod_dicts, 'linc-scheduler-configuration-bra')
+        workload_gen.save_as_yaml(pod_dicts,  os.path.join(out_dir, '%s-bra.yaml' % (name, )))
 
     def replace_scheduler(self, pods_dicts, scheduler_name):
         for job in pods_dicts:

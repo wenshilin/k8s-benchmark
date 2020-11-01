@@ -39,18 +39,18 @@ class WorkloadTest(unittest.TestCase):
 
     def run_once(self):
         # 负载的类型
-        workload_type = '边到云到边'
+        workload_type = '云到边'
         # 负载生成时间/负载所在文件夹
-        workload_generated_time = '2020-10-31 14-25-48'
+        workload_generated_time = '2020-11-01 21-01-45'
 
-        scheduling_algorithms = ['ep', 'lrp', 'mrp', 'aladdin']
+        scheduling_algorithms = ['ep', 'lrp', 'mrp', 'aladdin', 'bra']
         # scheduling_algorithms = ['mrp']
         tests = ['%s-%s' % (workload_type, scheduling_algorithm, ) for scheduling_algorithm in scheduling_algorithms]
 
         workload_dir = os.path.join('results/workloads', workload_generated_time)
 
         for name in tests:
-            print("----------------------------------------------------------------------")
+            print("-----------------------------------------------------------------")
             jobs = workload_gen.load_from_file(os.path.join(workload_dir, '%s.yaml' % (name, )))
             print('Running %s' % name)
             print('loaded job number: %d' % len(jobs))

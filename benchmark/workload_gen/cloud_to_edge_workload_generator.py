@@ -47,16 +47,16 @@ class Cloud2EdgeWorkloadGenerator(WorkloadGenerator):
                 if cloud_task_cnt % 2 == 0:
                     #task.cpu_count *= 4
                     task.request_cpu = 4
-                    task.limit_cpu = 8
+                    task.limit_cpu = 4
                     task.cpu_count = max(1, math.ceil(task.limit_cpu))
                     if task.cpu_count > 8:
                         task.cpu_count = 8
                     task.task_type = 'cpu'
                 # Memory
                 else:
-                    task.memory_mb *= 4
-                    task.request_mem_mb *= 4
-                    task.limit_mem_mb *= 4
+                    task.memory_mb = 4096
+                    task.request_mem_mb = 4096
+                    task.limit_mem_mb = 4096
                     task.task_type = 'memory'
                 cloud_task_cnt += 1
 
@@ -65,16 +65,16 @@ class Cloud2EdgeWorkloadGenerator(WorkloadGenerator):
                 if edge1_task_cnt % 2 == 0:
                     #task.cpu_count *= 25
                     task.request_cpu = 1
-                    task.limit_cpu = 2
+                    task.limit_cpu = 1
                     task.cpu_count = max(1, math.ceil(task.limit_cpu))
                     if task.cpu_count > 2:
                         task.cpu_count = 2
                     task.task_type = 'cpu'
                 # Memory
                 else:
-                    task.memory_mb *= 1
-                    task.request_mem_mb *= 1
-                    task.limit_mem_mb *= 1
+                    task.memory_mb = 1024
+                    task.request_mem_mb = 1024
+                    task.limit_mem_mb = 1024
                     task.task_type = 'memory'
                 edge1_task_cnt += 1
 

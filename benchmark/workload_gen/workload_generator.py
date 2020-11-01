@@ -111,9 +111,9 @@ class WorkloadGenerator(object):
             #task.memory_mb = task.request_mem_mb + 200
             #task.limit_mem_mb = max(task.limit_mem_mb, need_mem_mb) + 600
 
-            need_mem_mb = task.write_size_mb + task.memory_mb + 200
-            task.memory_mb = need_mem_mb - 100
-            task.limit_mem_mb = max(task.limit_mem_mb, need_mem_mb) + 50
+            #need_mem_mb = task.write_size_mb + task.memory_mb + 200
+            #task.memory_mb = need_mem_mb - 100
+            #task.limit_mem_mb = max(task.limit_mem_mb, need_mem_mb) + 50
 
             # Reduces working time
             task.time_ms *= (task.limit_cpu + 1)
