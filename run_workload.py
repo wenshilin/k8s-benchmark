@@ -7,13 +7,13 @@ import warnings
 
 import kubernetes
 
-from benchmark import workload_gen
-from common.workload.workload_runner import WorkloadRunner
 from common import global_arguments
 from common.kube_info.metrics_server_client import MetricsServerClient
 from common.summarizing.kube_evaluation_summarizer import KubeEvaluationSummarizer
 from common.utils import kube as utils
 from common.utils import kube_config
+from common.workload import load_from_file
+from common.workload.workload_runner import WorkloadRunner
 
 
 class WorkloadTest(unittest.TestCase):
@@ -39,25 +39,29 @@ class WorkloadTest(unittest.TestCase):
 
     def run_once(self):
         # 负载的类型
-        workload_type = '边到云到边'
+        workload_type = '云到边'
         # 负载生成时间/负载所在文件夹
-        workload_generated_time = '2020-10-31 14-25-48'
-
-        scheduling_algorithms = ['ep', 'lrp', 'mrp', 'aladdin']
-        # scheduling_algorithms = ['mrp']
-        tests = ['%s-%s' % (workload_type, scheduling_algorithm, ) for scheduling_algorithm in scheduling_algorithms]
+        workload_generated_time = '2020-11-01 16-56-00'
+        scheduling_algorithms = ['bra', 'ep', 'lrp', 'mrp', 'aladdin']
 
         workload_dir = os.path.join('results/workloads', workload_generated_time)
+        test_names = ['%s-%s' % (workload_type, scheduling_algorithm, )
+                      for scheduling_algorithm in scheduling_algorithms]
+        filenames = [os.path.join(workload_dir, '%s.yaml') % (test_name, )
+                     for test_name in test_names]
 
-        for name in tests:
-            print("----------------------------------------------------------------------")
-            jobs = workload_gen.load_from_file(os.path.join(workload_dir, '%s.yaml' % (name, )))
-            print('Running %s' % name)
-            print('loaded job number: %d' % len(jobs))
-            self.start(jobs)
-            self.wait_until_all_job_done()
-            pods = self.get_pods()
-            self.write_summary(name, pods)
+        for test_name, filename in zip(test_names, filenames):
+            self.run_single_test(test_name, filename)
+
+    def run_single_test(self, test_name: str, filename: str):
+        print("----------------------------------------------------------------------")
+        jobs = load_from_file(filename)
+        print('Running %s' % test_name)
+        print('loaded job number: %d' % len(jobs))
+        self.start(jobs)
+        self.wait_until_all_job_done()
+        pods = self.get_pods()
+        self.write_summary(test_name, pods)
 
     def get_pods(self):
         return self.client.list_namespaced_pod('default').items
