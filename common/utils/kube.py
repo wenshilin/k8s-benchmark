@@ -1,5 +1,6 @@
-from kubernetes import client, utils
 from datetime import datetime
+
+from kubernetes import client, utils
 
 from common import consts
 
@@ -38,6 +39,14 @@ def get_pod_creation_timestamp(pod: client.V1Pod) -> datetime:
 def get_pod_running_time(pod: client.V1Pod, finished_at: datetime) -> float:
     started_at: datetime = pod.status.start_time
     return (finished_at - started_at).total_seconds()
+
+
+def get_pod_finish_time(pod: client.V1Pod) -> datetime:
+    return pod.status.container_statuses[0].state.terminated.finished_at
+
+
+def get_pod_job_name(pod: client.V1Pod) -> str:
+    return pod.metadata.labels['job']
 
 
 def get_pod_limit_cpu(pod: client.V1Pod) -> str:

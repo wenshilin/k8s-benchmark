@@ -34,18 +34,17 @@ class WorkloadTest(unittest.TestCase):
         warnings.simplefilter('ignore', ResourceWarning)
 
     def test_all(self):
-        for _ in range(3):
+        for _ in range(1):
             self.run_once()
 
     def run_once(self):
         # 负载的类型
         workload_type = '边到云到边'
-
         # 负载生成时间/负载所在文件夹
-        workload_generated_time = '2020-10-30 23-18-48'
+        workload_generated_time = '2020-10-31 14-25-48'
 
-        # scheduling_algorithms = ['ep', 'lrp', 'mrp', 'aladdin', 'ds']
-        scheduling_algorithms = ['ep']
+        scheduling_algorithms = ['ep', 'lrp', 'mrp', 'aladdin']
+        # scheduling_algorithms = ['mrp']
         tests = ['%s-%s' % (workload_type, scheduling_algorithm, ) for scheduling_algorithm in scheduling_algorithms]
 
         workload_dir = os.path.join('results/workloads', workload_generated_time)
@@ -71,7 +70,7 @@ class WorkloadTest(unittest.TestCase):
             time.sleep(5)
             pods = self.get_pods()
             all_pod_finished = all(map(utils.pod_finished, pods))
-        print('****** all job finished ******')
+        print('all job finished!!!')
         print("----------------------------------------------------------------------")
 
     def start(self, workload):

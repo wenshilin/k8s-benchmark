@@ -8,7 +8,3 @@ def read_pod_from_file(filename: str):
     """
     with open(filename, 'rb') as f:
         return pickle.load(f)
-
-
-if __name__ == '__main__':
-    read_pod_from_file('../results/pods/2020-10-29 08:02:29-边到云-c61.pk')
