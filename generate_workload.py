@@ -1,6 +1,7 @@
 import datetime
 import logging
 import os
+import random
 import unittest
 from unittest import TestCase
 
@@ -18,6 +19,9 @@ class WorkloadGenTest(TestCase):
             format='%(asctime)s %(levelname)s %(funcName)s: %(message)s'
         )
         self.now = ''
+
+        # 随机种子设置，确定每次task个数
+        random.seed(1)
 
     def test_trace_data(self):
         data = read_json_file(workload_gen.WorkloadGenerator.ALIBABA_TRACE_JOBS_JSON)
@@ -45,9 +49,9 @@ class WorkloadGenTest(TestCase):
 
     def test_generate_workload(self):
         self.now = datetime.datetime.now().strftime('%Y-%m-%d %H-%M-%S')
-        #self.dump('云到边', 'cloud_edge')
+        self.dump('云到边', 'cloud_edge')
         #self.dump('边到云', 'edge_cloud')
-        self.dump('边到云到边', 'edge_cloud_edge')
+        #self.dump('边到云到边', 'edge_cloud_edge')
 
     def dump(self, name: str,  workload_type: str):
         generator = workload_gen.create_workload_generator(workload_type)
