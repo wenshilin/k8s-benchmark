@@ -65,7 +65,7 @@ class WorkloadGenerator(object):
         job_num = self._job_num()
         for _ in range(job_num):
             print(self.task_count)
-            if self.task_count <= 120:
+            if self.task_count <= 150:
                 job = self._generate_job()
                 jobs.append(job)
                 self.job_count += 1
@@ -118,21 +118,21 @@ class WorkloadGenerator(object):
             task.request_mem_mb = need_mem_mb
 
             #CPU process --- edge-cloud-edge
-            #if task.node_type == 'cloud':
-            #    task.limit_cpu = min(1,task.limit_cpu/15)
-            #    task.request_cpu = min(1,task.request_cpu/5)
-            #    task.cpu_count = min(1,math.ceil(task.limit_cpu))
-            #elif task.node_type == 'edge1' or task.node_type == 'edge2':
-            #    task.limit_cpu = min(1,task.limit_cpu/15)
-            #    task.request_cpu = min(1,task.request_cpu/5)
-            #    task.cpu_count = min(1,math.ceil(task.limit_cpu))
+            if task.node_type == 'cloud':
+                task.limit_cpu = min(1,task.limit_cpu/15)
+                task.request_cpu = min(1,task.request_cpu/5)
+                task.cpu_count = min(1,math.ceil(task.limit_cpu))
+            elif task.node_type == 'edge1' or task.node_type == 'edge2':
+                task.limit_cpu = min(1,task.limit_cpu/15)
+                task.request_cpu = min(1,task.request_cpu/5)
+                task.cpu_count = min(1,math.ceil(task.limit_cpu))
 
 
             # Reduces working time
             if task.limit_cpu > 1:
-                task.time_ms = int(task.time_ms/task.limit_cpu)
+                task.time_ms = int(task.time_ms/task.limit_cpu/10000)
             else:
-                task.time_ms = int(task.time_ms / 1)
+                task.time_ms = int(task.time_ms / 1 / 10000)
 
             while task.time_ms >= 300000:
                 task.time_ms = int(task.time_ms / 2)

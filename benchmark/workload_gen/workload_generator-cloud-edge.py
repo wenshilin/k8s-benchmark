@@ -128,7 +128,7 @@ class WorkloadGenerator(object):
             #    task.cpu_count = min(1,math.ceil(task.limit_cpu))
 
 
-            # Reduces working time
+            # Reduces working time ---cloud-edge
             if task.limit_cpu > 1:
                 task.time_ms = int(task.time_ms/task.limit_cpu)
             else:
