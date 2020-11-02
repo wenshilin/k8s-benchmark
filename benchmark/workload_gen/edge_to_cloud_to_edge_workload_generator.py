@@ -3,7 +3,7 @@ import math,random
 from scipy import stats
 
 from common import consts
-from .workload_generator import WorkloadGenerator
+from .workload_generator_edge_cloud_edge import WorkloadGenerator
 
 
 class Edge2Cloud2EdgeWorkloadGenerator(WorkloadGenerator):
@@ -42,7 +42,7 @@ class Edge2Cloud2EdgeWorkloadGenerator(WorkloadGenerator):
 
         for i, task in enumerate(tasks):
             if task.node_type == 'cloud':
-                # Memory
+                # Mix
                 task.request_mem_mb += 4096
                 task.limit_mem_mb += 4096
                 task.memory_mb = max(int(task.request_mem_mb), int(task.limit_mem_mb))
@@ -50,10 +50,10 @@ class Edge2Cloud2EdgeWorkloadGenerator(WorkloadGenerator):
                     task.limit_mem_mb = 7700
                     task.request_mem_mb = 7700
                     task.memory_mb = 7700
-                task.task_type = 'memory'
+                task.task_type = 'mix'
 
             elif task.node_type == 'edge1' or task.node_type == 'edge2':
-                # Memory
+                # Mix
                 task.request_mem_mb += 1024
                 task.limit_mem_mb += 1024
                 task.memory_mb = max(int(task.request_mem_mb), int(task.limit_mem_mb))
@@ -61,7 +61,7 @@ class Edge2Cloud2EdgeWorkloadGenerator(WorkloadGenerator):
                     task.limit_mem_mb = 1700
                     task.request_mem_mb = 1700
                     task.memory_mb = 1700
-                task.task_type = 'memory'
+                task.task_type = 'mix'
 
         tasks = self._build_dicts(tasks)
         return tasks
