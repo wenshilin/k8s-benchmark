@@ -13,7 +13,7 @@ class Edge2Cloud2EdgeWorkloadGenerator(WorkloadGenerator):
 
     def __init__(self):
         super().__init__(consts.TASK_TYPES)
-        self.poisson_dist = stats.poisson.rvs(mu=3000, size=20, random_state=1)
+        self.poisson_dist = stats.poisson.rvs(mu=30000, size=20, random_state=1)
 
     def _generate_job(self):
         job_dict = self._random_choose_job()
@@ -43,24 +43,14 @@ class Edge2Cloud2EdgeWorkloadGenerator(WorkloadGenerator):
         for i, task in enumerate(tasks):
             if task.node_type == 'cloud':
                 # Mix
-                task.request_mem_mb += 4096
-                task.limit_mem_mb += 4096
-                task.memory_mb = max(int(task.request_mem_mb), int(task.limit_mem_mb))
-                if (task.limit_mem_mb > 7700 or task.memory_mb > 7700 or task.request_mem_mb > 7700):
-                    task.limit_mem_mb = 7700
-                    task.request_mem_mb = 7700
-                    task.memory_mb = 7700
+                task.request_mem_mb = task.request_mem_mb
+                task.limit_mem_mb = task.limit_mem_mb
                 task.task_type = 'mix'
 
             elif task.node_type == 'edge1' or task.node_type == 'edge2':
                 # Mix
-                task.request_mem_mb += 1024
-                task.limit_mem_mb += 1024
-                task.memory_mb = max(int(task.request_mem_mb), int(task.limit_mem_mb))
-                if (task.limit_mem_mb > 1700 or task.memory_mb > 1700 or task.request_mem_mb > 1700):
-                    task.limit_mem_mb = 1700
-                    task.request_mem_mb = 1700
-                    task.memory_mb = 1700
+                task.request_mem_mb = task.request_mem_mb
+                task.limit_mem_mb = task.limit_mem_mb
                 task.task_type = 'mix'
 
         tasks = self._build_dicts(tasks)
