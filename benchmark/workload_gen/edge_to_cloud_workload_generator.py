@@ -4,7 +4,7 @@ import random
 from scipy import stats
 
 from common import consts
-from .workload_generator import WorkloadGenerator
+from .workload_generator_edge_cloud import WorkloadGenerator
 
 
 class Edge2CloudWorkloadGenerator(WorkloadGenerator):
