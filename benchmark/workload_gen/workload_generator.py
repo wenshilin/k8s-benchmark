@@ -1,6 +1,5 @@
 import random
 import typing
-import math
 
 import yaml
 
@@ -41,13 +40,13 @@ class WorkloadGenerator(object):
         params = {
             'start_ms': start_ms,
             'end_ms': end_ms,
-            'cpu_count': max(1, int(cpu)),
+            'cpu_count': max(1, int(cpu * 16)),
             'memory_mb': int(ram * 1024 * 32),
-            'time_ms': int((end_ms - start_ms) * 1000),
+            'time_ms': int((end_ms - start_ms) * max_cpu * 100),
             'send_size_mb': int(random.random() * 0.0),
             'write_size_mb': int(io * 1024 * 0.0),
-            'request_cpu': cpu,
-            'limit_cpu': max_cpu,
+            'request_cpu': cpu * 16,
+            'limit_cpu': max_cpu * 16,
             'request_mem_mb': int(ram * 1024 * 32),
             'limit_mem_mb': int(max_ram * 1024 * 32),
         }
@@ -65,7 +64,7 @@ class WorkloadGenerator(object):
         job_num = self._job_num()
         for _ in range(job_num):
             print(self.task_count)
-            if self.task_count <= 120:
+            if self.task_count <= 150:
                 job = self._generate_job()
                 jobs.append(job)
                 self.job_count += 1
@@ -112,32 +111,17 @@ class WorkloadGenerator(object):
             #task.memory_mb = task.request_mem_mb + 200
             #task.limit_mem_mb = max(task.limit_mem_mb, need_mem_mb) + 600
 
-            need_mem_mb = task.write_size_mb + task.memory_mb + 10
+            need_mem_mb = task.write_size_mb + task.memory_mb + 150
             task.memory_mb = need_mem_mb
             task.limit_mem_mb = need_mem_mb + 50
             task.request_mem_mb = need_mem_mb
 
-            #CPU process --- edge-cloud-edge
-            #if task.node_type == 'cloud':
-            #    task.limit_cpu = min(1,task.limit_cpu/15)
-            #    task.request_cpu = min(1,task.request_cpu/5)
-            #    task.cpu_count = min(1,math.ceil(task.limit_cpu))
-            #elif task.node_type == 'edge1' or task.node_type == 'edge2':
-            #    task.limit_cpu = min(1,task.limit_cpu/15)
-            #    task.request_cpu = min(1,task.request_cpu/5)
-            #    task.cpu_count = min(1,math.ceil(task.limit_cpu))
-
-
             # Reduces working time
-            if task.limit_cpu > 1:
-                task.time_ms = int(task.time_ms/task.limit_cpu)
-            else:
-                task.time_ms = int(task.time_ms / 1)
-
+            task.time_ms *= (task.limit_cpu + 1)
             while task.time_ms >= 300000:
                 task.time_ms = int(task.time_ms / 2)
-            # if task.limit_cpu < 1:
-            #    task.time_ms *= (task.limit_cpu + 400)
+            if task.limit_cpu < 1:
+                task.time_ms *= (task.limit_cpu + 1)
 
             # Build dictionary
             tasks[i] = build_task_dict(task)

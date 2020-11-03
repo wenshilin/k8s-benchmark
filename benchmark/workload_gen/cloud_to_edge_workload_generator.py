@@ -14,7 +14,7 @@ class Cloud2EdgeWorkloadGenerator(WorkloadGenerator):
 
     def __init__(self):
         super().__init__(consts.TASK_TYPES[:2])
-        self.poisson_dist = stats.poisson.rvs(mu=30000, size=20, random_state=1)
+        self.poisson_dist = stats.poisson.rvs(mu=20000, size=20, random_state=1)
 
     def _generate_job(self):
         job_dict = self._random_choose_job()

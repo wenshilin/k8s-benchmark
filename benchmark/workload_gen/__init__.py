@@ -4,6 +4,7 @@ import logging
 from .cloud_to_edge_workload_generator import Cloud2EdgeWorkloadGenerator
 from .edge_to_cloud_to_edge_workload_generator import Edge2Cloud2EdgeWorkloadGenerator
 from .edge_to_cloud_workload_generator import Edge2CloudWorkloadGenerator
+from .high_cpu_memory_workload_generator import HighCpuAndMemoryWorkloadGenerator
 from .workload_generator import WorkloadGenerator
 
 
@@ -14,6 +15,8 @@ def create_workload_generator(workload_type: str):
         return Edge2CloudWorkloadGenerator()
     elif workload_type == 'edge_cloud_edge':
         return Edge2Cloud2EdgeWorkloadGenerator()
+    elif workload_type == 'high_cpu_memory':
+        return  HighCpuAndMemoryWorkloadGenerator()
     raise RuntimeError('Unknown workload type:', workload_type)
 
 
