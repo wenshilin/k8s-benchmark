@@ -39,9 +39,9 @@ class WorkloadTest(unittest.TestCase):
 
     def run_once(self):
         # 负载的类型
-        workload_type = '边到云到边'
+        workload_type = '高Cpu和Memory'
         # 负载生成时间/负载所在文件夹
-        workload_generated_time = '2020-11-02 19-24-17'
+        workload_generated_time = '2020-11-03 19-15-54'
 
         scheduling_algorithms = ['ep', 'lrp', 'mrp', 'aladdin', 'bra']
         # scheduling_algorithms = ['mrp']
