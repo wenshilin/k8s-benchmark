@@ -50,9 +50,6 @@ class WorkloadRunner(object):
             wait_sum += wait_interval
             logging.info('Waiting pods to be deleted (%d seconds).' % wait_sum)
 
-        #ensure pods delete finished
-        time.sleep(30)
-
         for thread in self.run_threads:
             thread.join()
         self.run_threads.clear()
