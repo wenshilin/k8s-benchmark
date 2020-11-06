@@ -44,11 +44,14 @@ class WorkloadRunner(object):
 
         self.delete_workload_exists_in_cluster()
         wait_sum = 0
-        wait_interval = 5
+        wait_interval = 10
         while not self._all_job_deleted():
             time.sleep(wait_interval)
             wait_sum += wait_interval
             logging.info('Waiting pods to be deleted (%d seconds).' % wait_sum)
+
+        # ensure all pods deleted
+        time.sleep(30)   
 
         for thread in self.run_threads:
             thread.join()
