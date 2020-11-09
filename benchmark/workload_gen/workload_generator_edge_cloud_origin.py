@@ -41,7 +41,7 @@ class WorkloadGenerator(object):
         params = {
             'start_ms': start_ms,
             'end_ms': end_ms,
-            'cpu_count': max(1, math.ceil(max_cpu)),
+            'cpu_count': max(1, int(cpu)),
             'memory_mb': int(ram * 1024 * 32),
             'time_ms': int((end_ms - start_ms) * 1000),
             'send_size_mb': int(random.random() * 0.0),
@@ -112,26 +112,27 @@ class WorkloadGenerator(object):
             #task.memory_mb = task.request_mem_mb + 200
             #task.limit_mem_mb = max(task.limit_mem_mb, need_mem_mb) + 600
 
-            need_mem_mb = task.write_size_mb + task.memory_mb + 10
-            task.memory_mb = need_mem_mb
-            task.limit_mem_mb = need_mem_mb + 50
-            task.request_mem_mb = need_mem_mb
+            need_mem_mb = task.write_size_mb + task.memory_mb + 600
+            task.memory_mb = need_mem_mb  + 200
+            task.limit_mem_mb = need_mem_mb + 400
+            task.request_mem_mb = need_mem_mb + 100
 
-            # CPU process --- edge-cloud-edge
+            #CPU process --- edge-cloud
             if task.node_type == 'cloud':
-                task.limit_cpu = min(1, task.limit_cpu / 15)
-                task.request_cpu = min(1, task.request_cpu / 15)
-                task.cpu_count = min(1, math.ceil(task.limit_cpu))
+                task.limit_cpu = min(1,task.limit_cpu/15)
+                task.request_cpu = min(1,task.request_cpu/15)
+                task.cpu_count = min(1,math.ceil(task.limit_cpu))
             elif task.node_type == 'edge1':
-                task.limit_cpu = min(1, task.limit_cpu / 15)
-                task.request_cpu = min(1, task.request_cpu / 15)
-                task.cpu_count = min(1, math.ceil(task.limit_cpu))
+                task.limit_cpu = min(1,task.limit_cpu/15)
+                task.request_cpu = min(1,task.request_cpu/15)
+                task.cpu_count = min(1,math.ceil(task.limit_cpu))
 
-            # Reduces working time ---cloud-edge
+
+            # Reduces working time
             if task.limit_cpu > 1:
-                task.time_ms = int(task.time_ms/task.limit_cpu/1000)
+                task.time_ms = int(task.time_ms/task.limit_cpu/10000)
             else:
-                task.time_ms = int(task.time_ms/1/1000)
+                task.time_ms = int(task.time_ms / 1 / 10000)
 
             while task.time_ms >= 300000:
                 task.time_ms = int(task.time_ms / 2)

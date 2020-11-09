@@ -1,51 +1,45 @@
-import math
-import random
+import math,random
 
 from scipy import stats
 
 from common import consts
-from .workload_generator_edge_cloud import WorkloadGenerator
+from .workload_generator_edge_cloud_edge import WorkloadGenerator
 
 
-class Edge2CloudWorkloadGenerator(WorkloadGenerator):
+class Edge2Cloud2EdgeWorkloadGenerator(WorkloadGenerator):
     """
-    边到云负载生成
+    边到云到边负载生成
     """
 
     def __init__(self):
-        super().__init__(consts.TASK_TYPES[:2])
-        self.poisson_dist = stats.poisson.rvs(mu=5000, size=20, random_state=1)
-        #self.poisson_dist1 = stats.poisson.rvs(mu=2000, size=20, random_state=1)
+        super().__init__(consts.TASK_TYPES)
+        self.poisson_dist = stats.poisson.rvs(mu=8000, size=20, random_state=1)
 
     def _generate_job(self):
         job_dict = self._random_choose_job()
         first_2 = False
-        while len(job_dict['job.tasks']) <= 1:
+        while len(job_dict['job.tasks']) <= 2:
             job_dict = self._random_choose_job()
             first_2 = True
 
         if first_2:
-            tasks = self._generate_general_tasks(job_dict, 2)
+            tasks = self._generate_general_tasks(job_dict, 3)
         else:
             tasks = self._generate_general_tasks(job_dict, random.randint(6,15))
 
         tasks = self._post_process_tasks(tasks)
         tasks.sort(key=lambda t: t['startTime'])
         min_start_time = min([t['startTime'] for t in tasks])
-        for i,t in enumerate(tasks):
+        for t in tasks:
             #t['startTime'] = t['startTime'] - min_start_time + self.prev_job_last_start_time
-            #if i == 0:
             t['startTime'] = int((t['startTime'] - min_start_time) * 8 + self.prev_job_last_start_time)
-            #else:
-            #   t['startTime'] = int((t['startTime'] - min_start_time) * 8 + self.poisson_dist1[i] + self.prev_job_last_start_time)
 
         self.prev_job_last_start_time = max([t['startTime'] for t in tasks]) + self.poisson_dist[self.job_count]
-        print('job start time: ',self.prev_job_last_start_time)
+        print('job start time: ', self.prev_job_last_start_time)
         return tasks
 
     def _post_process_tasks(self, tasks):
-        cloud_task_cnt = 0
-        edge1_task_cnt = 0
+
         for i, task in enumerate(tasks):
             if task.node_type == 'cloud':
                 # Mix
@@ -53,7 +47,7 @@ class Edge2CloudWorkloadGenerator(WorkloadGenerator):
                 task.limit_mem_mb = task.limit_mem_mb
                 task.task_type = 'mix'
 
-            elif task.node_type == 'edge1':
+            elif task.node_type == 'edge1' or task.node_type == 'edge2':
                 # Mix
                 task.request_mem_mb = task.request_mem_mb
                 task.limit_mem_mb = task.limit_mem_mb

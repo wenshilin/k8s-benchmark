@@ -24,11 +24,13 @@ def get_pod_node_name(pod: client.V1Pod):
 
 
 def get_pod_waiting_time(pod: client.V1Pod) -> float:
-    created_at: datetime = get_pod_creation_timestamp(pod)
-    started_at: datetime = pod.status.start_time
+    #created_at: datetime = get_pod_creation_timestamp(pod)
+    #created_at: datetime = pod.metadata.creation_timestamp
+    created_at: datetime = pod.status.start_time
+    started_at: datetime = pod.status.container_statuses[0].state.terminated.started_at
     pod_waitingtime = (started_at - created_at).total_seconds()
-    if pod_waitingtime < 0:
-        pod_waitingtime = 0.0
+    #if pod_waitingtime < 0:
+    #    pod_waitingtime = 0.0
     return pod_waitingtime
 
 
