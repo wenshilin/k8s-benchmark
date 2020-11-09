@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    component: scheduler
+    tier: control-plane
+  name: aladdin-scheduler
+  namespace: kube-system
+spec:
+  selector:
+    matchLabels:
+      component: scheduler
+      tier: control-plane
+  replicas: 1
+  template:
+    metadata:
+      annotations:
+        scheduler.alpha.kubernetes.io/critical-pod: ""
+      labels:
+        component: scheduler
+        tier: control-plane
+    spec:
+      nodeSelector:
+        node-role.kubernetes.io/master: ""
+      tolerations:
+        - key: "node-role.kubernetes.io/master"
+          operator: "Equal"
+          value: ""
+          effect: "NoSchedule"
+      serviceAccountName: my-scheduler
+      containers:
+        - command:
+            - /usr/local/bin/aladdin-scheduler
+            - --address=0.0.0.0
+            - --scheduler-name=aladdin-scheduler
+            - --kubeconfig=/etc/kubernetes/scheduler.conf
+            - --leader-elect=false
+            - --port=10253
+          image: 10.1.114.59:5000/aladdin-scheduler:latest
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 8
+            httpGet:
+              path: /healthz
+              port: 10253
+              scheme: HTTP
+            initialDelaySeconds: 15
+            timeoutSeconds: 15
+          name: custom-scheduler
+          resources:
+            requests:
+              cpu: 100m
+          volumeMounts:
+            - mountPath: /etc/kubernetes/scheduler.conf
+              name: kubeconfig
+              readOnly: true
+      hostNetwork: true
+      priorityClassName: system-cluster-critical
+      volumes:
+        - hostPath:
+            path: /etc/kubernetes/scheduler.conf
+            type: FileOrCreate
+          name: kubeconfig
