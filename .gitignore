@@ -128,3 +128,5 @@ dmypy.json
 results/
 !results/workloads/
 kube-config
+
+cmake-build-debug/
