@@ -34,13 +34,20 @@ class Cloud2EdgeWorkloadGenerator(WorkloadGenerator):
 
         for t in tasks:
             t['startTime'] = int((t['startTime'] - min_start_time) * 8 + self.prev_job_last_start_time)
+            #t['pod']['metadata']['jobTaskNumber'] = str('n')+str(len(tasks))
 
-        self.prev_job_last_start_time = max([t['startTime'] for t in tasks]) + self.poisson_dist[self.job_count]
+        print('job name: ',('job-' + str(self.job_count)))
         print('job start time: ', self.prev_job_last_start_time)
+        print('job contains task number: ',len(tasks))
+        print('task total number: ', self.task_count)
+        print('')
+        self.prev_job_last_start_time = max([t['startTime'] for t in tasks]) + self.poisson_dist[self.job_count]
+
         return tasks
 
     def _post_process_tasks(self, tasks):
         for i, task in enumerate(tasks):
+            task.job_tasknum = str('n')+str(len(tasks))
             if task.node_type == 'cloud':
                 # CPU
                 task.request_cpu += 3
