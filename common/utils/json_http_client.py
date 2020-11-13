@@ -21,8 +21,9 @@ class JsonHttpClient(object):
                     logging.warning(f'Succeed after retry {retry_times} times, URL: {url}')
                 return json.loads(response.text)
             except Exception as e:
-                logging.info(e)
                 retry_times += 1
+                if retry_times % 100 == 0:
+                    logging.error(e)
                 time.sleep(0.1)
 
 

@@ -2,19 +2,22 @@ from dataclasses import dataclass
 
 
 @dataclass
-class Node(object):
+class NodeState(object):
 
-    node_name: str
+    # CPU使用量
+    cpu_usage: float
 
-    allocatable_cpu: float = None
-    allocatable_mem: float = None
-    allocatable_pod: int = None
+    # 请求的总CPU
+    cpu_requested: float
 
-    cpu_usage: float = None
-    mem_usage: float = None
-    pod_usage: int = None
+    # 总计可分配的CPU
+    cpu_allocatable: float
 
-    num_cpu_pod: int = 0
-    num_disk_pod: int = 0
+    # 内存使用量
+    mem_usage: float
 
-    requested_cpu: float = 0
+    # 请求的总内存
+    mem_requested: float
+
+    # 总计可分配的内存
+    mem_allocatable: float
