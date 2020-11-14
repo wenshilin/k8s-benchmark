@@ -112,26 +112,26 @@ class WorkloadGenerator(object):
             #task.memory_mb = task.request_mem_mb + 200
             #task.limit_mem_mb = max(task.limit_mem_mb, need_mem_mb) + 600
 
-            need_mem_mb = task.write_size_mb + task.memory_mb + 10
-            task.memory_mb = need_mem_mb
-            task.limit_mem_mb = need_mem_mb + 50
+            need_mem_mb = task.write_size_mb + task.memory_mb + 80
+            task.memory_mb = need_mem_mb + 50
+            task.limit_mem_mb = need_mem_mb + 150
             task.request_mem_mb = need_mem_mb
 
             # CPU process --- edge-cloud-edge
-            if task.node_type == 'cloud':
-                task.limit_cpu = min(1, task.limit_cpu / 15)
-                task.request_cpu = min(1, task.request_cpu / 15)
-                task.cpu_count = min(1, math.ceil(task.limit_cpu))
-            elif task.node_type == 'edge1':
-                task.limit_cpu = min(1, task.limit_cpu / 15)
-                task.request_cpu = min(1, task.request_cpu / 15)
-                task.cpu_count = min(1, math.ceil(task.limit_cpu))
+            #if task.node_type == 'cloud':
+            #    task.limit_cpu = task.limit_cpu / 2
+            #    task.request_cpu = task.request_cpu / 2
+            #    task.cpu_count = max(math.ceil(task.request_cpu), math.ceil(task.limit_cpu))
+            #elif task.node_type == 'edge1':
+            #    task.limit_cpu = task.limit_cpu / 6
+            #    task.request_cpu = task.request_cpu / 6
+            #    task.cpu_count = max(math.ceil(task.request_cpu), math.ceil(task.limit_cpu))
 
             # Reduces working time ---cloud-edge
             if task.limit_cpu > 1:
-                task.time_ms = int(task.time_ms/task.limit_cpu/1000)
+                task.time_ms = int(task.time_ms/task.limit_cpu/100)
             else:
-                task.time_ms = int(task.time_ms/1/1000)
+                task.time_ms = int(task.time_ms/1/100)
 
             while task.time_ms >= 300000:
                 task.time_ms = int(task.time_ms / 2)

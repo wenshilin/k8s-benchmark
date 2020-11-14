@@ -41,6 +41,7 @@ class Cloud2EdgeWorkloadGenerator(WorkloadGenerator):
 
     def _post_process_tasks(self, tasks):
         for i, task in enumerate(tasks):
+            task.job_tasknum = str('n')+str(len(tasks))
             if task.node_type == 'cloud':
                 # CPU
                 task.request_cpu += 3

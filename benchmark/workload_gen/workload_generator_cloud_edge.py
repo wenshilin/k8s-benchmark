@@ -160,6 +160,7 @@ def build_task_dict(task: Task):
     s = WORKLOAD_POD_TEMPLATE \
         .replace('$NAME', task.name) \
         .replace('$JOB_NAME', task.job_name) \
+        .replace('$JOB_TASKNUM', task.job_tasknum) \
         .replace('$TASK_TYPE', task.task_type) \
         .replace('$SCHEDULER_NAME', scheduler_name) \
         .replace('$CONTAINER_IMAGE', task.container_image) \
