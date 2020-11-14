@@ -11,7 +11,7 @@ from .task import Task
 
 class WorkloadGenerator(object):
 
-    ALIBABA_TRACE_JOBS_JSON = "templates/alibaba-trace-jobs.json"
+    ALIBABA_TRACE_JOBS_JSON = "templates/alibaba-trace-jobs-3.json"
 
     def __init__(self, task_types: list):
         self.trace_data = read_json_file(WorkloadGenerator.ALIBABA_TRACE_JOBS_JSON)
@@ -54,7 +54,7 @@ class WorkloadGenerator(object):
         return Task(**params)
 
     def _job_num(self):
-        return 20
+        return len(self.trace_data)
         # return random.randint(10, len(self.trace_data))
 
     def _generate_job(self) -> list:
@@ -64,8 +64,8 @@ class WorkloadGenerator(object):
         jobs = []
         job_num = self._job_num()
         for _ in range(job_num):
-            print(self.task_count)
-            if self.task_count <= 120:
+            #print(self.task_count)
+            if self.task_count <= 150:
                 job = self._generate_job()
                 jobs.append(job)
                 self.job_count += 1

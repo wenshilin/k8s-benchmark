@@ -49,9 +49,9 @@ class WorkloadGenTest(TestCase):
 
     def test_generate_workload(self):
         self.now = datetime.datetime.now().strftime('%Y-%m-%d %H-%M-%S')
-        self.dump('云到边', 'cloud_edge')
-        #self.dump('边到云', 'edge_cloud')
-       # self.dump('边到云到边', 'edge_cloud_edge')
+       # self.dump('云到边', 'cloud_edge')
+       # self.dump('边到云', 'edge_cloud')
+        self.dump('边到云到边', 'edge_cloud_edge')
        # self.dump('高Cpu和Memory', 'high_cpu_memory')
 
     def dump(self, name: str,  workload_type: str):
@@ -59,25 +59,17 @@ class WorkloadGenTest(TestCase):
         pod_dicts = generator.generate()
         out_dir = os.path.join(self.out_dir, self.now)
         os.makedirs(out_dir, exist_ok=True)
-        workload_gen.save_as_yaml(pod_dicts, os.path.join(out_dir, '%s-as_basic.yaml' % (name, )))
-
-        self.replace_scheduler(pod_dicts, 'linc-scheduler-bra')
-        workload_gen.save_as_yaml(pod_dicts,  os.path.join(out_dir, '%s-bra.yaml' % (name, )))
-
-        self.replace_scheduler(pod_dicts, 'linc-scheduler-ep')
+        workload_gen.save_as_yaml(pod_dicts, os.path.join(out_dir, '%s-ds.yaml' % (name, )))
+        self.replace_scheduler(pod_dicts, 'linc-scheduler-configuration-1')
         workload_gen.save_as_yaml(pod_dicts,  os.path.join(out_dir, '%s-ep.yaml' % (name, )))
-
-        self.replace_scheduler(pod_dicts, 'linc-scheduler-lrp')
+        self.replace_scheduler(pod_dicts, 'linc-scheduler-configuration-2')
         workload_gen.save_as_yaml(pod_dicts,  os.path.join(out_dir, '%s-lrp.yaml' % (name, )))
-
-        self.replace_scheduler(pod_dicts, 'linc-scheduler-mrp')
+        self.replace_scheduler(pod_dicts, 'linc-scheduler-configuration-3')
         workload_gen.save_as_yaml(pod_dicts,  os.path.join(out_dir, '%s-mrp.yaml' % (name, )))
-
-        self.replace_scheduler(pod_dicts, 'linc-scheduler-rlp')
-        workload_gen.save_as_yaml(pod_dicts,  os.path.join(out_dir, '%s-rlp.yaml' % (name, )))
-
-        #self.replace_scheduler(pod_dicts, 'linc-scheduler-rtcrp')
-        #workload_gen.save_as_yaml(pod_dicts, os.path.join(out_dir, '%s-rtcrp.yaml' % (name,)))
+        self.replace_scheduler(pod_dicts, 'aladdin-scheduler')
+        workload_gen.save_as_yaml(pod_dicts,  os.path.join(out_dir, '%s-aladdin.yaml' % (name, )))
+        self.replace_scheduler(pod_dicts, 'linc-scheduler-configuration-bra')
+        workload_gen.save_as_yaml(pod_dicts,  os.path.join(out_dir, '%s-bra.yaml' % (name, )))
 
     def replace_scheduler(self, pods_dicts, scheduler_name):
         for job in pods_dicts:

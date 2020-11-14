@@ -1,12 +1,13 @@
 # names of scheduler configurations
 ACTIONS = [
-    'DUMMY_SCHEDULER',
-    'zb-bit',
-    'ls'
+    'linc-scheduler-lrp',
+    'linc-scheduler-mrp',
+    'linc-scheduler-bra',
 ]
 
 # identity in pod's label
 LABEL_SCHEDULER_NAME = 'linc/schedulerName'
+THIS_SCHEDULER_NAME = 'linc-scheduler'
 
 DEFAULT_SCHEDULER_NAME = 'default-scheduler'
 
