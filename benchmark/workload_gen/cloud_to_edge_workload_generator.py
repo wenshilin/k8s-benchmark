@@ -57,6 +57,7 @@ class Cloud2EdgeWorkloadGenerator(WorkloadGenerator):
                     task.cpu_count = 8
                     task.limit_cpu = 8
                     task.request_cpu = 7
+
                 task.task_type = 'cpu'
 
             elif task.node_type == 'edge1':
@@ -68,6 +69,7 @@ class Cloud2EdgeWorkloadGenerator(WorkloadGenerator):
                     task.cpu_count = 2
                     task.limit_cpu = 2
                     task.request_cpu = 1
+
                 task.task_type = 'cpu'
 
         tasks = self._build_dicts(tasks)
