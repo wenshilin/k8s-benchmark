@@ -41,7 +41,7 @@ class WorkloadGenerator(object):
         params = {
             'start_ms': start_ms,
             'end_ms': end_ms,
-            'cpu_count': max(1, int(cpu)),
+            'cpu_count': max(1, math.ceil(max_cpu)),
             'memory_mb': int(ram * 1024 * 32),
             'time_ms': int((end_ms - start_ms) * 1000),
             'send_size_mb': int(random.random() * 0.0),
@@ -134,7 +134,7 @@ class WorkloadGenerator(object):
             else:
                 task.time_ms = int(task.time_ms / 1)
 
-            while task.time_ms >= 300000:
+            while task.time_ms >= 100000:
                 task.time_ms = int(task.time_ms / 2)
             # if task.limit_cpu < 1:
             #    task.time_ms *= (task.limit_cpu + 400)

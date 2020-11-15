@@ -112,27 +112,27 @@ class WorkloadGenerator(object):
             #task.memory_mb = task.request_mem_mb + 200
             #task.limit_mem_mb = max(task.limit_mem_mb, need_mem_mb) + 600
 
-            need_mem_mb = task.write_size_mb + task.memory_mb + 600
-            task.memory_mb = need_mem_mb + 50
-            task.limit_mem_mb = need_mem_mb + 100
-            task.request_mem_mb = need_mem_mb + 60
+            need_mem_mb = task.write_size_mb + task.memory_mb + 10
+            task.memory_mb = need_mem_mb
+            task.limit_mem_mb = need_mem_mb + 50
+            task.request_mem_mb = need_mem_mb
 
             #CPU process --- edge-cloud-edge
             if task.node_type == 'cloud':
                 task.limit_cpu = min(1,task.limit_cpu/15)
-                task.request_cpu = min(1,task.request_cpu/5)
+                task.request_cpu = min(1,task.request_cpu/15)
                 task.cpu_count = min(1,math.ceil(task.limit_cpu))
-            elif task.node_type == 'edge1' or task.node_type == 'edge2':
+            elif task.node_type == 'edge1':
                 task.limit_cpu = min(1,task.limit_cpu/15)
-                task.request_cpu = min(1,task.request_cpu/5)
+                task.request_cpu = min(1,task.request_cpu/15)
                 task.cpu_count = min(1,math.ceil(task.limit_cpu))
 
 
             # Reduces working time
             if task.limit_cpu > 1:
-                task.time_ms = int(task.time_ms/task.limit_cpu/10000)
+                task.time_ms = int(task.time_ms/task.limit_cpu/100000)
             else:
-                task.time_ms = int(task.time_ms / 1 / 10000)
+                task.time_ms = int(task.time_ms / 1 / 100000)
 
             while task.time_ms >= 300000:
                 task.time_ms = int(task.time_ms / 2)

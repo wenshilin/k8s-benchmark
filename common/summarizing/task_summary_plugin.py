@@ -15,8 +15,8 @@ class TaskSummaryPlugin(SummaryPlugin):
     def __init__(self):
         self.save_dir = 'results/tasks'
 
-        self.succeed_headers = ['名称', 'Job', '创建时间', '结束时间', 'WaitTime(s)', 'ExecutionTime(s)', 'SumTime(s)', '负载类型', '选择调度器', '选择节点']
-        self.failed_headers = ['名称', 'Job', '创建时间', '结束时间', '负载类型', '选择调度器', '选择节点']
+        self.succeed_headers = ['名称', 'Job', '提交时间', '创建时间', '开始时间', '结束时间', 'WaitTime(s)', 'ExecutionTime(s)', 'SumTime(s)', '负载类型', '选择调度器', '选择节点']
+        self.failed_headers = ['名称', 'Job', '提交时间', '创建时间', '开始时间', '结束时间', '负载类型', '选择调度器', '选择节点']
         self.now = ''
 
     def write_summary(self, pods, now: str, summary_name: str):
@@ -28,14 +28,15 @@ class TaskSummaryPlugin(SummaryPlugin):
         pods.sort(key=lambda pod: utils.get_obj_name(pod))
         for p in pods:
             if utils.pod_succeeded(p):
-                ct = p.metadata.creation_timestamp
-                st = p.status.start_time
+                submitTime = p.metadata.creation_timestamp
+                ct = p.status.start_time
+                st = p.status.container_statuses[0].state.terminated.started_at
                 ft = p.status.container_statuses[0].state.terminated.finished_at
                 wt = utils.get_pod_waiting_time(p)
                 rt = (ft - st).total_seconds()
                 tt = wt + rt
                 job = p.metadata.labels.get('job', 'None')
-                row = [p.metadata.name, job, ct, ft, wt, rt, tt,
+                row = [p.metadata.name, job, submitTime, ct, st, ft, wt, rt, tt,
                        p.metadata.labels.get('taskType'),
                        p.metadata.labels.get('linc/schedulerName', utils.get_pod_scheduler_name(p)),
                        p.spec.node_name]
@@ -46,7 +47,7 @@ class TaskSummaryPlugin(SummaryPlugin):
                 ct = p.metadata.creation_timestamp
                 job = p.metadata.labels.get('job', 'None')
                 row = [
-                    p.metadata.name, job, ct, ft,
+                    p.metadata.name, job, submitTime, ct, st, ft,
                     p.metadata.labels.get('taskType'),
                     p.metadata.labels.get('linc/schedulerName', utils.get_pod_scheduler_name(p)),
                     p.spec.node_name
@@ -86,9 +87,9 @@ class TaskSummaryPlugin(SummaryPlugin):
         nodeslist = ['k8s2-54', 'k8s3-54', 'k8s4-54', 'k8s5-54', 'k8s6-54', 'k8s7-54']
 
         for row in succeed:
-            time = float(row[6])
-            task_type = row[7]
-            node = row[9]
+            time = float(row[8])
+            task_type = row[9]
+            node = row[11]
 
             if node == nodeslist[0]:
                 k8s2.append(time)

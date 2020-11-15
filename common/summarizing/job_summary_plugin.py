@@ -13,7 +13,7 @@ class JobSummaryPlugin(SummaryPlugin):
     """
     def __init__(self):
         self.save_dir = 'results/jobs'
-        self.JCTheaders = ['Jobname', 'Job Start Time', 'Job End Time', 'Job Completed Time(s)']
+        self.JCTheaders = ['Job', 'Job Submit Time', 'Job End Time', 'Job Completed Time(s)']
         self.now = ''
 
     def write_summary(self, pods, now: str, name: str):
