@@ -1,4 +1,4 @@
-from benchmark.jct_tables import *
+from benchmark.job_data_reading import *
 
 
 base_dir = 'results/jobs/'
