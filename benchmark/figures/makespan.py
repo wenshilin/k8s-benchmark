@@ -14,7 +14,7 @@ def draw_makespan(data_frame: pd.DataFrame,
                   save_filename: str,
                   title: str = None,
                   x_label: str = None,
-                  y_label: str = 'Job makespan(s)',
+                  y_label: str = 'Makespan(s)',
                   dir_name: str = 'results/figures'):
     means = []
     for an in algorithm_names:
