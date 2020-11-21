@@ -4,7 +4,7 @@ import os
 import plotly as py
 import pytz
 
-from benchmark.gantt import create_gantt_data, draw_gantt
+from benchmark.figures.gantt import create_gantt_data, draw_gantt
 from scripts.read_pod_from_file import read_pod_from_file
 
 

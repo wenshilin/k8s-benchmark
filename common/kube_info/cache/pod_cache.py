@@ -11,8 +11,9 @@ from .informer import Informer
 from ...utils import kube as utils
 
 
-def create_pod_cache_and_start_listening(client, need_process_func, timeout=None, wait_init_seconds: int = 0):
-    cache = PodCache(timeout)
+def create_pod_cache_and_start_listening(client, need_process_func, timeout=None,
+                                         wait_init_seconds: int = 0, disable_log: bool = False):
+    cache = PodCache(timeout, disable_log)
     informer = Informer(client.list_pod_for_all_namespaces)
     informer.add_event_handler(EventHandlerImpl(cache, need_process_func))
     informer.run()
@@ -22,8 +23,9 @@ def create_pod_cache_and_start_listening(client, need_process_func, timeout=None
 
 class PodCache(object):
 
-    def __init__(self, timeout=None):
+    def __init__(self, timeout=None, disable_log: bool = False):
         self._timeout = timeout
+        self._disable_log = disable_log
         self._cache = Cache()
         self._finished_pods = []
         self._waiting_pod_ids = queue.Queue()
@@ -74,7 +76,7 @@ class PodCache(object):
                                         utils.pod_running(old_obj)
             finished = utils.pod_finished(new_obj) and old_state_is_not_finished
             failed = utils.pod_failed(new_obj) and utils.pod_pending(old_obj)
-            if finished or failed:
+            if not self._disable_log and (finished or failed):
                 logging.info(f'{utils.get_obj_name(new_obj)} {new_obj.status.phase}')
                 self._finished_pods.append(new_obj)
         self._cache.put(key, new_obj)
