@@ -56,6 +56,10 @@ def get_pod_finish_time(pod: client.V1Pod) -> datetime:
     return pod.status.container_statuses[0].state.terminated.finished_at
 
 
+def get_running_pod_start_time(pod: client.V1Pod) -> datetime:
+    return pod.status.container_statuses[0].state.running.started_at
+
+
 def get_pod_job_name(pod: client.V1Pod) -> str:
     return pod.metadata.labels['job']
 
@@ -105,6 +109,11 @@ def get_pod_request_memory_float(pod: client.V1Pod) -> float:
 
 def get_pod_job_id(pod: client.V1Pod) -> str:
     return pod.metadata.labels['job']
+
+
+def get_job_task_number(pod: client.V1Pod) -> int:
+    num_str = pod.metadata.labels['jobTaskNumber'][1:]
+    return int(num_str)
 
 
 def get_pod_workload(pod: client.V1Pod) -> int:
@@ -196,9 +205,21 @@ def is_worker_node(node) -> bool:
     return 'linc/nodeType' in node.metadata.labels
 
 
+def is_edge2_node(node) -> bool:
+    return 'linc/nodeType' in node.metadata.labels and node.metadata.labels['linc/nodeType'] == 'edge2'
+
+
 def action_valid(action: int):
     return action is not None and action != 0
 
 
 def convert_action_to_scheduler_name(action: int):
     return consts.ACTIONS[action]
+
+
+def get_pod_node_type(pod: client.V1Pod):
+    return pod.spec.node_selector.get('linc/nodeType', None)
+
+
+def convert_node_type_to_index(node_type: str):
+    return consts.TASK_TYPES.index(node_type)
