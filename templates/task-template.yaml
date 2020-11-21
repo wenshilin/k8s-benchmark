@@ -7,6 +7,7 @@ pod:
     labels:
       app: linc-workload
       job: $JOB_NAME
+      jobTaskNumber: $JOB_TASKNUM
       taskType: $TASK_TYPE
   spec:
     schedulerName: $SCHEDULER_NAME

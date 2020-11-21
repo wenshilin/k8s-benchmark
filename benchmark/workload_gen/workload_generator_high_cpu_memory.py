@@ -11,7 +11,7 @@ from .task import Task
 
 class WorkloadGenerator(object):
 
-    ALIBABA_TRACE_JOBS_JSON = "templates/alibaba-trace-jobs.json"
+    ALIBABA_TRACE_JOBS_JSON = "templates/alibaba-trace-jobs-3.json"
 
     def __init__(self, task_types: list):
         self.trace_data = read_json_file(WorkloadGenerator.ALIBABA_TRACE_JOBS_JSON)
@@ -41,7 +41,7 @@ class WorkloadGenerator(object):
         params = {
             'start_ms': start_ms,
             'end_ms': end_ms,
-            'cpu_count': max(1, int(cpu)),
+            'cpu_count': max(1, math.ceil(max_cpu)),
             'memory_mb': int(ram * 1024 * 32),
             'time_ms': int((end_ms - start_ms) * 1000),
             'send_size_mb': int(random.random() * 0.0),
@@ -54,7 +54,7 @@ class WorkloadGenerator(object):
         return Task(**params)
 
     def _job_num(self):
-        return 20
+        return len(self.trace_data)
         # return random.randint(10, len(self.trace_data))
 
     def _generate_job(self) -> list:
@@ -130,9 +130,9 @@ class WorkloadGenerator(object):
 
             # Reduces working time
             if task.limit_cpu > 1:
-                task.time_ms = int(task.time_ms/task.limit_cpu)
+                task.time_ms = int(task.time_ms/task.limit_cpu / 70)
             else:
-                task.time_ms = int(task.time_ms / 1)
+                task.time_ms = int(task.time_ms / 1 / 70)
 
             while task.time_ms >= 300000:
                 task.time_ms = int(task.time_ms / 2)

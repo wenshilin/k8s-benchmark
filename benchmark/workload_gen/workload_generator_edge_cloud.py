@@ -11,7 +11,7 @@ from .task import Task
 
 class WorkloadGenerator(object):
 
-    ALIBABA_TRACE_JOBS_JSON = "templates/alibaba-trace-jobs.json"
+    ALIBABA_TRACE_JOBS_JSON = "templates/alibaba-trace-jobs-3.json"
 
     def __init__(self, task_types: list):
         self.trace_data = read_json_file(WorkloadGenerator.ALIBABA_TRACE_JOBS_JSON)
@@ -41,7 +41,7 @@ class WorkloadGenerator(object):
         params = {
             'start_ms': start_ms,
             'end_ms': end_ms,
-            'cpu_count': max(1, int(cpu)),
+            'cpu_count': max(1, math.ceil(max_cpu)),
             'memory_mb': int(ram * 1024 * 32),
             'time_ms': int((end_ms - start_ms) * 1000),
             'send_size_mb': int(random.random() * 0.0),
@@ -54,7 +54,7 @@ class WorkloadGenerator(object):
         return Task(**params)
 
     def _job_num(self):
-        return 20
+        return len(self.trace_data)
         # return random.randint(10, len(self.trace_data))
 
     def _generate_job(self) -> list:
@@ -81,9 +81,9 @@ class WorkloadGenerator(object):
 
             task = self._get_task_parameters(task)
             if i == 0:
-                task_type = 'cloud'
-            elif i == 1:
                 task_type = 'edge1'
+            elif i == 1:
+                task_type = 'cloud'
             elif i == 2 and len(self.task_types) == 3:
                 task_type = 'edge2'
             else:
@@ -112,27 +112,26 @@ class WorkloadGenerator(object):
             #task.memory_mb = task.request_mem_mb + 200
             #task.limit_mem_mb = max(task.limit_mem_mb, need_mem_mb) + 600
 
-            need_mem_mb = task.write_size_mb + task.memory_mb + 10
-            task.memory_mb = need_mem_mb
-            task.limit_mem_mb = need_mem_mb + 50
+            need_mem_mb = task.write_size_mb + task.memory_mb + 80
+            task.memory_mb = need_mem_mb + 50
+            task.limit_mem_mb = need_mem_mb + 150
             task.request_mem_mb = need_mem_mb
 
-            #CPU process --- edge-cloud
-            if task.node_type == 'cloud':
-                task.limit_cpu = min(1,task.limit_cpu/15)
-                task.request_cpu = min(1,task.request_cpu/5)
-                task.cpu_count = min(1,math.ceil(task.limit_cpu))
-            elif task.node_type == 'edge1':
-                task.limit_cpu = min(1,task.limit_cpu/15)
-                task.request_cpu = min(1,task.request_cpu/5)
-                task.cpu_count = min(1,math.ceil(task.limit_cpu))
+            # CPU process --- edge-cloud-edge
+            #if task.node_type == 'cloud':
+            #    task.limit_cpu = task.limit_cpu / 2
+            #    task.request_cpu = task.request_cpu / 2
+            #    task.cpu_count = max(math.ceil(task.request_cpu), math.ceil(task.limit_cpu))
+            #elif task.node_type == 'edge1':
+            #    task.limit_cpu = task.limit_cpu / 6
+            #    task.request_cpu = task.request_cpu / 6
+            #    task.cpu_count = max(math.ceil(task.request_cpu), math.ceil(task.limit_cpu))
 
-
-            # Reduces working time
+            # Reduces working time ---cloud-edge
             if task.limit_cpu > 1:
-                task.time_ms = int(task.time_ms/task.limit_cpu/10000)
+                task.time_ms = int(task.time_ms/task.limit_cpu/100)
             else:
-                task.time_ms = int(task.time_ms / 1 / 10000)
+                task.time_ms = int(task.time_ms/1/100)
 
             while task.time_ms >= 300000:
                 task.time_ms = int(task.time_ms / 2)

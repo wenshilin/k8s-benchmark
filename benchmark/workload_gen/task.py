@@ -22,6 +22,7 @@ class Task(object):
 
     name: str = None
     job_name: str = None
+    job_tasknum: str = None
     task_type: str = None
     node_type: str = None
     scheduler_name: str = None
