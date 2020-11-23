@@ -6,6 +6,7 @@ from typing import List
 import munch
 from torch.utils.tensorboard import SummaryWriter
 
+from common import consts
 from common.kube_info.reward_builder import RewardBuilder
 from common.summarizing.kube_evaluation_summarizer import KubeEvaluationSummarizer
 from common.utils import kube as utils
@@ -26,7 +27,7 @@ class SimEnvWorkloadTester(AbstractWorkloadTester):
         super().__init__(workload_type, workload_generated_time,
                          scheduling_algorithms, repeat_times, workload_load_directory)
 
-        self.action = 1
+        self.action = 0
         self.client = JsonHttpClient(base_url)
         self.summarizer = KubeEvaluationSummarizer()
         self.reward_builder = RewardBuilder()
@@ -35,18 +36,20 @@ class SimEnvWorkloadTester(AbstractWorkloadTester):
         workload_dir = os.path.join(self.workload_load_directory, self.workload_generated_time)
 
         for idx, name in enumerate(tests):
-            print("-----------------------------------------------------------------")
+            logging.info("-----------------------------------------------------------------")
             jobs = load_from_file(os.path.join(workload_dir, '%s.yaml' % (name,)))
-            print('Running %s' % name)
-            print('loaded job number: %d' % len(jobs))
+            logging.info('Running %s' % name)
+            logging.info('loaded job number: %d' % len(jobs))
             save_dir = f'results/tensorboard/{now_str()}-sim'
             os.makedirs(save_dir, exist_ok=True)
             summary_writer = SummaryWriter(save_dir)
 
+            self.action = algorithm_to_index(name) + 1
+            logging.info(f'current action index {self.action}')
             self.reward_builder.reset()
             self.start(jobs)
             pods = self.wait_until_all_job_done(summary_writer, idx)
-            print("----------------------------------------------------------------------")
+            logging.info("----------------------------------------------------------------------")
             self.write_summary(name, pods)
 
     def wait_until_all_job_done(self, summary_writer, test_idx):
@@ -71,10 +74,9 @@ class SimEnvWorkloadTester(AbstractWorkloadTester):
             summary_writer.add_scalar('reward', reward, t)
             sum_reward += reward
             t += 1
-            print(data)
 
         summary_writer.add_scalar('sum_reward', sum_reward, test_idx)
-        print(f'simulation finished at time step {t}')
+        logging.info(f'simulation finished at time step {t}')
         return pods
 
     def _get_reward(self, pods_finished_at_this_timestamp, all_pods) -> float:
@@ -134,3 +136,10 @@ class SimEnvWorkloadTester(AbstractWorkloadTester):
     def write_summary(self, name, pods):
         now = now_str()
         self.summarizer.write_summary(pods, now, name)
+
+
+def algorithm_to_index(name: str):
+    for idx, action in enumerate(consts.SCHEDULING_ALGORITHMS):
+        if name.split('-')[-1] in action:
+            return idx
+    raise RuntimeError(f'{name} not found')
