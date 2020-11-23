@@ -126,7 +126,8 @@ dmypy.json
 .idea/
 
 results/
-!results/workloads/
 kube-config
+!results/README.md
+!workloads/README.md
 
 cmake-build-debug/

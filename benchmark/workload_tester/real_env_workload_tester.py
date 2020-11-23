@@ -1,66 +1,50 @@
-import datetime
 import logging
 import os
 import time
-import unittest
-import warnings
 from typing import List
 
 import kubernetes
 from torch.utils.tensorboard import SummaryWriter
 
-from benchmark import workload_gen
-from common import global_arguments
 from common.kube_info.cache.pod_cache import create_pod_cache_and_start_listening
 from common.kube_info.metrics_server_client import MetricsServerClient
 from common.kube_info.reward_builder import RewardBuilder
 from common.summarizing.kube_evaluation_summarizer import KubeEvaluationSummarizer
 from common.utils import kube as utils
-from common.utils import kube_config
+from common.utils import now_str, load_from_file
 from common.workload.workload_runner import WorkloadRunner
+from .abstract_workload_tester import AbstractWorkloadTester
 
 
-class WorkloadTest(unittest.TestCase):
+class RealEnvWorkloadTester(AbstractWorkloadTester):
 
-    def setUp(self) -> None:
-        kube_config.load_kube_config()
-        logging.basicConfig(
-            level=logging.INFO,
-            format='%(asctime)s %(levelname)s %(funcName)s: %(message)s'
-        )
-        global_arguments.init_empty_arguments()
+    def __init__(self,
+                 metrics_server_base_url: str,
+                 workload_type: str,
+                 workload_generated_time: str,
+                 scheduling_algorithms: List[str],
+                 repeat_times: int = 1,
+                 workload_load_directory: str = 'workloads'):
+        super().__init__(workload_type, workload_generated_time,
+                         scheduling_algorithms, repeat_times, workload_load_directory)
+
         self.client = kubernetes.client.CoreV1Api()
         self.summarizer = KubeEvaluationSummarizer()
 
-        self.ms = MetricsServerClient('http://localhost:8001/apis/metrics.k8s.io/v1beta1')
+        self.ms = MetricsServerClient(metrics_server_base_url)
         self.workload_runner = WorkloadRunner(self.client, dry_run=False)
         self.reward_builder = RewardBuilder()
         self.cache = create_pod_cache_and_start_listening(self.client, lambda _: True)
 
-        warnings.simplefilter('ignore', ResourceWarning)
-
-    def test_all(self):
-        for _ in range(6):
-            self.run_once()
-
-    def run_once(self):
-        # 负载的类型
-        workload_type = '边到云'
-        # 负载生成时间/负载所在文件夹
-        workload_generated_time = '2020-11-08 19-30-02'
-
-        scheduling_algorithms = ['ep', 'lrp', 'mrp', 'bra', 'rlp']
-        # scheduling_algorithms = ['mrp']
-        tests = ['%s-%s' % (workload_type, scheduling_algorithm, ) for scheduling_algorithm in scheduling_algorithms]
-
-        workload_dir = os.path.join('results/workloads', workload_generated_time)
+    def run_tests(self, tests):
+        workload_dir = os.path.join(self.workload_load_directory, self.workload_generated_time)
 
         for name in tests:
             print("-----------------------------------------------------------------")
-            jobs = workload_gen.load_from_file(os.path.join(workload_dir, '%s.yaml' % (name, )))
+            jobs = load_from_file(os.path.join(workload_dir, '%s.yaml' % (name,)))
             print('Running %s' % name)
             print('loaded job number: %d' % len(jobs))
-            save_dir = f'results/tensorboard/{self.now_str()}'
+            save_dir = f'results/tensorboard/{now_str()}-real'
             os.makedirs(save_dir, exist_ok=True)
             summary_writer = SummaryWriter(save_dir)
             self.reward_builder.reset()
@@ -100,7 +84,8 @@ class WorkloadTest(unittest.TestCase):
         job_ids = self._filter_job_ids(finished_pods)
         return self._calculate_job_complete_times(job_ids)
 
-    def _filter_job_ids(self, finished_pods):
+    @staticmethod
+    def _filter_job_ids(finished_pods):
         job_ids = set()
         for p in finished_pods:
             job_id = utils.get_pod_job_id(p)
@@ -135,12 +120,5 @@ class WorkloadTest(unittest.TestCase):
         self.workload_runner.restart(workload)
 
     def write_summary(self, name, pods):
-        self.now = self.now_str()
-        self.summarizer.write_summary(pods, self.now, name)
-
-    def now_str(self):
-        return datetime.datetime.now().strftime('%Y-%m-%d %H-%M-%S')
-
-
-if __name__ == '__main__':
-    unittest.main()
+        now = now_str()
+        self.summarizer.write_summary(pods, now, name)
