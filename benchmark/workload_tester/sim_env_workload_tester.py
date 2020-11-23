@@ -7,6 +7,7 @@ import munch
 from torch.utils.tensorboard import SummaryWriter
 
 from common import consts
+from common.kube_info.jct_caculation import calculate_job_complete_times
 from common.kube_info.reward_builder import RewardBuilder
 from common.summarizing.kube_evaluation_summarizer import KubeEvaluationSummarizer
 from common.utils import kube as utils
@@ -81,50 +82,13 @@ class SimEnvWorkloadTester(AbstractWorkloadTester):
 
     def _get_reward(self, pods_finished_at_this_timestamp, all_pods) -> float:
         self.reward_builder.pods_finished(pods_finished_at_this_timestamp)
-        jct_list = self._get_job_complete_times(pods_finished_at_this_timestamp, all_pods)
+        jct_list = calculate_job_complete_times(pods_finished_at_this_timestamp, all_pods)
         self.reward_builder.jobs_finished(jct_list)
         return self.reward_builder.reward
-
-    def _get_job_complete_times(self, finished_pods, all_pods):
-        job_ids = self._filter_job_ids(finished_pods)
-        return self._calculate_job_complete_times(job_ids, all_pods)
-
-    @staticmethod
-    def _filter_job_ids(finished_pods):
-        job_ids = set()
-        for p in finished_pods:
-            job_id = utils.get_pod_job_id(p)
-            if job_id not in job_ids:
-                job_ids.add(job_id)
-        return job_ids
-
-    def _calculate_job_complete_times(self, job_ids, all_pods) -> List[float]:
-        jct_list = []
-        for job_id in job_ids:
-            pods = self._job_finished_pods(job_id, all_pods)
-            job_task_number = utils.get_job_task_number(pods[0])
-            logging.info(f'job {job_id}: task number {job_task_number}, finished task number {len(pods)}')
-            if len(pods) == job_task_number:
-                jct = self._calculate_jct(pods)
-                jct_list.append(jct)
-                logging.info(f'JCT of job {job_id} is {jct}s')
-        return jct_list
-
-    @staticmethod
-    def _job_finished_pods(job_id, pods):
-        return list(filter(lambda p: utils.is_workload(p) and
-                           utils.get_pod_job_id(p) == job_id and
-                           utils.pod_finished(p), pods))
 
     @staticmethod
     def finished_pods(pods):
         return list(filter(lambda p: utils.is_workload(p) and utils.pod_finished(p), pods))
-
-    @staticmethod
-    def _calculate_jct(pods) -> float:
-        first_pod_created_at = min(map(utils.get_pod_creation_timestamp, pods))
-        last_pod_finished_at = max(map(utils.get_pod_finish_time, pods))
-        return (last_pod_finished_at - first_pod_created_at).total_seconds()
 
     def start(self, workload):
         # 后端要求发送字符串
