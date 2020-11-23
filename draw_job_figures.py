@@ -18,11 +18,11 @@ def main():
     draw_makespan(summary, algorithm_names,
                   title='Edge-Cloud',
                   save_filename='makespan.jpg',
-                  x_label='The makespan of the algorithms')
+                  x_label='Different scheduling algorithms')
     draw_jct_box(summary, algorithm_names,
                  title='Edge-Cloud',
                  save_filename='jct_box.jpg',
-                 x_label='The JCT of the algorithms')
+                 x_label='Different scheduling algorithms')
     draw_cdf(jobs, algorithm_names,
              title='Edge-Cloud',
              save_filename='CDF.jpg',
