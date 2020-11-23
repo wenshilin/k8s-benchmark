@@ -11,7 +11,7 @@ from .task import Task
 
 class WorkloadGenerator(object):
 
-    ALIBABA_TRACE_JOBS_JSON = "templates/alibaba-trace-jobs-3.json"
+    ALIBABA_TRACE_JOBS_JSON = "templates/alibaba-trace-jobs.json"
 
     def __init__(self, task_types: list):
         self.trace_data = read_json_file(WorkloadGenerator.ALIBABA_TRACE_JOBS_JSON)
