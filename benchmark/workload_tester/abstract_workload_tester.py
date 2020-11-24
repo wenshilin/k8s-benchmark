@@ -1,4 +1,5 @@
 import abc
+import logging
 from typing import List
 
 
@@ -18,8 +19,8 @@ class AbstractWorkloadTester(object):
 
     def run(self):
         tests = self.generate_tests()
-        print(f'workload is generated at {self.workload_generated_time}')
-        print(f'attempts to run tests in order: {tests}')
+        logging.info(f'workload is generated at {self.workload_generated_time}')
+        logging.info(f'attempts to run tests in order: {tests}')
         self.run_tests(tests)
 
     @abc.abstractmethod

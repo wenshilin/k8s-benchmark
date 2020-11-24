@@ -54,14 +54,13 @@ class SimEnvWorkloadTester(AbstractWorkloadTester):
             logging.info(f'current action index {self.action}')
             self.reward_builder.reset()
             self.start(jobs)
-            pods = self.wait_until_all_job_done(summary_writer, idx)
-            logging.info("----------------------------------------------------------------------")
-            self.write_summary(name, pods)
+            pods, nodes = self.wait_until_all_job_done(summary_writer, idx)
+            self.write_summary(name, pods, nodes)
 
     def wait_until_all_job_done(self, summary_writer, test_idx):
         done = False
         sum_reward = 0
-        pods = None
+        pods, nodes = None, None
         t = 0
 
         while True:
@@ -77,7 +76,6 @@ class SimEnvWorkloadTester(AbstractWorkloadTester):
             current_clock = read_clock(data)
             logging.info(f'current clock {current_clock}')
 
-            # FIXME: 当前获得的是所有完成的Pod
             finished_pods = self.finished_pods(pods, self.last_clock, current_clock)
             reward = self._get_reward(finished_pods, pods)
             summary_writer.add_scalar('reward', reward, t)
@@ -87,7 +85,7 @@ class SimEnvWorkloadTester(AbstractWorkloadTester):
 
         summary_writer.add_scalar('sum_reward', sum_reward, test_idx)
         logging.info(f'simulation finished at time step {t}')
-        return pods
+        return pods, nodes
 
     def _get_reward(self, pods_finished_at_this_timestamp, all_pods) -> float:
         self.reward_builder.pods_finished(pods_finished_at_this_timestamp)
@@ -108,9 +106,9 @@ class SimEnvWorkloadTester(AbstractWorkloadTester):
         logging.debug(data)
         self.last_clock = read_clock(data)
 
-    def write_summary(self, name, pods):
+    def write_summary(self, name, pods, nodes):
         now = now_str()
-        self.summarizer.write_summary(pods, now, name)
+        self.summarizer.write_summary(pods, now, name, nodes)
 
 
 def algorithm_to_index(name: str):
