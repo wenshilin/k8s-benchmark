@@ -1,0 +1,8 @@
+numpy
+kubernetes
+pandas
+munch
+torch
+plotly
+requests
+prettytable
