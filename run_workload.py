@@ -40,7 +40,7 @@ class WorkloadTest(unittest.TestCase):
         warnings.simplefilter('ignore', ResourceWarning)
 
     def test_all(self):
-        for _ in range(6):
+        for _ in range(1):
             self.run_once()
 
     def run_once(self):
