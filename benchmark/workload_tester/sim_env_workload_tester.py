@@ -5,8 +5,11 @@ from typing import List
 
 import munch
 from dateutil import tz
-#from torch.utils.tensorboard import SummaryWriter
-from tensorboardX import SummaryWriter
+
+try:
+    from tensorboardX import SummaryWriter
+except ImportError:
+    from torch.utils.tensorboard import SummaryWriter
 
 from common import consts
 from common.kube_info.jct_caculation import calculate_job_complete_times
