@@ -1,3 +1,4 @@
+import logging
 import os
 import time
 from typing import List
@@ -40,21 +41,26 @@ class RealEnvWorkloadTester(AbstractWorkloadTester):
         workload_dir = os.path.join(self.workload_load_directory, self.workload_generated_time)
 
         for name in tests:
-            print("-----------------------------------------------------------------")
+            logging.info("-----------------------------------------------------------------")
             jobs = load_from_file(os.path.join(workload_dir, '%s.yaml' % (name,)))
-            print('Running %s' % name)
-            print('loaded job number: %d' % len(jobs))
+            logging.info('Running %s' % name)
+            logging.info('loaded job number: %d' % len(jobs))
             save_dir = f'results/tensorboard/{now_str()}-real'
             os.makedirs(save_dir, exist_ok=True)
             summary_writer = SummaryWriter(save_dir)
             self.reward_builder.reset()
             self.start(jobs)
             self.wait_until_all_job_done(summary_writer)
+
             pods = self.get_pods()
-            self.write_summary(name, pods)
+            nodes = self.get_nodes()
+            self.write_summary(name, pods, nodes)
 
     def get_pods(self):
         return self.client.list_namespaced_pod('default').items
+
+    def get_nodes(self):
+        return self.client.list_node().items
 
     def wait_until_all_job_done(self, summary_writer):
         all_pod_finished = False
@@ -70,8 +76,6 @@ class RealEnvWorkloadTester(AbstractWorkloadTester):
             all_pod_finished = all(map(utils.pod_finished, pods))
 
         summary_writer.add_scalar('sum_reward', sum_reward, 0)
-        print('all job finished!!!')
-        print("----------------------------------------------------------------------")
 
     def _get_reward(self) -> float:
         finished_pods = self.cache.get_finished_pods_and_clean_cache()
@@ -84,6 +88,6 @@ class RealEnvWorkloadTester(AbstractWorkloadTester):
     def start(self, workload):
         self.workload_runner.restart(workload)
 
-    def write_summary(self, name, pods):
+    def write_summary(self, name, pods, nodes):
         now = now_str()
-        self.summarizer.write_summary(pods, now, name)
+        self.summarizer.write_summary(pods, now, name, nodes)
