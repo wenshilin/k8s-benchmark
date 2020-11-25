@@ -35,7 +35,7 @@ class Edge2Cloud2EdgeWorkloadGenerator(WorkloadGenerator):
             t['startTime'] = int((t['startTime'] - min_start_time) * 8 + self.prev_job_last_start_time)
 
         self.prev_job_last_start_time = max([t['startTime'] for t in tasks]) + self.poisson_dist[self.job_count]
-        print('next job start time: ', self.prev_job_last_start_time)
+        print('Next job start time: ', self.prev_job_last_start_time)
         return tasks
 
     def _post_process_tasks(self, tasks):
