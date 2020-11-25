@@ -42,13 +42,13 @@ class WorkloadGenerator(object):
         params = {
             'start_ms': start_ms,
             'end_ms': end_ms,
-            'cpu_count': max(1, math.ceil(max_cpu)),
-            'memory_mb': int(ram),
+            'cpu_count': max(1, math.ceil(max_cpu/100)),
+            'memory_mb': int(ram*1024),
             'time_ms': int((end_ms - start_ms) * 1000),
-            'request_cpu': cpu,
-            'limit_cpu': max_cpu,
-            'request_mem_mb': int(ram),
-            'limit_mem_mb': int(max_ram),
+            'request_cpu': float(cpu/100),
+            'limit_cpu': float(max_cpu/100),
+            'request_mem_mb': int(ram*1024),
+            'limit_mem_mb': int(max_ram*1024),
         }
         return Task(**params)
 
@@ -101,10 +101,9 @@ class WorkloadGenerator(object):
     def _build_dicts(self, tasks: typing.List[Task]) -> typing.List[dict]:
         for i, task in enumerate(tasks):
 
-            need_mem_mb = task.memory_mb + 10
-            task.memory_mb = need_mem_mb
-            task.limit_mem_mb = need_mem_mb + 50
-            task.request_mem_mb = need_mem_mb
+            task.memory_mb = task.memory_mb + 10
+            task.limit_mem_mb = task.limit_mem_mb + 50
+            task.request_mem_mb = task.request_mem_mb
 
             #CPU process --- edge-cloud-edge
             if task.node_type == 'cloud':
@@ -118,9 +117,9 @@ class WorkloadGenerator(object):
 
             # Reduces working time
             if task.limit_cpu > 1:
-                task.time_ms = int(task.time_ms/task.limit_cpu/40)
+                task.time_ms = int(task.time_ms/task.limit_cpu)
             else:
-                task.time_ms = int(task.time_ms/1/40)
+                task.time_ms = int(task.time_ms/1)
 
             while task.time_ms >= 300000:
                 task.time_ms = int(task.time_ms / 2)
