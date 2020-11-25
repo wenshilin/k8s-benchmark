@@ -114,9 +114,9 @@ class WorkloadGenerator(object):
 
             # Reduces working time
             if task.limit_cpu > 1:
-                task.time_ms = int(task.time_ms/task.limit_cpu)
+                task.time_ms = int(task.time_ms/task.limit_cpu/10)
             else:
-                task.time_ms = int(task.time_ms/1)
+                task.time_ms = int(task.time_ms/1/10)
 
             while task.time_ms >= 300000:
                 task.time_ms = int(task.time_ms / 2)
