@@ -5,7 +5,6 @@ import math
 import yaml
 
 from common import consts
-from common.utils.json import read_json_file
 from common.utils.json import read_sql_file
 from .task import Task
 

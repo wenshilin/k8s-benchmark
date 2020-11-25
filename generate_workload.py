@@ -5,11 +5,7 @@ import random
 import unittest
 import pymysql
 from unittest import TestCase
-
 from benchmark import workload_gen
-from common.utils.json import read_json_file
-from common.utils.json import read_sql_file
-
 
 class WorkloadGenTest(TestCase):
 
