@@ -3,6 +3,7 @@ import logging
 import os
 import random
 import unittest
+import pymysql
 from unittest import TestCase
 
 from benchmark import workload_gen
@@ -59,4 +60,6 @@ class WorkloadGenTest(TestCase):
                 pod['pod']['spec']['schedulerName'] = scheduler_name
 
 if __name__ == '__main__':
+
     unittest.main()
+

@@ -44,14 +44,14 @@ class Edge2Cloud2EdgeWorkloadGenerator(WorkloadGenerator):
             task.job_tasknum = 'n' + str(len(tasks))
             if task.node_type == 'cloud':
                 # Mix
-                task.request_mem_mb = task.request_mem_mb
-                task.limit_mem_mb = task.limit_mem_mb
+                #task.request_mem_mb = task.request_mem_mb
+                #task.limit_mem_mb = task.limit_mem_mb
                 task.task_type = 'mix'
 
             elif task.node_type == 'edge1':
                 # Mix
-                task.request_mem_mb = task.request_mem_mb
-                task.limit_mem_mb = task.limit_mem_mb
+                #task.request_mem_mb = task.request_mem_mb
+                #task.limit_mem_mb = task.limit_mem_mb
                 task.task_type = 'mix'
 
         tasks = self._build_dicts(tasks)

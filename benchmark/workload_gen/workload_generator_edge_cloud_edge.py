@@ -12,10 +12,7 @@ from .task import Task
 
 class WorkloadGenerator(object):
 
-    #ALIBABA_TRACE_JOBS_JSON = "templates/alibaba-trace-jobs.json"
-
     def __init__(self, task_types: list):
-        #self.trace_data = read_json_file(WorkloadGenerator.ALIBABA_TRACE_JOBS_JSON)
         self.trace_data = read_sql_file()
         self.job_count = 0
         self.task_count = 0
@@ -63,13 +60,13 @@ class WorkloadGenerator(object):
         job_num = self._job_num()
         for _ in range(job_num):
             print(self.job_count)
-            if self.job_count <= 2:
+            if self.job_count <= 15:
                 job = self._generate_job()
                 jobs.append(job)
                 self.job_count += 1
         return jobs
 
-    def _generate_general_tasks(self, job_dict: dict, first_n: int = 6) -> list:
+    def _generate_general_tasks(self, job_dict: dict, first_n: int = 9) -> list:
         task_dict = job_dict['job.tasks']
         tasks = []
 
@@ -109,11 +106,11 @@ class WorkloadGenerator(object):
             if task.node_type == 'cloud':
                 task.limit_cpu = min(4,task.limit_cpu)
                 task.request_cpu = min(4,task.request_cpu)
-                task.cpu_count = min(max(1,math.ceil(task.request_cpu)),math.ceil(task.limit_cpu))
+                task.cpu_count = max(1,math.ceil(task.limit_cpu))
             elif task.node_type == 'edge1':
                 task.limit_cpu = min(0.5,task.limit_cpu)
                 task.request_cpu = min(0.5,task.request_cpu)
-                task.cpu_count = min(max(1,math.ceil(task.request_cpu)),math.ceil(task.limit_cpu))
+                task.cpu_count = max(1,math.ceil(task.limit_cpu))
 
             # Reduces working time
             if task.limit_cpu > 1:
