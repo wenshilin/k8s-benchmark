@@ -6,15 +6,17 @@ import yaml
 
 from common import consts
 from common.utils.json import read_json_file
+from common.utils.json import read_sql_file
 from .task import Task
 
 
 class WorkloadGenerator(object):
 
-    ALIBABA_TRACE_JOBS_JSON = "templates/alibaba-trace-jobs.json"
+    #ALIBABA_TRACE_JOBS_JSON = "templates/alibaba-trace-jobs.json"
 
     def __init__(self, task_types: list):
-        self.trace_data = read_json_file(WorkloadGenerator.ALIBABA_TRACE_JOBS_JSON)
+        #self.trace_data = read_json_file(WorkloadGenerator.ALIBABA_TRACE_JOBS_JSON)
+        self.trace_data = read_sql_file()
         self.job_count = 0
         self.task_count = 0
         self.task_types = task_types
@@ -27,25 +29,22 @@ class WorkloadGenerator(object):
         return random.choice(self.task_types)
 
     def _get_task_parameters(self, task: dict):
-        start_ms = task['container.start.ms']
-        end_ms = task['container.end.ms']
-        cpu = task['cpu']
-        max_cpu = task['maxcpu']
-        ram = task['ram']
-        max_ram = task['maxram']
-        io = task['io']
-        return self._process_task_parameters(start_ms, end_ms, cpu, max_cpu, ram, max_ram, io)
+        start_ms = task[5]
+        end_ms = task[6]
+        cpu = task[10]
+        max_cpu = task[11]
+        ram = task[12]
+        max_ram = task[13]
+        return self._process_task_parameters(start_ms, end_ms, cpu, max_cpu, ram, max_ram)
 
     @staticmethod
-    def _process_task_parameters(start_ms, end_ms, cpu, max_cpu, ram, max_ram, io):
+    def _process_task_parameters(start_ms, end_ms, cpu, max_cpu, ram, max_ram):
         params = {
             'start_ms': start_ms,
             'end_ms': end_ms,
             'cpu_count': max(1, math.ceil(max_cpu)),
             'memory_mb': int(ram),
             'time_ms': int((end_ms - start_ms) * 1000),
-            'send_size_mb': int(random.random() * 0.0),
-            'write_size_mb': int(io * 1024 * 0.0),
             'request_cpu': cpu,
             'limit_cpu': max_cpu,
             'request_mem_mb': int(ram),
@@ -64,13 +63,13 @@ class WorkloadGenerator(object):
         job_num = self._job_num()
         for _ in range(job_num):
             print(self.job_count)
-            if self.job_count <= 12:
+            if self.job_count <= 2:
                 job = self._generate_job()
                 jobs.append(job)
                 self.job_count += 1
         return jobs
 
-    def _generate_general_tasks(self, job_dict: dict, first_n: int = 12) -> list:
+    def _generate_general_tasks(self, job_dict: dict, first_n: int = 6) -> list:
         task_dict = job_dict['job.tasks']
         tasks = []
 
@@ -102,7 +101,7 @@ class WorkloadGenerator(object):
     def _build_dicts(self, tasks: typing.List[Task]) -> typing.List[dict]:
         for i, task in enumerate(tasks):
 
-            need_mem_mb = task.write_size_mb + task.memory_mb + 10
+            need_mem_mb = task.memory_mb + 10
             task.memory_mb = need_mem_mb
             task.limit_mem_mb = need_mem_mb + 50
             task.request_mem_mb = need_mem_mb

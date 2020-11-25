@@ -23,7 +23,7 @@ class Edge2Cloud2EdgeWorkloadGenerator(WorkloadGenerator):
             first_3 = True
 
         if first_3:
-            tasks = self._generate_general_tasks(job_dict, 6)
+            tasks = self._generate_general_tasks(job_dict, 3)
         else:
             tasks = self._generate_general_tasks(job_dict)
 

@@ -25,28 +25,29 @@ class WorkloadGenTest(TestCase):
         random.seed(1)
 
     def test_trace_data(self):
-        data = read_json_file(workload_gen.WorkloadGenerator.ALIBABA_TRACE_JOBS_JSON)
+        #data = read_json_file(workload_gen.WorkloadGenerator.ALIBABA_TRACE_JOBS_JSON)
+        data =read_sql_file()
         print('job cnt:', len(data))
         print('job tasks:', [len(job['job.tasks']) for job in data])
 
-        running_time_ms = []
+        running_time_s = []
         start_time_ms = []
-        cpu, max_cpu, ram, max_ram, io = [], [], [], [], []
+        cpu, max_cpu, ram, max_ram = [], [], [], []
         for job in data:
             for task in job['job.tasks']:
-                running_time_ms.append(int(task['container.end.ms'] - int(task['container.start.ms'])))
-                start_time_ms.append(int(task['container.start.ms']))
-                cpu.append(task['cpu'])
-                max_cpu.append(task['maxcpu'])
-                ram.append(task['ram'])
-                max_ram.append(task['maxram'])
-                io.append(task['io'])
-        print('task avg running time s', avg(running_time_ms), 'max', max(running_time_ms), 'min', min(running_time_ms))
-        print('task avg cpu', avg(cpu), 'max', max(cpu), 'min', min(cpu))
-        print('task avg max_cpu', avg(max_cpu), 'max', max(max_cpu), 'min', min(max_cpu))
-        print('task avg ram', avg(ram), 'max', max(ram), 'min', min(ram))
-        print('task avg max_ram', avg(max_ram), 'max', max(max_ram), 'min', min(max_ram))
-        print('task avg io', avg(io), 'max', max(io), 'min', min(io))
+
+                running_time_s.append(int(task[6]) - int(task[5]))
+                start_time_ms.append(int(task[5]))
+                cpu.append(float(task[10] / 100))
+                max_cpu.append(float(task[11] / 100))
+                ram.append(task[12] * 1024)
+                max_ram.append(task[13] * 1024)
+
+        print('task avg running time(s): ', avg(running_time_s), 'max: ', max(running_time_s), 'min: ', min(running_time_s))
+        print('task avg cpu(core): ', avg(cpu), 'max: ', max(cpu), 'min: ', min(cpu))
+        print('task avg max_cpu(core): ', avg(max_cpu), 'max: ', max(max_cpu), 'min: ', min(max_cpu))
+        print('task avg ram(MB): ', avg(ram), 'max: ', max(ram), 'min: ', min(ram))
+        print('task avg max_ram(MB): ', avg(max_ram), 'max: ', max(max_ram), 'min: ', min(max_ram))
 
     def test_generate_workload(self):
         self.now = datetime.datetime.now().strftime('%Y-%m-%d %H-%M-%S')
