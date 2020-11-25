@@ -94,4 +94,4 @@ class RealEnvWorkloadTester(AbstractWorkloadTester):
 
     def write_summary(self, name, pods, nodes):
         now = now_str()
-        self.summarizer.write_summary(pods, now, name, nodes)
+        self.summarizer.write_summary(pods, nodes, now, name)
