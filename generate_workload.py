@@ -24,8 +24,8 @@ class WorkloadGenTest(TestCase):
     def test_generate_workload(self):
         self.now = datetime.datetime.now().strftime('%Y-%m-%d %H-%M-%S')
         #self.dump('云到边', 'cloud_edge')
-        #self.dump('边到云', 'edge_cloud')
-        self.dump('边到云到边', 'edge_cloud_edge')
+        self.dump('边到云', 'edge_cloud')
+        #self.dump('边到云到边', 'edge_cloud_edge')
         #self.dump('高Cpu和Memory', 'high_cpu_memory')
 
     def dump(self, name: str,  workload_type: str):
