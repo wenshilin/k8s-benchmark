@@ -28,7 +28,7 @@ if __name__ == '__main__':
         #scheduling_algorithms=['ep', 'lrp', 'mrp', 'bra', 'rlp'],
         scheduling_algorithms=['ep', 'lrp', 'mrp', 'bra', 'rlp'],
         # 重复运行的次数，当前为重复运行一种算法repeat_times之后再运行下一算法
-        repeat_times=3,
+        repeat_times=5,
         metrics_server_base_url='http://localhost:8001/apis/metrics.k8s.io/v1beta1',
     )
     start = time.time()

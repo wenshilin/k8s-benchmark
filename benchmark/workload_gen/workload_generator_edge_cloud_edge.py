@@ -58,7 +58,7 @@ class WorkloadGenerator(object):
         jobs = []
         job_num = self._job_num()
         for _ in range(job_num):
-            if self.job_count <= 15:
+            if self.job_count <= 12:
                 print("job count: ", self.job_count)
                 job = self._generate_job()
                 jobs.append(job)
@@ -113,9 +113,9 @@ class WorkloadGenerator(object):
 
             # Reduces working time
             if task.limit_cpu > 1:
-                task.time_ms = int(task.time_ms/task.limit_cpu/5)
+                task.time_ms = int(task.time_ms/task.limit_cpu/1000)
             else:
-                task.time_ms = int(task.time_ms/1/5)
+                task.time_ms = int(task.time_ms/1/1000)
 
             while task.time_ms >= 300000:
                 task.time_ms = int(task.time_ms / 2)

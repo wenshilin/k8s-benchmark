@@ -51,13 +51,31 @@ class Edge2Cloud2EdgeWorkloadGenerator(WorkloadGenerator):
                 # Mix
                 #task.request_mem_mb = task.request_mem_mb
                 #task.limit_mem_mb = task.limit_mem_mb
-                task.task_type = 'mix'
+                #task.task_type = 'mix'
+
+                #Memory
+                task.request_mem_mb += 3000
+                task.limit_mem_mb += 3000
+                task.memory_mb = min(int(task.request_mem_mb), int(task.limit_mem_mb))
+                if (task.limit_mem_mb > 7700 or task.memory_mb > 7700 or task.request_mem_mb > 7700):
+                    task.limit_mem_mb = 7700
+                    task.request_mem_mb = 7700
+                    task.memory_mb = 7700
+                task.task_type = 'memory'
 
             elif task.node_type == 'edge1':
                 # Mix
                 #task.request_mem_mb = task.request_mem_mb
                 #task.limit_mem_mb = task.limit_mem_mb
-                task.task_type = 'mix'
+                #task.task_type = 'mix'
+
+                # Memory
+                task.memory_mb = min(int(task.request_mem_mb), int(task.limit_mem_mb))
+                if (task.limit_mem_mb > 1700 or task.memory_mb > 1700 or task.request_mem_mb > 1700):
+                    task.limit_mem_mb = 1700
+                    task.request_mem_mb = 1700
+                    task.memory_mb = 1700
+                task.task_type = 'memory'
 
         tasks = self._build_dicts(tasks)
         return tasks
