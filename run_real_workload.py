@@ -1,5 +1,6 @@
 import logging
 import warnings
+import time
 
 from benchmark.workload_tester import RealEnvWorkloadTester
 from common import global_arguments
@@ -30,4 +31,7 @@ if __name__ == '__main__':
         repeat_times=3,
         metrics_server_base_url='http://localhost:8001/apis/metrics.k8s.io/v1beta1',
     )
+    start = time.time()
     workload_tester.run()
+    end = time.time()
+    print("Total running time: %s seconds" % (end - start))
