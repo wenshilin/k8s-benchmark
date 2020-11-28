@@ -94,7 +94,7 @@ class WorkloadGenerator(object):
     def _build_dicts(self, tasks: typing.List[Task]) -> typing.List[dict]:
         for i, task in enumerate(tasks):
             # To solve OOMKilled
-            task.memory_mb = task.memory_mb + 10
+            task.memory_mb = task.memory_mb
             task.limit_mem_mb = task.limit_mem_mb + 50
             task.request_mem_mb = task.request_mem_mb
 
@@ -110,9 +110,9 @@ class WorkloadGenerator(object):
 
             # Reduces working time
             if task.limit_cpu > 1:
-                task.time_ms = int(task.time_ms / task.limit_cpu / 5)
+                task.time_ms = int(task.time_ms / task.limit_cpu / 50)
             else:
-                task.time_ms = int(task.time_ms / 1 / 5)
+                task.time_ms = int(task.time_ms / 1 / 50)
 
             while task.time_ms >= 300000:
                 task.time_ms = int(task.time_ms / 2)
