@@ -26,7 +26,7 @@ class HighCpuAndMemoryWorkloadGenerator(WorkloadGenerator):
         if first_2:
             tasks = self._generate_general_tasks(job_dict, 2)
         else:
-            tasks = self._generate_general_tasks(job_dict, random.randint(6,15))
+            tasks = self._generate_general_tasks(job_dict)
 
         tasks = self._post_process_tasks(tasks)
         tasks.sort(key=lambda t: t['startTime'])
@@ -35,14 +35,20 @@ class HighCpuAndMemoryWorkloadGenerator(WorkloadGenerator):
         for t in tasks:
             t['startTime'] = int((t['startTime'] - min_start_time) * 8 + self.prev_job_last_start_time)
 
+        print('job name: ', ('job-' + str(self.job_count)))
+        print('next job start time: ', self.prev_job_last_start_time)
+        print('job contains task number: ', len(tasks))
+        print('task total number: ', self.task_count)
+        print('')
         self.prev_job_last_start_time = max([t['startTime'] for t in tasks]) + self.poisson_dist[self.job_count]
-        print('job start time: ', self.prev_job_last_start_time)
+
         return tasks
 
     def _post_process_tasks(self, tasks):
         cloud_task_cnt = 0
         edge1_task_cnt = 0
         for i, task in enumerate(tasks):
+            task.job_tasknum = 'n' + str(len(tasks))
             if task.node_type == 'cloud':
                 if cloud_task_cnt % 2 == 0:
                     # Memory

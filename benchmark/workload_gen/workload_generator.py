@@ -2,18 +2,17 @@ import random
 import typing
 
 import yaml
+import math
 
 from common import consts
-from common.utils.json import read_json_file
+from common.utils.json import read_sql_file
 from .task import Task
 
 
 class WorkloadGenerator(object):
 
-    ALIBABA_TRACE_JOBS_JSON = "templates/alibaba-trace-jobs.json"
-
     def __init__(self, task_types: list):
-        self.trace_data = read_json_file(WorkloadGenerator.ALIBABA_TRACE_JOBS_JSON)
+        self.trace_data = read_sql_file()
         self.job_count = 0
         self.task_count = 0
         self.task_types = task_types
@@ -26,35 +25,31 @@ class WorkloadGenerator(object):
         return random.choice(self.task_types)
 
     def _get_task_parameters(self, task: dict):
-        start_ms = task['container.start.ms']
-        end_ms = task['container.end.ms']
-        cpu = task['cpu']
-        max_cpu = task['maxcpu']
-        ram = task['ram']
-        max_ram = task['maxram']
-        io = task['io']
-        return self._process_task_parameters(start_ms, end_ms, cpu, max_cpu, ram, max_ram, io)
+        start_ms = task[5]
+        end_ms = task[6]
+        cpu = task[10]
+        max_cpu = task[11]
+        ram = task[12]
+        max_ram = task[13]
+        return self._process_task_parameters(start_ms, end_ms, cpu, max_cpu, ram, max_ram)
 
     @staticmethod
     def _process_task_parameters(start_ms, end_ms, cpu, max_cpu, ram, max_ram, io):
         params = {
             'start_ms': start_ms,
             'end_ms': end_ms,
-            'cpu_count': max(1, int(cpu * 16)),
-            'memory_mb': int(ram * 1024 * 32),
-            'time_ms': int((end_ms - start_ms) * max_cpu * 100),
-            'send_size_mb': int(random.random() * 0.0),
-            'write_size_mb': int(io * 1024 * 0.0),
-            'request_cpu': cpu * 16,
-            'limit_cpu': max_cpu * 16,
-            'request_mem_mb': int(ram * 1024 * 32),
-            'limit_mem_mb': int(max_ram * 1024 * 32),
+            'cpu_count': max(1, math.ceil(max_cpu/100)),
+            'memory_mb': int(ram * 1024),
+            'time_ms': int((end_ms - start_ms) * 1000),
+            'request_cpu': float(cpu/100),
+            'limit_cpu': float(max_cpu/100),
+            'request_mem_mb': int(ram * 1024),
+            'limit_mem_mb': int(max_ram * 1024),
         }
         return Task(**params)
 
     def _job_num(self):
         return len(self.trace_data)
-        # return random.randint(10, len(self.trace_data))
 
     def _generate_job(self) -> list:
         pass
@@ -63,14 +58,14 @@ class WorkloadGenerator(object):
         jobs = []
         job_num = self._job_num()
         for _ in range(job_num):
-            print(self.task_count)
-            if self.task_count <= 150:
+            if self.job_count <= 15:
+                print('job count: ',self.job_count)
                 job = self._generate_job()
                 jobs.append(job)
                 self.job_count += 1
         return jobs
 
-    def _generate_general_tasks(self, job_dict: dict, first_n: int = 30) -> list:
+    def _generate_general_tasks(self, job_dict: dict, first_n: int = 12) -> list:
         task_dict = job_dict['job.tasks']
         tasks = []
 
@@ -79,14 +74,13 @@ class WorkloadGenerator(object):
                 break
 
             task = self._get_task_parameters(task)
-            if i == 0:
+            if i % 3 == 0:
                 task_type = 'cloud'
-            elif i == 1:
+            elif i % 3 == 1:
                 task_type = 'edge1'
-            elif i == 2 and len(self.task_types) == 3:
+            elif i % 3 == 2 and len(self.task_types) == 3:
                 task_type = 'edge2'
-            else:
-                task_type = self._task_type()
+
             task.node_type = task_type
 
             task.job_name = 'job-' + str(self.job_count)
@@ -135,6 +129,7 @@ def build_task_dict(task: Task):
     s = WORKLOAD_POD_TEMPLATE \
         .replace('$NAME', task.name) \
         .replace('$JOB_NAME', task.job_name) \
+        .replace('$JOB_TASKNUM', task.job_tasknum) \
         .replace('$TASK_TYPE', task.task_type) \
         .replace('$SCHEDULER_NAME', scheduler_name) \
         .replace('$CONTAINER_IMAGE', task.container_image) \

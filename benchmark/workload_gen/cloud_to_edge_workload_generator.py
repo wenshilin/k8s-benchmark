@@ -26,7 +26,7 @@ class Cloud2EdgeWorkloadGenerator(WorkloadGenerator):
         if first_2:
             tasks = self._generate_general_tasks(job_dict, 2)
         else:
-            tasks = self._generate_general_tasks(job_dict, random.randint(6,15))
+            tasks = self._generate_general_tasks(job_dict)
 
         tasks = self._post_process_tasks(tasks)
         tasks.sort(key=lambda t: t['startTime'])
@@ -34,10 +34,9 @@ class Cloud2EdgeWorkloadGenerator(WorkloadGenerator):
 
         for t in tasks:
             t['startTime'] = int((t['startTime'] - min_start_time) * 8 + self.prev_job_last_start_time)
-            #t['pod']['metadata']['jobTaskNumber'] = str('n')+str(len(tasks))
 
         print('job name: ',('job-' + str(self.job_count)))
-        print('job start time: ', self.prev_job_last_start_time)
+        print('next job start time: ', self.prev_job_last_start_time)
         print('job contains task number: ',len(tasks))
         print('task total number: ', self.task_count)
         print('')

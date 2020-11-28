@@ -58,7 +58,6 @@ class WorkloadGenerator(object):
         jobs = []
         job_num = self._job_num()
         for _ in range(job_num):
-            print(self.job_count)
             if self.job_count <= 13:
                 print("job count: ", self.job_count)
                 job = self._generate_job()
@@ -98,11 +97,6 @@ class WorkloadGenerator(object):
             task.memory_mb = task.memory_mb + 10
             task.limit_mem_mb = task.limit_mem_mb + 50
             task.request_mem_mb = task.request_mem_mb
-
-            #need_mem_mb = task.memory_mb + 80
-            #task.memory_mb = need_mem_mb + 50
-            #task.limit_mem_mb = need_mem_mb + 150
-            #task.request_mem_mb = need_mem_mb
 
             # CPU process --- edge-cloud-edge
             if task.node_type == 'cloud':

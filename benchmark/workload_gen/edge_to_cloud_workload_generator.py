@@ -26,7 +26,7 @@ class Edge2CloudWorkloadGenerator(WorkloadGenerator):
         if first_2:
             tasks = self._generate_general_tasks(job_dict, 2)
         else:
-            tasks = self._generate_general_tasks(job_dict, 12)
+            tasks = self._generate_general_tasks(job_dict)
 
         tasks = self._post_process_tasks(tasks)
         tasks.sort(key=lambda t: t['startTime'])
@@ -38,8 +38,13 @@ class Edge2CloudWorkloadGenerator(WorkloadGenerator):
             #else:
             #   t['startTime'] = int((t['startTime'] - min_start_time) * 8 + self.poisson_dist1[i] + self.prev_job_last_start_time)
 
+        print('job name: ', ('job-' + str(self.job_count)))
+        print('next job start time: ', self.prev_job_last_start_time)
+        print('job contains task number: ', len(tasks))
+        print('task total number: ', self.task_count)
+        print('')
         self.prev_job_last_start_time = max([t['startTime'] for t in tasks]) + self.poisson_dist[self.job_count]
-        print('next job start time: ',self.prev_job_last_start_time)
+
         return tasks
 
     def _post_process_tasks(self, tasks):
