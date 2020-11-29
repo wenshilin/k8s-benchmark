@@ -18,7 +18,7 @@ class WorkloadGenTest(TestCase):
         )
         self.now = ''
 
-        # 随机种子设置，确定每次task个数
+        # 随机种子设置，确定每次job,task个数
         random.seed(1)
 
     def test_generate_workload(self):
