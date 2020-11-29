@@ -21,31 +21,6 @@ class WorkloadGenTest(TestCase):
         # 随机种子设置，确定每次task个数
         random.seed(1)
 
-    def test_trace_data(self):
-        data = read_sql_file()
-        print('job cnt:', len(data))
-        print('job tasks:', [len(job['job.tasks']) for job in data])
-
-        running_time_s = []
-        start_time_ms = []
-        cpu, max_cpu, ram, max_ram = [], [], [], []
-        for job in data:
-            for task in job['job.tasks']:
-                # print(task)
-                running_time_s.append(int(task[6]) - int(task[5]))
-                start_time_ms.append(int(task[5]))
-                cpu.append(float(task[10] / 100))
-                max_cpu.append(float(task[11] / 100))
-                ram.append(int(task[12] * 1024))
-                max_ram.append(int(task[13] * 1024))
-
-        print("-----------------------------------------------------------------------")
-        print('task avg running time(s): ', avg(running_time_s), ', max: ', max(running_time_s), ', min:',min(running_time_s))
-        print('task avg cpu(core): ', avg(cpu), ', max: ', max(cpu), ', min: ', min(cpu))
-        print('task avg max_cpu(core): ', avg(max_cpu), ', max: ', max(max_cpu), ', min: ', min(max_cpu))
-        print('task avg ram(MB): ', avg(ram), ', max: ', max(ram), ', min: ', min(ram))
-        print('task avg max_ram(MB): ', avg(max_ram), ', max: ', max(max_ram), ', min: ', min(max_ram))
-
     def test_generate_workload(self):
         self.now = datetime.datetime.now().strftime('%Y-%m-%d %H-%M-%S')
         #self.dump('云到边', 'cloud_edge')
@@ -79,9 +54,6 @@ class WorkloadGenTest(TestCase):
         for job in pods_dicts:
             for pod in job:
                 pod['pod']['spec']['schedulerName'] = scheduler_name
-
-def avg(data: list):
-    return sum(data) / len(data)
 
 if __name__ == '__main__':
 
