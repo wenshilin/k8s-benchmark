@@ -73,7 +73,6 @@ class SimEnvWorkloadTester(AbstractWorkloadTester):
             done = data['done']
             pods = data['pods']
             pods = munch.munchify(pods)
-            nodes = munch.munchify(data['nodes'])
             current_clock = read_clock(data)
             logging.info(f'current clock {current_clock}')
 
@@ -109,7 +108,7 @@ class SimEnvWorkloadTester(AbstractWorkloadTester):
 
     def write_summary(self, name, pods, nodes):
         now = now_str()
-        self.summarizer.write_summary(pods, nodes, now, name)
+        self.summarizer.write_summary(pods, now, name, nodes)
 
 
 def algorithm_to_index(name: str):
