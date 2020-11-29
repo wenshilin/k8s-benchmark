@@ -14,8 +14,7 @@ class Edge2CloudWorkloadGenerator(WorkloadGenerator):
 
     def __init__(self):
         super().__init__(consts.TASK_TYPES[:2])
-        self.poisson_dist = stats.poisson.rvs(mu=10000, size=20, random_state=1)
-        #self.poisson_dist1 = stats.poisson.rvs(mu=2000, size=20, random_state=1)
+        self.poisson_dist = stats.poisson.rvs(mu=5000, size=20, random_state=1)
 
     def _generate_job(self):
         job_dict = self._random_choose_job()
@@ -27,7 +26,7 @@ class Edge2CloudWorkloadGenerator(WorkloadGenerator):
         if first_2:
             tasks = self._generate_general_tasks(job_dict, 2)
         else:
-            tasks = self._generate_general_tasks(job_dict, random.randint(6,15))
+            tasks = self._generate_general_tasks(job_dict)
 
         tasks = self._post_process_tasks(tasks)
         tasks.sort(key=lambda t: t['startTime'])
@@ -39,35 +38,25 @@ class Edge2CloudWorkloadGenerator(WorkloadGenerator):
             #else:
             #   t['startTime'] = int((t['startTime'] - min_start_time) * 8 + self.poisson_dist1[i] + self.prev_job_last_start_time)
 
+        print('job name: ', ('job-' + str(self.job_count)))
+        print('next job start time: ', self.prev_job_last_start_time)
+        print('job contains task number: ', len(tasks))
+        print('task total number: ', self.task_count)
+        print('')
         self.prev_job_last_start_time = max([t['startTime'] for t in tasks]) + self.poisson_dist[self.job_count]
-        print('job start time: ',self.prev_job_last_start_time)
+
         return tasks
 
     def _post_process_tasks(self, tasks):
-        cloud_task_cnt = 0
-        edge1_task_cnt = 0
-        for i, task in enumerate(tasks):
 
+        for i, task in enumerate(tasks):
+            task.job_tasknum = 'n' + str(len(tasks))
             if task.node_type == 'cloud':
                 # mix
-                task.request_cpu += 3
-                task.limit_cpu += 4
-                task.cpu_count = max(math.ceil(task.request_cpu), math.ceil(task.limit_cpu))
-                if task.cpu_count > 8 or task.limit_cpu > 8 or task.request_cpu > 8:
-                    task.cpu_count = 8
-                    task.limit_cpu = 8
-                    task.request_cpu = 7
                 task.task_type = 'mix'
 
             elif task.node_type == 'edge1':
                 # mix
-                task.request_cpu += 1
-                task.limit_cpu += 2
-                task.cpu_count = max(math.ceil(task.request_cpu), math.ceil(task.limit_cpu))
-                if task.cpu_count > 2 or task.limit_cpu > 2 or task.request_cpu > 2:
-                    task.cpu_count = 2
-                    task.limit_cpu = 2
-                    task.request_cpu = 1
                 task.task_type = 'mix'
 
         tasks = self._build_dicts(tasks)

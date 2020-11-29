@@ -26,7 +26,7 @@ class Cloud2EdgeWorkloadGenerator(WorkloadGenerator):
         if first_2:
             tasks = self._generate_general_tasks(job_dict, 2)
         else:
-            tasks = self._generate_general_tasks(job_dict, random.randint(6,15))
+            tasks = self._generate_general_tasks(job_dict)
 
         tasks = self._post_process_tasks(tasks)
         tasks.sort(key=lambda t: t['startTime'])
@@ -34,10 +34,9 @@ class Cloud2EdgeWorkloadGenerator(WorkloadGenerator):
 
         for t in tasks:
             t['startTime'] = int((t['startTime'] - min_start_time) * 8 + self.prev_job_last_start_time)
-            #t['pod']['metadata']['jobTaskNumber'] = str('n')+str(len(tasks))
 
         print('job name: ',('job-' + str(self.job_count)))
-        print('job start time: ', self.prev_job_last_start_time)
+        print('next job start time: ', self.prev_job_last_start_time)
         print('job contains task number: ',len(tasks))
         print('task total number: ', self.task_count)
         print('')
@@ -50,8 +49,8 @@ class Cloud2EdgeWorkloadGenerator(WorkloadGenerator):
             task.job_tasknum = 'n' + str(len(tasks))
             if task.node_type == 'cloud':
                 # CPU
-                task.request_cpu += 3
-                task.limit_cpu += 4
+                task.request_cpu += 2
+                task.limit_cpu += 3
                 task.cpu_count = max(math.ceil(task.request_cpu), math.ceil(task.limit_cpu))
                 if task.cpu_count > 8 or task.limit_cpu > 8 or task.request_cpu > 8:
                     task.cpu_count = 8
@@ -62,8 +61,8 @@ class Cloud2EdgeWorkloadGenerator(WorkloadGenerator):
 
             elif task.node_type == 'edge1':
                 # CPU
-                task.request_cpu += 1
-                task.limit_cpu += 2
+                #task.request_cpu += 1
+                #task.limit_cpu += 2
                 task.cpu_count = max(math.ceil(task.request_cpu), math.ceil(task.limit_cpu))
                 if task.cpu_count > 2 or task.limit_cpu > 2 or task.request_cpu > 2:
                     task.cpu_count = 2

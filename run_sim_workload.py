@@ -21,7 +21,7 @@ if __name__ == '__main__':
         # 负载生成时间/负载所在文件夹
         workload_generated_time='2020-11-08 19-30-02',
         # 需要运行的算法名称
-        scheduling_algorithms=['ep', ],
+        scheduling_algorithms=['ep', 'lrp', 'mrp', 'bra', 'rlp'],
         # 重复运行的次数，当前为重复运行一种算法repeat_times之后再运行下一算法
         repeat_times=1,
         # 仿真环境服务端端口

@@ -4,7 +4,11 @@ import time
 from typing import List
 
 import kubernetes
-from torch.utils.tensorboard import SummaryWriter
+
+try:
+    from tensorboardX import SummaryWriter
+except ImportError:
+    from torch.utils.tensorboard import SummaryWriter
 
 from common.kube_info.cache.pod_cache import create_pod_cache_and_start_listening
 from common.kube_info.jct_caculation import calculate_job_complete_times
@@ -90,4 +94,4 @@ class RealEnvWorkloadTester(AbstractWorkloadTester):
 
     def write_summary(self, name, pods, nodes):
         now = now_str()
-        self.summarizer.write_summary(pods, now, name, nodes)
+        self.summarizer.write_summary(pods, nodes, now, name)
