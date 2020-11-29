@@ -81,7 +81,6 @@ class WorkloadGenTest(TestCase):
             for pod in job:
                 pod['pod']['spec']['schedulerName'] = scheduler_name
 
-
 def avg(data: list):
     return sum(data) / len(data)
 
