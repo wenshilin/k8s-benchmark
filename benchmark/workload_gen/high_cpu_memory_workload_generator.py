@@ -52,8 +52,8 @@ class HighCpuAndMemoryWorkloadGenerator(WorkloadGenerator):
             if task.node_type == 'cloud':
                 if cloud_task_cnt % 2 == 0:
                     # Memory
-                    task.request_mem_mb += 4096
-                    task.limit_mem_mb += 4096
+                    task.request_mem_mb += 2048
+                    task.limit_mem_mb += 3072
                     task.memory_mb = max(int(task.request_mem_mb), int(task.limit_mem_mb))
                     if (task.limit_mem_mb > 7700 or task.memory_mb > 7700 or task.request_mem_mb > 7700):
                         task.limit_mem_mb = 7700
@@ -62,8 +62,8 @@ class HighCpuAndMemoryWorkloadGenerator(WorkloadGenerator):
                     task.task_type = 'memory'
                 else:
                     # CPU
-                    task.request_cpu += 3
-                    task.limit_cpu += 4
+                    task.request_cpu += 2
+                    task.limit_cpu += 3
                     task.cpu_count = max(math.ceil(task.request_cpu), math.ceil(task.limit_cpu))
                     if task.cpu_count > 8 or task.limit_cpu > 8 or task.request_cpu > 8:
                         task.cpu_count = 8
@@ -76,7 +76,7 @@ class HighCpuAndMemoryWorkloadGenerator(WorkloadGenerator):
                 if edge1_task_cnt % 2 == 0:
                     # Memory
                     task.request_mem_mb += 1024
-                    task.limit_mem_mb += 1024
+                    task.limit_mem_mb += 1536
                     task.memory_mb = max(int(task.request_mem_mb), int(task.limit_mem_mb))
                     if (task.limit_mem_mb > 1700 or task.memory_mb > 1700 or task.request_mem_mb > 1700):
                         task.limit_mem_mb = 1700
@@ -85,8 +85,8 @@ class HighCpuAndMemoryWorkloadGenerator(WorkloadGenerator):
                     task.task_type = 'memory'
                 else:
                     # CPU
-                    task.request_cpu += 1
-                    task.limit_cpu += 2
+                    #task.request_cpu += 1
+                    #task.limit_cpu += 2
                     task.cpu_count = max(math.ceil(task.request_cpu), math.ceil(task.limit_cpu))
                     if task.cpu_count > 2 or task.limit_cpu > 2 or task.request_cpu > 2:
                         task.cpu_count = 2

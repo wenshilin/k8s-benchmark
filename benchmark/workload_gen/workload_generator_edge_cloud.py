@@ -94,8 +94,8 @@ class WorkloadGenerator(object):
     def _build_dicts(self, tasks: typing.List[Task]) -> typing.List[dict]:
         for i, task in enumerate(tasks):
             # To solve OOMKilled
-            task.memory_mb = task.memory_mb + 10
-            task.limit_mem_mb = task.limit_mem_mb + 50
+            task.memory_mb = task.memory_mb + 50
+            task.limit_mem_mb = task.limit_mem_mb + 100
             task.request_mem_mb = task.request_mem_mb
 
             # CPU process --- edge-cloud-edge
