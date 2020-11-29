@@ -1,6 +1,7 @@
 import abc
 import logging
 from typing import List
+import time
 
 
 class AbstractWorkloadTester(object):
@@ -22,6 +23,11 @@ class AbstractWorkloadTester(object):
         logging.info(f'workload is generated at {self.workload_generated_time}')
         logging.info(f'attempts to run tests in order: {tests}')
         self.run_tests(tests)
+        #for test in tests:
+        #    start1 = time.time()
+        #    self.run_tests(test)
+        #    end1 = time.time()
+        #    print("Each running time: %s seconds" % (end1 - start1))
 
     @abc.abstractmethod
     def run_tests(self, tests):

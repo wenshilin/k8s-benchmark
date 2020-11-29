@@ -58,14 +58,14 @@ class WorkloadGenerator(object):
         jobs = []
         job_num = self._job_num()
         for _ in range(job_num):
-            if self.job_count <= 15:
+            if self.job_count <= 12:
                 print("job count: ", self.job_count)
                 job = self._generate_job()
                 jobs.append(job)
                 self.job_count += 1
         return jobs
 
-    def _generate_general_tasks(self, job_dict: dict, first_n: int = 12) -> list:
+    def _generate_general_tasks(self, job_dict: dict, first_n: int = 10) -> list:
         task_dict = job_dict['job.tasks']
         tasks = []
 
@@ -94,18 +94,18 @@ class WorkloadGenerator(object):
     def _build_dicts(self, tasks: typing.List[Task]) -> typing.List[dict]:
         for i, task in enumerate(tasks):
             # To solve OOMKilled
-            need_mem_mb = task.write_size_mb + task.memory_mb + 10
+            need_mem_mb = task.memory_mb
             task.memory_mb = need_mem_mb
             task.limit_mem_mb = need_mem_mb + 50
             task.request_mem_mb = need_mem_mb
 
             # Reduces working time ---cloud-edge
             if task.limit_cpu > 1:
-                task.time_ms = int(task.time_ms/task.limit_cpu)
+                task.time_ms = int(task.time_ms/task.limit_cpu*5)
             else:
-                task.time_ms = int(task.time_ms / 1)
+                task.time_ms = int(task.time_ms/1*5)
 
-            while task.time_ms >= 100000:
+            while task.time_ms >= 300000:
                 task.time_ms = int(task.time_ms / 2)
 
             # Build dictionary
