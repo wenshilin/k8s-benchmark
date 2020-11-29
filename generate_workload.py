@@ -21,11 +21,16 @@ class WorkloadGenTest(TestCase):
         # 随机种子设置，确定每次job,task个数
         random.seed(1)
 
+    def test_trace_data(self):
+        data =read_sql_file()
+        print('job cnt:', len(data))
+        print('job tasks:', [len(job['job.tasks']) for job in data])
+
     def test_generate_workload(self):
         self.now = datetime.datetime.now().strftime('%Y-%m-%d %H-%M-%S')
         #self.dump('云到边', 'cloud_edge')
-        #self.dump('边到云', 'edge_cloud')
-        self.dump('边到云到边', 'edge_cloud_edge')
+        self.dump('边到云', 'edge_cloud')
+        #self.dump('边到云到边', 'edge_cloud_edge')
         #self.dump('高Cpu和Memory', 'high_cpu_memory')
 
     def dump(self, name: str,  workload_type: str):
