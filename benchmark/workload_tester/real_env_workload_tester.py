@@ -58,7 +58,6 @@ class RealEnvWorkloadTester(AbstractWorkloadTester):
             save_dir = f'results/tensorboard/{now_str()}-real'
             os.makedirs(save_dir, exist_ok=True)
             summary_writer = SummaryWriter(save_dir)
-            self.reward_builder.reset()
             self.start(jobs)
             self.wait_until_all_job_done(summary_writer)
             self.summarizer.write_summary(name)
@@ -79,6 +78,7 @@ class RealEnvWorkloadTester(AbstractWorkloadTester):
         summary_writer.add_scalar('sum_reward', sum_reward, 0)
 
     def _get_reward(self) -> float:
+        self.reward_builder.reset()
         finished_pods = self.informer.get_finished_pods()
         self.reward_builder.pods_finished(finished_pods)
         all_pods = self.informer.get_pods_objects()
