@@ -18,6 +18,7 @@ from common.summarizing.kube_evaluation_summarizer import KubeEvaluationSummariz
 from common.utils import kube as utils
 from common.utils import now_str
 from common.utils.json_http_client import JsonHttpClient
+from common.kube_info.sim_kube_informer import SimKubeInformer
 from .abstract_workload_tester import AbstractWorkloadTester
 
 
@@ -35,7 +36,8 @@ class SimEnvWorkloadTester(AbstractWorkloadTester):
 
         self.action = 0
         self.client = JsonHttpClient(base_url)
-        self.summarizer = KubeEvaluationSummarizer()
+        self.informer = SimKubeInformer()
+        self.summarizer = KubeEvaluationSummarizer(self.informer)
         self.reward_builder = RewardBuilder()
         self.last_clock = None
 
@@ -58,13 +60,12 @@ class SimEnvWorkloadTester(AbstractWorkloadTester):
             logging.info(f'current action index {self.action}')
             self.reward_builder.reset()
             self.start(jobs)
-            pods, nodes = self.wait_until_all_job_done(summary_writer, idx)
-            self.write_summary(name, pods, nodes)
+            self.wait_until_all_job_done(summary_writer, idx)
+            self.summarizer.write_summary(name)
 
     def wait_until_all_job_done(self, summary_writer, test_idx):
         done = False
         sum_reward = 0
-        pods, nodes = None, None
         t = 0
 
         while True:
@@ -81,6 +82,10 @@ class SimEnvWorkloadTester(AbstractWorkloadTester):
             current_clock = read_clock(data)
             logging.info(f'current clock {current_clock}')
 
+            self.informer.pods = pods
+            self.informer.nodes = nodes
+            self.informer.clock = current_clock
+
             finished_pods = self.finished_pods(pods, self.last_clock, current_clock)
             reward = self._get_reward(finished_pods, pods)
             summary_writer.add_scalar('reward', reward, t)
@@ -90,7 +95,6 @@ class SimEnvWorkloadTester(AbstractWorkloadTester):
 
         summary_writer.add_scalar('sum_reward', sum_reward, test_idx)
         logging.info(f'simulation finished at time step {t}')
-        return pods, nodes
 
     def _get_reward(self, pods_finished_at_this_timestamp, all_pods) -> float:
         self.reward_builder.pods_finished(pods_finished_at_this_timestamp)
@@ -110,10 +114,6 @@ class SimEnvWorkloadTester(AbstractWorkloadTester):
         })
         logging.debug(data)
         self.last_clock = read_clock(data)
-
-    def write_summary(self, name, pods, nodes):
-        now = now_str()
-        self.summarizer.write_summary(pods, nodes, now, name)
 
 
 def algorithm_to_index(name: str):
