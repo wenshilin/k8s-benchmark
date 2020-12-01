@@ -19,6 +19,7 @@ from common.utils import kube as utils
 from common.utils import now_str, load_from_file
 from common.workload.workload_runner import WorkloadRunner
 from common.kube_info.real_kube_informer import RealKubeInformer
+from common.run_status import RunStatus
 from .abstract_workload_tester import AbstractWorkloadTester
 
 
@@ -42,8 +43,8 @@ class RealEnvWorkloadTester(AbstractWorkloadTester):
             kube_client=client,
             metrics_server=metrics_server
         )
-        self.summarizer = KubeEvaluationSummarizer(self.informer)
 
+        self.stat = RunStatus()
         self.workload_runner = WorkloadRunner(client, dry_run=False)
         self.reward_builder = RewardBuilder()
 
@@ -60,22 +61,24 @@ class RealEnvWorkloadTester(AbstractWorkloadTester):
             summary_writer = SummaryWriter(save_dir)
             self.start(jobs)
             self.wait_until_all_job_done(summary_writer)
-            self.summarizer.write_summary(name)
+            summarizer = KubeEvaluationSummarizer(self.informer, summary_writer, self.stat)
+            summarizer.write_summary(name)
 
     def wait_until_all_job_done(self, summary_writer):
         all_pod_finished = False
-        t = 0
-        sum_reward = 0
+        self.stat.episode_reward = 0
+        self.stat.timestep = 0
+
         while not all_pod_finished or not self.workload_runner.has_done():
-            t += 1
+            self.stat.timestep += 1
             reward = self._get_reward()
-            sum_reward += reward
-            summary_writer.add_scalar('reward', reward, t)
+            self.stat.episode_reward += reward
+            summary_writer.add_scalar('reward', reward, self.stat.timestep)
             time.sleep(10)
             pods = self.informer.get_node_objects()
             all_pod_finished = all(map(utils.pod_finished, pods))
 
-        summary_writer.add_scalar('sum_reward', sum_reward, 0)
+        summary_writer.add_scalar('sum_reward', self.stat.episode_reward, 0)
 
     def _get_reward(self) -> float:
         self.reward_builder.reset()
