@@ -75,7 +75,7 @@ class RealEnvWorkloadTester(AbstractWorkloadTester):
             self.stat.episode_reward += reward
             summary_writer.add_scalar('reward', reward, self.stat.timestep)
             time.sleep(10)
-            pods = self.informer.get_node_objects()
+            pods = self.informer.get_pods_objects()
             all_pod_finished = all(map(utils.pod_finished, pods))
 
         summary_writer.add_scalar('sum_reward', self.stat.episode_reward, 0)
