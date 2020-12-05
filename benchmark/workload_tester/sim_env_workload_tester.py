@@ -15,6 +15,7 @@ from common.utils import kube as utils
 from common.utils import now_str
 from common.utils.json_http_client import JsonHttpClient
 from common.kube_info.sim_kube_informer import SimKubeInformer
+from common.run_status import RunStatus
 from .abstract_workload_tester import AbstractWorkloadTester
 
 
@@ -33,7 +34,7 @@ class SimEnvWorkloadTester(AbstractWorkloadTester):
         self.action = 0
         self.client = JsonHttpClient(base_url)
         self.informer = SimKubeInformer()
-        self.summarizer = KubeEvaluationSummarizer(self.informer)
+        self.stat = RunStatus()
         self.reward_builder = RewardBuilder()
         self.last_clock = None
 
@@ -51,17 +52,18 @@ class SimEnvWorkloadTester(AbstractWorkloadTester):
 
             os.makedirs(save_dir, exist_ok=True)
             summary_writer = SummaryWriter(save_dir)
-
             self.action = algorithm_to_index(name) + 1
             logging.info(f'current action index {self.action}')
             self.start(jobs)
             self.wait_until_all_job_done(summary_writer, idx)
-            self.summarizer.write_summary(name)
+
+            summarizer = KubeEvaluationSummarizer(self.informer, summary_writer, self.stat)
+            summarizer.write_summary(name)
 
     def wait_until_all_job_done(self, summary_writer, test_idx):
         done = False
-        sum_reward = 0
-        t = 0
+        self.stat.episode_reward = 0
+        self.stat.timestep = 0
 
         while not done:
             data = self.client.get_json('/step', json={
@@ -77,13 +79,13 @@ class SimEnvWorkloadTester(AbstractWorkloadTester):
             pods = self.informer.get_pods_objects()
             finished_pods = self.finished_pods(pods, self.last_clock, current_clock)
             reward = self._get_reward(finished_pods, pods)
-            summary_writer.add_scalar('reward', reward, t)
-            sum_reward += reward
-            t += 1
+            summary_writer.add_scalar('reward', reward, self.stat.timestep)
+            self.stat.episode_reward += reward
+            self.stat.timestep += 1
             self.last_clock = current_clock
 
-        summary_writer.add_scalar('sum_reward', sum_reward, test_idx)
-        logging.info(f'simulation finished at time step {t}')
+        summary_writer.add_scalar('sum_reward', self.stat.episode_reward, test_idx)
+        logging.info(f'simulation finished at time step {self.stat.timestep}')
 
     def _get_reward(self, pods_finished_at_this_timestamp, all_pods) -> float:
         self.reward_builder.reset()
