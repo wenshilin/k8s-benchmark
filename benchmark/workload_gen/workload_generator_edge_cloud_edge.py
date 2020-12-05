@@ -58,7 +58,7 @@ class WorkloadGenerator(object):
         jobs = []
         job_num = self._job_num()
         for _ in range(job_num):
-            if self.job_count <= 10:
+            if self.job_count <= 15:
                 print("job count: ", self.job_count)
                 job = self._generate_job()
                 jobs.append(job)

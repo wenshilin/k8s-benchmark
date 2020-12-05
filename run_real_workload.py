@@ -20,6 +20,7 @@ if __name__ == '__main__':
     workload_tester = RealEnvWorkloadTester(
         # 负载类型
         workload_type='边到云',
+        workload_load_directory='results/workloads',
         # 负载生成时间/负载所在文件夹
         workload_generated_time='2020-11-08 19-30-02',
         # 需要运行的算法名称
