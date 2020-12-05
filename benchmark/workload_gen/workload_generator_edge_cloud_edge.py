@@ -63,6 +63,8 @@ class WorkloadGenerator(object):
                 job = self._generate_job()
                 jobs.append(job)
                 self.job_count += 1
+            else:
+                break
         return jobs
 
     def _generate_general_tasks(self, job_dict: dict, first_n: int = 12) -> list:
