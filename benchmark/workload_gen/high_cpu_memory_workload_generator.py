@@ -26,7 +26,7 @@ class HighCpuAndMemoryWorkloadGenerator(WorkloadGenerator):
         if first_2:
             tasks = self._generate_general_tasks(job_dict, 2)
         else:
-            tasks = self._generate_general_tasks(job_dict,self.job_tasknumber)
+            tasks = self._generate_general_tasks(job_dict,self.jobconsist_tasknumber)
 
         tasks = self._post_process_tasks(tasks)
         tasks.sort(key=lambda t: t['startTime'])

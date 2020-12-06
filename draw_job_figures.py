@@ -6,7 +6,7 @@ from benchmark.job_data_reading import read_data_from_directories
 
 def main():
     # 数据的根目录
-    root_dir = 'results/jobs'
+    root_dir = 'results/jobs-2'
 
     dirs = list_dir(root_dir)
     summary, jobs = read_data_from_directories(dirs)
@@ -16,15 +16,15 @@ def main():
 
     os.makedirs('results/figures', exist_ok=True)
     draw_makespan(summary, algorithm_names,
-                  title='Cloud-Edge',
+                  title='Edge-Cloud-Edge',
                   save_filename='makespan.jpg',
                   x_label='Different scheduling algorithms')
     draw_jct_box(summary, algorithm_names,
-                 title='Cloud-Edge',
+                 title='Edge-Cloud-Edge',
                  save_filename='jct_box.jpg',
                  x_label='Different scheduling algorithms')
     draw_cdf(jobs, algorithm_names,
-             title='Cloud-Edge',
+             title='Edge-Cloud-Edge',
              save_filename='CDF.jpg',
              x_label='Job complete time(s)')
 
