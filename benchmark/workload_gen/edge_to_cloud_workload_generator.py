@@ -57,12 +57,12 @@ class Edge2CloudWorkloadGenerator(WorkloadGenerator):
 
                 # Memory
                 task.request_mem_mb += 2048
-                task.limit_mem_mb += 3072
+                task.limit_mem_mb += 2548
                 task.memory_mb = max(int(task.request_mem_mb), int(task.limit_mem_mb))
-                if (task.limit_mem_mb > 7700 or task.memory_mb > 7700 or task.request_mem_mb > 7700):
-                    task.limit_mem_mb = 7700
-                    task.request_mem_mb = 7700
-                    task.memory_mb = 7700
+                if (task.limit_mem_mb > 3700 or task.memory_mb > 3700 or task.request_mem_mb > 3700):
+                    task.limit_mem_mb = 3700
+                    task.request_mem_mb = 3700
+                    task.memory_mb = 3700
                 task.task_type = 'memory'
 
             elif task.node_type == 'edge1':
