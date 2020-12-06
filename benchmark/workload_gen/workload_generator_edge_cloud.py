@@ -12,7 +12,13 @@ from .task import Task
 class WorkloadGenerator(object):
 
     def __init__(self, task_types: list):
-        self.trace_data = read_sql_file(0,2)
+        # set some parameters
+        self.job_number = 10
+        self.tracetimeid = 0
+        self.workloadtypeid = 2
+        self.job_tasknumber = 12
+
+        self.trace_data = read_sql_file(self.tracetimeid, self.workloadtypeid, self.job_tasknumber)
         self.job_count = 0
         self.task_count = 0
         self.task_types = task_types
@@ -58,7 +64,7 @@ class WorkloadGenerator(object):
         jobs = []
         job_num = self._job_num()
         for _ in range(job_num):
-            if self.job_count <= 15:
+            if self.job_count <= self.job_number:
                 print("job count: ", self.job_count)
                 job = self._generate_job()
                 jobs.append(job)

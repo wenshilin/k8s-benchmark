@@ -25,7 +25,7 @@ class Edge2Cloud2EdgeWorkloadGenerator(WorkloadGenerator):
         if first_3:
             tasks = self._generate_general_tasks(job_dict, 3)
         else:
-            tasks = self._generate_general_tasks(job_dict)
+            tasks = self._generate_general_tasks(job_dict, self.job_tasknumber)
 
         tasks = self._post_process_tasks(tasks)
         tasks.sort(key=lambda t: t['startTime'])

@@ -12,13 +12,17 @@ from .task import Task
 class WorkloadGenerator(object):
 
     def __init__(self, task_types: list):
-        self.trace_data = read_sql_file(0,4,12)
+        # set some parameters
+        self.job_number = 15
+        self.tracetimeid = 1
+        self.workloadtypeid = 4
+        self.job_tasknumber = 12
+
+        self.trace_data = read_sql_file(self.tracetimeid,self.workloadtypeid,self.job_tasknumber)
         self.job_count = 0
         self.task_count = 0
         self.task_types = task_types
         self.prev_job_last_start_time = 0
-        self.job_number = 10
-        self.job_tasknumber = 12
 
     def _random_choose_job(self):
         return random.choice(self.trace_data)
@@ -102,6 +106,16 @@ class WorkloadGenerator(object):
             task.memory_mb = task.memory_mb + 10
             task.limit_mem_mb = task.limit_mem_mb + 50
             task.request_mem_mb = task.request_mem_mb
+
+            # CPU process --- high_cpu_memory
+            if task.node_type == 'cloud':
+                task.limit_cpu = min(4, task.limit_cpu)
+                task.request_cpu = min(4, task.request_cpu)
+                task.cpu_count = min(4,max(1, math.ceil(task.limit_cpu)))
+            elif task.node_type == 'edge1':
+                task.limit_cpu = min(2, task.limit_cpu)
+                task.request_cpu = min(2, task.request_cpu)
+                task.cpu_count = min(2,max(1, math.ceil(task.limit_cpu)))
 
             # Reduces working time
             if task.limit_cpu > 1:
