@@ -6,7 +6,7 @@ from benchmark.job_data_reading import read_data_from_directories
 
 def main():
     # 数据的根目录
-    root_dir = 'results/cloud-edge/jobs'
+    root_dir = 'results/jobs'
 
     dirs = list_dir(root_dir)
     summary, jobs = read_data_from_directories(dirs)

@@ -73,7 +73,7 @@ class WorkloadGenerator(object):
                 break
         return jobs
 
-    def _generate_general_tasks(self, job_dict: dict, first_n: int = 30) -> list:
+    def _generate_general_tasks(self, job_dict: dict, first_n: int = 100) -> list:
         task_dict = job_dict['job.tasks']
         tasks = []
 

@@ -49,13 +49,13 @@ class Cloud2EdgeWorkloadGenerator(WorkloadGenerator):
             task.job_tasknum = 'n' + str(len(tasks))
             if task.node_type == 'cloud':
                 # CPU
-                task.request_cpu += 2
-                task.limit_cpu += 3
+                task.request_cpu += 1
+                task.limit_cpu += 2
                 task.cpu_count = max(math.ceil(task.request_cpu), math.ceil(task.limit_cpu))
-                if task.cpu_count > 8 or task.limit_cpu > 8 or task.request_cpu > 8:
-                    task.cpu_count = 8
-                    task.limit_cpu = 8
-                    task.request_cpu = 7
+                if task.cpu_count >= 4 or task.limit_cpu >= 4 or task.request_cpu >= 4:
+                    task.cpu_count = 4
+                    task.limit_cpu = 4
+                    task.request_cpu = 4
 
                 task.task_type = 'cpu'
 
@@ -64,10 +64,10 @@ class Cloud2EdgeWorkloadGenerator(WorkloadGenerator):
                 #task.request_cpu += 1
                 #task.limit_cpu += 2
                 task.cpu_count = max(math.ceil(task.request_cpu), math.ceil(task.limit_cpu))
-                if task.cpu_count > 2 or task.limit_cpu > 2 or task.request_cpu > 2:
+                if task.cpu_count >= 2 or task.limit_cpu >= 2 or task.request_cpu >= 2:
                     task.cpu_count = 2
                     task.limit_cpu = 2
-                    task.request_cpu = 1
+                    task.request_cpu = 2
 
                 task.task_type = 'cpu'
 
