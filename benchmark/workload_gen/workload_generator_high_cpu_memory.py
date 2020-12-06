@@ -16,9 +16,10 @@ class WorkloadGenerator(object):
         self.job_number = 15
         self.tracetimeid = 1
         self.workloadtypeid = 4
-        self.job_tasknumber = 12
+        self.jobconsist_tasknumber = 12
+        self.job_tasknum = 10000
 
-        self.trace_data = read_sql_file(self.tracetimeid,self.workloadtypeid,self.job_tasknumber)
+        self.trace_data = read_sql_file(self.tracetimeid,self.workloadtypeid,self.jobconsist_tasknumber,self.job_tasknum)
         self.job_count = 0
         self.task_count = 0
         self.task_types = task_types
