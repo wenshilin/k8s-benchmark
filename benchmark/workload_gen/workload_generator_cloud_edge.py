@@ -12,12 +12,22 @@ from .task import Task
 class WorkloadGenerator(object):
 
     def __init__(self, task_types: list):
-        # set some parameters
-        self.job_number = 10
+        # ***** set some parameters of generating workloads *****
+
+        # trace time period: 0 -> 0-6h ; 1 -> 6-24h
         self.tracetimeid = 0
-        self.workloadtypeid = 3
+
+        # job_number: 9 -> 0-6h; 6 -> 6-24h
+        self.job_number = 9
+
+        # jobconsist_tasknumber: 12 -> 0-6h; 18 ->6-24h
         self.jobconsist_tasknumber = 12
-        self.job_tasknum = 10000
+
+        # cpu and memory type: 1 -> low cpu, low memory; 2 -> low cpu, high memory; 3 -> high cpu, low memory; 4 -> high cpu, high memory
+        self.workloadtypeid = 1
+
+        # alibabatrace: job_tasknum
+        self.job_tasknum = 0
 
         self.trace_data = read_sql_file(self.tracetimeid, self.workloadtypeid, self.jobconsist_tasknumber,self.job_tasknum)
         self.job_count = 0
