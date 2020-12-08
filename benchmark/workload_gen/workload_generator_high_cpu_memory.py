@@ -17,8 +17,8 @@ class WorkloadGenerator(object):
         # trace time period: 0 -> 0-6h ; 1 -> 6-24h
         self.tracetimeid = 0
 
-        # job_number: 9 -> 0-6h; 6 -> 6-24h
-        self.job_number = 9
+        # job_number: 8 -> 0-6h; 5 -> 6-24h
+        self.job_number = 8
 
         # jobconsist_tasknumber: 12 -> 0-6h; 18 ->6-24h
         self.jobconsist_tasknumber = 12
@@ -27,7 +27,7 @@ class WorkloadGenerator(object):
         self.workloadtypeid = 1
 
         # alibabatrace: job_tasknum
-        self.job_tasknum = 0
+        self.job_tasknum = 10000
 
         self.trace_data = read_sql_file(self.tracetimeid,self.workloadtypeid,self.jobconsist_tasknumber,self.job_tasknum)
         self.job_count = 0
