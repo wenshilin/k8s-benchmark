@@ -13,10 +13,10 @@ class WorkloadGenerator(object):
 
     def __init__(self, task_types: list):
         # set some parameters
-        self.job_number = 15
+        self.job_number = 14
         self.tracetimeid = 1
         self.workloadtypeid = 4
-        self.jobconsist_tasknumber = 12
+        self.jobconsist_tasknumber = 4
         self.job_tasknum = 10000
 
         self.trace_data = read_sql_file(self.tracetimeid, self.workloadtypeid, self.jobconsist_tasknumber,self.job_tasknum)

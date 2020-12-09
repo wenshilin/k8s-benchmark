@@ -17,11 +17,11 @@ class WorkloadGenerator(object):
         # trace time period: 0 -> 0-6h ; 1 -> 6-24h
         self.tracetimeid = 1
 
-        # job_number: 8 -> 0-6h; 5 -> 6-24h
-        self.job_number = 5
+        # job_number: 14 -> 0-6h; 9 -> 6-24h
+        self.job_number = 9
 
-        # jobconsist_tasknumber: 12 -> 0-6h; 18 ->6-24h
-        self.jobconsist_tasknumber = 18
+        # jobconsist_tasknumber: 4 -> 0-6h; 6 ->6-24h
+        self.jobconsist_tasknumber = 6
 
         # cpu and memory type: 1 -> low cpu, low memory; 2 -> low cpu, high memory; 3 -> high cpu, low memory; 4 -> high cpu, high memory
         self.workloadtypeid = 2
