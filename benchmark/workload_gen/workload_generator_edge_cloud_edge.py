@@ -15,21 +15,26 @@ class WorkloadGenerator(object):
         # ***** set some parameters of generating workloads *****
 
         # trace time period: 0 -> 0-6h ; 1 -> 6-24h
-        self.tracetimeid = 1
+        self.tracetimeid = 0
 
-        # job_number: 14 -> 0-6h; 9 -> 6-24h
-        self.job_number = 9
+        # job_number: 17,35 -> 0-6h; 11,23 -> 6-24h
+        self.job_number = 5
 
-        # jobconsist_tasknumber: 4 -> 0-6h; 6 ->6-24h
-        self.jobconsist_tasknumber = 6
+        # jobconsist_tasknumber: 6 -> 0-6h; 9 ->6-24h
+        self.jobconsist_tasknumber = 20
+
+        # default:0, cloud node:1, edge node:2, cloud and edge node:3
+        self.nodenumberid = 0
 
         # cpu and memory type: 1 -> low cpu, low memory; 2 -> low cpu, high memory; 3 -> high cpu, low memory; 4 -> high cpu, high memory
-        self.workloadtypeid = 1
+        self.workloadtypeid = 4
 
         # alibabatrace: job_tasknum
-        self.job_tasknum = 10000
+        self.job_tasknum = 5000
 
         self.trace_data = read_sql_file(self.tracetimeid, self.workloadtypeid, self.jobconsist_tasknumber,self.job_tasknum)
+        print('job cnt:', len(self.trace_data))
+        print('job tasks:', [len(job['job.tasks']) for job in self.trace_data])
         self.job_count = 0
         self.task_count = 0
         self.task_types = task_types
@@ -121,14 +126,14 @@ class WorkloadGenerator(object):
             task.request_mem_mb = task.request_mem_mb
 
             #CPU process --- edge-cloud-edge
-            if task.node_type == 'cloud':
-                task.limit_cpu = min(4,task.limit_cpu)
-                task.request_cpu = min(4,task.request_cpu)
-                task.cpu_count = max(1,math.ceil(task.limit_cpu))
-            elif task.node_type == 'edge1':
-                task.limit_cpu = min(0.5,task.limit_cpu)
-                task.request_cpu = min(0.5,task.request_cpu)
-                task.cpu_count = max(1,math.ceil(task.limit_cpu))
+            #if task.node_type == 'cloud':
+            #    task.limit_cpu = min(4,task.limit_cpu)
+            #    task.request_cpu = min(4,task.request_cpu)
+            #    task.cpu_count = max(1,math.ceil(task.limit_cpu))
+            #elif task.node_type == 'edge1':
+            #    task.limit_cpu = min(0.5,task.limit_cpu)
+            #    task.request_cpu = min(0.5,task.request_cpu)
+            #    task.cpu_count = max(1,math.ceil(task.limit_cpu))
 
             # Reduces working time
             if task.limit_cpu > 1:
