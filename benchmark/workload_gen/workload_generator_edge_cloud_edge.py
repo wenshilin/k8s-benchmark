@@ -21,7 +21,7 @@ class WorkloadGenerator(object):
         self.job_number = 5
 
         # jobconsist_tasknumber: 6 -> 0-6h; 9 ->6-24h
-        self.jobconsist_tasknumber = 20
+        self.jobconsist_tasknumber = 27
 
         # default:0, cloud node:1, edge node:2, cloud and edge node:3
         self.nodenumberid = 0
@@ -30,11 +30,11 @@ class WorkloadGenerator(object):
         self.workloadtypeid = 4
 
         # alibabatrace: job_tasknum
-        self.job_tasknum = 5000
+        self.job_tasknum = 10000
 
         self.trace_data = read_sql_file(self.tracetimeid, self.workloadtypeid, self.jobconsist_tasknumber,self.job_tasknum)
-        print('job cnt:', len(self.trace_data))
-        print('job tasks:', [len(job['job.tasks']) for job in self.trace_data])
+        #print('job cnt:', len(self.trace_data))
+        #print('job tasks:', [len(job['job.tasks']) for job in self.trace_data])
         self.job_count = 0
         self.task_count = 0
         self.task_types = task_types
