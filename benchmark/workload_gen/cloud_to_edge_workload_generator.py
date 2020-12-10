@@ -14,7 +14,7 @@ class Cloud2EdgeWorkloadGenerator(WorkloadGenerator):
 
     def __init__(self):
         super().__init__(consts.TASK_TYPES[:2])
-        self.poisson_dist = stats.poisson.rvs(mu=20000, size=20, random_state=1)
+        self.poisson_dist = stats.poisson.rvs(mu=20000, size=1000, random_state=1)
 
     def _generate_job(self):
         job_dict = self._random_choose_job()
@@ -26,7 +26,7 @@ class Cloud2EdgeWorkloadGenerator(WorkloadGenerator):
         if first_2:
             tasks = self._generate_general_tasks(job_dict, 2)
         else:
-            tasks = self._generate_general_tasks(job_dict)
+            tasks = self._generate_general_tasks(job_dict, self.jobconsist_tasknumber)
 
         tasks = self._post_process_tasks(tasks)
         tasks.sort(key=lambda t: t['startTime'])
@@ -49,13 +49,13 @@ class Cloud2EdgeWorkloadGenerator(WorkloadGenerator):
             task.job_tasknum = 'n' + str(len(tasks))
             if task.node_type == 'cloud':
                 # CPU
-                task.request_cpu += 2
-                task.limit_cpu += 3
+                task.request_cpu += 1
+                task.limit_cpu += 2
                 task.cpu_count = max(math.ceil(task.request_cpu), math.ceil(task.limit_cpu))
-                if task.cpu_count > 8 or task.limit_cpu > 8 or task.request_cpu > 8:
-                    task.cpu_count = 8
-                    task.limit_cpu = 8
-                    task.request_cpu = 7
+                if task.cpu_count >= 4 or task.limit_cpu >= 4 or task.request_cpu >= 4:
+                    task.cpu_count = 4
+                    task.limit_cpu = 4
+                    task.request_cpu = 4
 
                 task.task_type = 'cpu'
 
@@ -64,10 +64,10 @@ class Cloud2EdgeWorkloadGenerator(WorkloadGenerator):
                 #task.request_cpu += 1
                 #task.limit_cpu += 2
                 task.cpu_count = max(math.ceil(task.request_cpu), math.ceil(task.limit_cpu))
-                if task.cpu_count > 2 or task.limit_cpu > 2 or task.request_cpu > 2:
+                if task.cpu_count >= 2 or task.limit_cpu >= 2 or task.request_cpu >= 2:
                     task.cpu_count = 2
                     task.limit_cpu = 2
-                    task.request_cpu = 1
+                    task.request_cpu = 2
 
                 task.task_type = 'cpu'
 

@@ -1,10 +1,6 @@
-import datetime
 import logging
 import os
 from typing import List
-
-import munch
-from dateutil import tz
 
 try:
     from tensorboardX import SummaryWriter
@@ -18,6 +14,8 @@ from common.summarizing.kube_evaluation_summarizer import KubeEvaluationSummariz
 from common.utils import kube as utils
 from common.utils import now_str
 from common.utils.json_http_client import JsonHttpClient
+from common.kube_info.sim_kube_informer import SimKubeInformer
+from common.run_status import RunStatus
 from .abstract_workload_tester import AbstractWorkloadTester
 
 
@@ -35,7 +33,8 @@ class SimEnvWorkloadTester(AbstractWorkloadTester):
 
         self.action = 0
         self.client = JsonHttpClient(base_url)
-        self.summarizer = KubeEvaluationSummarizer()
+        self.informer = SimKubeInformer()
+        self.stat = RunStatus()
         self.reward_builder = RewardBuilder()
         self.last_clock = None
 
@@ -53,46 +52,43 @@ class SimEnvWorkloadTester(AbstractWorkloadTester):
 
             os.makedirs(save_dir, exist_ok=True)
             summary_writer = SummaryWriter(save_dir)
-
             self.action = algorithm_to_index(name) + 1
             logging.info(f'current action index {self.action}')
-            self.reward_builder.reset()
             self.start(jobs)
-            pods, nodes = self.wait_until_all_job_done(summary_writer, idx)
-            self.write_summary(name, pods, nodes)
+            self.wait_until_all_job_done(summary_writer, idx)
+
+            summarizer = KubeEvaluationSummarizer(self.informer, summary_writer, self.stat)
+            summarizer.write_summary(name)
 
     def wait_until_all_job_done(self, summary_writer, test_idx):
         done = False
-        sum_reward = 0
-        pods, nodes = None, None
-        t = 0
+        self.stat.episode_reward = 0
+        self.stat.timestep = 0
 
-        while True:
-            if done:
-                break
+        while not done:
             data = self.client.get_json('/step', json={
                 'action': self.action
             })
             logging.debug(data)
             done = data['done']
-            pods = data['pods']
-            pods = munch.munchify(pods)
-            nodes = munch.munchify(data['nodes'])
-            current_clock = read_clock(data)
+
+            self.informer.load_data(data)
+            current_clock = self.informer.clock
             logging.info(f'current clock {current_clock}')
 
+            pods = self.informer.get_pods_objects()
             finished_pods = self.finished_pods(pods, self.last_clock, current_clock)
             reward = self._get_reward(finished_pods, pods)
-            summary_writer.add_scalar('reward', reward, t)
-            sum_reward += reward
-            t += 1
+            summary_writer.add_scalar('reward', reward, self.stat.timestep)
+            self.stat.episode_reward += reward
+            self.stat.timestep += 1
             self.last_clock = current_clock
 
-        summary_writer.add_scalar('sum_reward', sum_reward, test_idx)
-        logging.info(f'simulation finished at time step {t}')
-        return pods, nodes
+        summary_writer.add_scalar('sum_reward', self.stat.episode_reward, test_idx)
+        logging.info(f'simulation finished at time step {self.stat.timestep}')
 
     def _get_reward(self, pods_finished_at_this_timestamp, all_pods) -> float:
+        self.reward_builder.reset()
         self.reward_builder.pods_finished(pods_finished_at_this_timestamp)
         jct_list = calculate_job_complete_times(pods_finished_at_this_timestamp, all_pods)
         self.reward_builder.jobs_finished(jct_list)
@@ -102,18 +98,15 @@ class SimEnvWorkloadTester(AbstractWorkloadTester):
     def finished_pods(pods, last_clock, current_clock):
         return list(filter(lambda p: utils.is_workload(p) and
                            utils.pod_finished(p) and
-                           last_clock < utils.get_pod_finish_time(p) <= current_clock, pods))
+                           last_clock <= utils.get_pod_finish_time(p) < current_clock, pods))
 
     def start(self, workload):
         data = self.client.get_json('/reset', json={
             'workload': workload
         })
         logging.debug(data)
-        self.last_clock = read_clock(data)
-
-    def write_summary(self, name, pods, nodes):
-        now = now_str()
-        self.summarizer.write_summary(pods, nodes, now, name)
+        self.informer.load_data(data)
+        self.last_clock = self.informer.clock
 
 
 def algorithm_to_index(name: str):
@@ -121,8 +114,3 @@ def algorithm_to_index(name: str):
         if name.split('-')[-1] in action:
             return idx
     raise RuntimeError(f'{name} not found')
-
-
-def read_clock(data):
-    clock_str = data['clock']
-    return datetime.datetime.strptime(clock_str, '%Y-%m-%dT%H:%M:%S%z').astimezone(tz.tzutc()).replace(tzinfo=None)

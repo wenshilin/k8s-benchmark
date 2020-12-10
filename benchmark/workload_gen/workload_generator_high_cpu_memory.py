@@ -12,7 +12,24 @@ from .task import Task
 class WorkloadGenerator(object):
 
     def __init__(self, task_types: list):
-        self.trace_data = read_sql_file()
+        # ***** set some parameters of generating workloads ***** #
+
+        # trace time period: 0 -> 0-6h ; 1 -> 6-24h
+        self.tracetimeid = 0
+
+        # job_number: 14 -> 0-6h; 9 -> 6-24h
+        self.job_number = 9
+
+        # jobconsist_tasknumber: 4 -> 0-6h; 6 ->6-24h
+        self.jobconsist_tasknumber = 6
+
+        # cpu and memory type: 1 -> low cpu, low memory; 2 -> low cpu, high memory; 3 -> high cpu, low memory; 4 -> high cpu, high memory
+        self.workloadtypeid = 1
+
+        # alibabatrace: job_tasknum
+        self.job_tasknum = 10000
+
+        self.trace_data = read_sql_file(self.tracetimeid,self.workloadtypeid,self.jobconsist_tasknumber,self.job_tasknum)
         self.job_count = 0
         self.task_count = 0
         self.task_types = task_types
@@ -59,14 +76,16 @@ class WorkloadGenerator(object):
         jobs = []
         job_num = self._job_num()
         for _ in range(job_num):
-            if self.job_count <= 15:
+            if self.job_count <= self.job_number:
                 print("job count: ", self.job_count)
                 job = self._generate_job()
                 jobs.append(job)
                 self.job_count += 1
+            else:
+                break
         return jobs
 
-    def _generate_general_tasks(self, job_dict: dict, first_n: int = 12) -> list:
+    def _generate_general_tasks(self, job_dict: dict, first_n: int = 100) -> list:
         task_dict = job_dict['job.tasks']
         tasks = []
 
@@ -76,9 +95,9 @@ class WorkloadGenerator(object):
 
             task = self._get_task_parameters(task)
             if i % 2 == 0:
-                task_type = 'cloud'
-            else:
                 task_type = 'edge1'
+            else:
+                task_type = 'cloud'
 
             task.node_type = task_type
 
@@ -95,19 +114,28 @@ class WorkloadGenerator(object):
     def _build_dicts(self, tasks: typing.List[Task]) -> typing.List[dict]:
         for i, task in enumerate(tasks):
             # To solve OOMKilled
-            need_mem_mb = task.write_size_mb + task.memory_mb + 10
-            task.memory_mb = need_mem_mb
-            task.limit_mem_mb = need_mem_mb + 50
-            task.request_mem_mb = need_mem_mb
+            task.memory_mb = task.memory_mb + 10
+            task.limit_mem_mb = task.limit_mem_mb + 50
+            task.request_mem_mb = task.request_mem_mb
+
+            # CPU process --- high_cpu_memory
+            if task.node_type == 'cloud':
+                task.limit_cpu = min(4, task.limit_cpu)
+                task.request_cpu = min(4, task.request_cpu)
+                task.cpu_count = min(4,max(1, math.ceil(task.limit_cpu)))
+            elif task.node_type == 'edge1':
+                task.limit_cpu = min(2, task.limit_cpu)
+                task.request_cpu = min(2, task.request_cpu)
+                task.cpu_count = min(2,max(1, math.ceil(task.limit_cpu)))
 
             # Reduces working time
             if task.limit_cpu > 1:
-                task.time_ms = int(task.time_ms/task.limit_cpu / 70)
+                task.time_ms = int(task.time_ms/task.limit_cpu/5)
             else:
-                task.time_ms = int(task.time_ms / 1 / 70)
+                task.time_ms = int(task.time_ms/1/5)
 
             while task.time_ms >= 300000:
-                task.time_ms = int(task.time_ms / 2)
+                task.time_ms = int(task.time_ms/2)
 
             # Build dictionary
             tasks[i] = build_task_dict(task)

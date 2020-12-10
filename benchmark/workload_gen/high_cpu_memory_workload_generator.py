@@ -14,7 +14,7 @@ class HighCpuAndMemoryWorkloadGenerator(WorkloadGenerator):
 
     def __init__(self):
         super().__init__(consts.TASK_TYPES[:2])
-        self.poisson_dist = stats.poisson.rvs(mu=30000, size=20, random_state=1)
+        self.poisson_dist = stats.poisson.rvs(mu=30000, size=1000, random_state=1)
 
     def _generate_job(self):
         job_dict = self._random_choose_job()
@@ -26,7 +26,7 @@ class HighCpuAndMemoryWorkloadGenerator(WorkloadGenerator):
         if first_2:
             tasks = self._generate_general_tasks(job_dict, 2)
         else:
-            tasks = self._generate_general_tasks(job_dict)
+            tasks = self._generate_general_tasks(job_dict,self.jobconsist_tasknumber)
 
         tasks = self._post_process_tasks(tasks)
         tasks.sort(key=lambda t: t['startTime'])
@@ -52,23 +52,23 @@ class HighCpuAndMemoryWorkloadGenerator(WorkloadGenerator):
             if task.node_type == 'cloud':
                 if cloud_task_cnt % 2 == 0:
                     # Memory
-                    task.request_mem_mb += 4096
-                    task.limit_mem_mb += 4096
+                    task.request_mem_mb += 2048
+                    task.limit_mem_mb += 2548
                     task.memory_mb = max(int(task.request_mem_mb), int(task.limit_mem_mb))
-                    if (task.limit_mem_mb > 7700 or task.memory_mb > 7700 or task.request_mem_mb > 7700):
-                        task.limit_mem_mb = 7700
-                        task.request_mem_mb = 7700
-                        task.memory_mb = 7700
+                    if (task.limit_mem_mb > 3700 or task.memory_mb > 3700 or task.request_mem_mb > 3700):
+                        task.limit_mem_mb = 3700
+                        task.request_mem_mb = 3700
+                        task.memory_mb = 3700
                     task.task_type = 'memory'
                 else:
                     # CPU
-                    task.request_cpu += 3
-                    task.limit_cpu += 4
+                    task.request_cpu += 1
+                    task.limit_cpu += 2
                     task.cpu_count = max(math.ceil(task.request_cpu), math.ceil(task.limit_cpu))
-                    if task.cpu_count > 8 or task.limit_cpu > 8 or task.request_cpu > 8:
-                        task.cpu_count = 8
-                        task.limit_cpu = 8
-                        task.request_cpu = 7
+                    if task.cpu_count >= 4 or task.limit_cpu >= 4 or task.request_cpu >= 4:
+                        task.cpu_count = 4
+                        task.limit_cpu = 4
+                        task.request_cpu = 4
                     task.task_type = 'cpu'
                 cloud_task_cnt += 1
 
@@ -76,7 +76,7 @@ class HighCpuAndMemoryWorkloadGenerator(WorkloadGenerator):
                 if edge1_task_cnt % 2 == 0:
                     # Memory
                     task.request_mem_mb += 1024
-                    task.limit_mem_mb += 1024
+                    task.limit_mem_mb += 1536
                     task.memory_mb = max(int(task.request_mem_mb), int(task.limit_mem_mb))
                     if (task.limit_mem_mb > 1700 or task.memory_mb > 1700 or task.request_mem_mb > 1700):
                         task.limit_mem_mb = 1700
@@ -85,13 +85,13 @@ class HighCpuAndMemoryWorkloadGenerator(WorkloadGenerator):
                     task.task_type = 'memory'
                 else:
                     # CPU
-                    task.request_cpu += 1
-                    task.limit_cpu += 2
+                    #task.request_cpu += 1
+                    #task.limit_cpu += 2
                     task.cpu_count = max(math.ceil(task.request_cpu), math.ceil(task.limit_cpu))
-                    if task.cpu_count > 2 or task.limit_cpu > 2 or task.request_cpu > 2:
+                    if task.cpu_count >= 2 or task.limit_cpu >= 2 or task.request_cpu >= 2:
                         task.cpu_count = 2
                         task.limit_cpu = 2
-                        task.request_cpu = 1
+                        task.request_cpu = 2
                     task.task_type = 'cpu'
                 edge1_task_cnt += 1
 

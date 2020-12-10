@@ -13,7 +13,7 @@ class Edge2Cloud2EdgeWorkloadGenerator(WorkloadGenerator):
 
     def __init__(self):
         super().__init__(consts.TASK_TYPES[:3])
-        self.poisson_dist = stats.poisson.rvs(mu=3000, size=20, random_state=1)
+        self.poisson_dist = stats.poisson.rvs(mu=10000, size=1000, random_state=1)
 
     def _generate_job(self):
         job_dict = self._random_choose_job()
@@ -25,7 +25,7 @@ class Edge2Cloud2EdgeWorkloadGenerator(WorkloadGenerator):
         if first_3:
             tasks = self._generate_general_tasks(job_dict, 3)
         else:
-            tasks = self._generate_general_tasks(job_dict)
+            tasks = self._generate_general_tasks(job_dict, self.jobconsist_tasknumber)
 
         tasks = self._post_process_tasks(tasks)
         tasks.sort(key=lambda t: t['startTime'])
