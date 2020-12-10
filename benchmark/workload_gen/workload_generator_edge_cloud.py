@@ -12,7 +12,25 @@ from .task import Task
 class WorkloadGenerator(object):
 
     def __init__(self, task_types: list):
-        self.trace_data = read_sql_file()
+        # ***** set some parameters of generating workloads *****
+
+        # trace time period: 0 -> 0-6h ; 1 -> 6-24h
+        self.tracetimeid = 1
+
+        # job_number: 14 -> 0-6h; 9 -> 6-24h
+        self.job_number = 9
+
+        # jobconsist_tasknumber: 4 -> 0-6h; 6 ->6-24h
+        self.jobconsist_tasknumber = 6
+
+        # cpu and memory type: 1 -> low cpu, low memory; 2 -> low cpu, high memory; 3 -> high cpu, low memory; 4 -> high cpu, high memory
+        self.workloadtypeid = 3
+
+        # alibabatrace: job_tasknum
+        self.job_tasknum = 10000
+
+        self.trace_data = read_sql_file(self.tracetimeid, self.workloadtypeid, self.jobconsist_tasknumber,
+                                        self.job_tasknum)
         self.job_count = 0
         self.task_count = 0
         self.task_types = task_types
@@ -58,14 +76,14 @@ class WorkloadGenerator(object):
         jobs = []
         job_num = self._job_num()
         for _ in range(job_num):
-            if self.job_count <= 14:
+            if self.job_count <= self.job_number:
                 print("job count: ", self.job_count)
                 job = self._generate_job()
                 jobs.append(job)
                 self.job_count += 1
         return jobs
 
-    def _generate_general_tasks(self, job_dict: dict, first_n: int = 10) -> list:
+    def _generate_general_tasks(self, job_dict: dict, first_n: int = 100) -> list:
         task_dict = job_dict['job.tasks']
         tasks = []
 

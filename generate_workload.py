@@ -21,16 +21,16 @@ class WorkloadGenTest(TestCase):
         # 随机种子设置，确定每次task个数
         random.seed(1)
 
-    def test_trace_data(self):
-        data = read_sql_file()
-        print('job cnt:', len(data))
-        print('job tasks:', [len(job['job.tasks']) for job in data])
+    #def test_trace_data(self):
+    #    data = read_sql_file()
+    #    print('job cnt:', len(data))
+    #    print('job tasks:', [len(job['job.tasks']) for job in data])
 
     def test_generate_workload(self):
         self.now = datetime.datetime.now().strftime('%Y-%m-%d %H-%M-%S')
         #self.dump('云到边', 'cloud_edge')
-        self.dump('边到云', 'edge_cloud')
-        #self.dump('边到云到边', 'edge_cloud_edge')
+        #self.dump('边到云', 'edge_cloud')
+        self.dump('边到云到边', 'edge_cloud_edge')
         #self.dump('高Cpu和Memory', 'high_cpu_memory')
 
     def dump(self, name: str,  workload_type: str):
@@ -52,8 +52,8 @@ class WorkloadGenTest(TestCase):
         self.replace_scheduler(pod_dicts, 'linc-scheduler-mrp')
         workload_gen.save_as_yaml(pod_dicts, os.path.join(out_dir, '%s-mrp.yaml' % (name,)))
 
-        self.replace_scheduler(pod_dicts, 'linc-scheduler-rlp')
-        workload_gen.save_as_yaml(pod_dicts, os.path.join(out_dir, '%s-rlp.yaml' % (name,)))
+        self.replace_scheduler(pod_dicts, 'linc-scheduler')
+        workload_gen.save_as_yaml(pod_dicts, os.path.join(out_dir, '%s-ls.yaml' % (name,)))
 
     def replace_scheduler(self, pods_dicts, scheduler_name):
         for job in pods_dicts:
