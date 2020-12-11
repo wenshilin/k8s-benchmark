@@ -13,7 +13,7 @@ class Edge2Cloud2EdgeWorkloadGenerator(WorkloadGenerator):
 
     def __init__(self):
         super().__init__(consts.TASK_TYPES[:3])
-        self.poisson_dist = stats.poisson.rvs(mu=3000, size=20, random_state=1)
+        self.poisson_dist = stats.poisson.rvs(mu=10000, size=1000, random_state=1)
 
     def _generate_job(self):
         job_dict = self._random_choose_job()
@@ -25,7 +25,7 @@ class Edge2Cloud2EdgeWorkloadGenerator(WorkloadGenerator):
         if first_3:
             tasks = self._generate_general_tasks(job_dict, 3)
         else:
-            tasks = self._generate_general_tasks(job_dict)
+            tasks = self._generate_general_tasks(job_dict, self.jobconsist_tasknumber)
 
         tasks = self._post_process_tasks(tasks)
         tasks.sort(key=lambda t: t['startTime'])
@@ -44,14 +44,32 @@ class Edge2Cloud2EdgeWorkloadGenerator(WorkloadGenerator):
         return tasks
 
     def _post_process_tasks(self, tasks):
-
+        cloud_task_cnt = 0
+        edge_task_cnt = 0
         for i, task in enumerate(tasks):
             task.job_tasknum = 'n' + str(len(tasks))
             if task.node_type == 'cloud':
                 # Mix
                 #task.request_mem_mb = task.request_mem_mb
                 #task.limit_mem_mb = task.limit_mem_mb
-                task.task_type = 'mix'
+                #task.task_type = 'mix'
+
+                if cloud_task_cnt % 3 == 0:
+                    task.request_cpu += 1
+                    task.limit_cpu += 1
+                    task.cpu_count = max(math.ceil(task.request_cpu),math.ceil(task.limit_cpu))
+                    task.task_type = 'mix'
+                elif cloud_task_cnt % 3 == 1:
+                    task.request_cpu += 3
+                    task.limit_cpu += 3
+                    task.cpu_count = max(math.ceil(task.request_cpu), math.ceil(task.limit_cpu))
+                    task.task_type = 'mix'
+                elif cloud_task_cnt % 3 == 2:
+                    task.request_cpu += 5
+                    task.limit_cpu += 5
+                    task.cpu_count = max(math.ceil(task.request_cpu), math.ceil(task.limit_cpu))
+                    task.task_type = 'mix'
+                cloud_task_cnt += 1
 
                 #Memory
                 #task.request_mem_mb += 3000
@@ -67,7 +85,24 @@ class Edge2Cloud2EdgeWorkloadGenerator(WorkloadGenerator):
                 # Mix
                 #task.request_mem_mb = task.request_mem_mb
                 #task.limit_mem_mb = task.limit_mem_mb
-                task.task_type = 'mix'
+                #task.task_type = 'mix'
+
+                if edge_task_cnt % 3 == 0:
+                    task.request_cpu += 1
+                    task.limit_cpu += 1
+                    task.cpu_count = max(math.ceil(task.request_cpu), math.ceil(task.limit_cpu))
+                    task.task_type = 'mix'
+                elif edge_task_cnt % 3 == 1:
+                    task.request_cpu += 3
+                    task.limit_cpu += 3
+                    task.cpu_count = max(math.ceil(task.request_cpu), math.ceil(task.limit_cpu))
+                    task.task_type = 'mix'
+                elif edge_task_cnt % 3 == 2:
+                    task.request_cpu += 7
+                    task.limit_cpu += 7
+                    task.cpu_count = max(math.ceil(task.request_cpu), math.ceil(task.limit_cpu))
+                    task.task_type = 'mix'
+                edge_task_cnt += 1
 
                 # Memory
                 #task.memory_mb = min(int(task.request_mem_mb), int(task.limit_mem_mb))

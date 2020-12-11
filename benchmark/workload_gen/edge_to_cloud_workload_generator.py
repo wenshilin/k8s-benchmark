@@ -14,7 +14,7 @@ class Edge2CloudWorkloadGenerator(WorkloadGenerator):
 
     def __init__(self):
         super().__init__(consts.TASK_TYPES[:2])
-        self.poisson_dist = stats.poisson.rvs(mu=5000, size=20, random_state=1)
+        self.poisson_dist = stats.poisson.rvs(mu=10000, size=1000, random_state=1)
 
     def _generate_job(self):
         job_dict = self._random_choose_job()
@@ -26,7 +26,7 @@ class Edge2CloudWorkloadGenerator(WorkloadGenerator):
         if first_2:
             tasks = self._generate_general_tasks(job_dict, 2)
         else:
-            tasks = self._generate_general_tasks(job_dict)
+            tasks = self._generate_general_tasks(job_dict, self.jobconsist_tasknumber)
 
         tasks = self._post_process_tasks(tasks)
         tasks.sort(key=lambda t: t['startTime'])
@@ -53,11 +53,31 @@ class Edge2CloudWorkloadGenerator(WorkloadGenerator):
             task.job_tasknum = 'n' + str(len(tasks))
             if task.node_type == 'cloud':
                 # mix
-                task.task_type = 'mix'
+                #task.task_type = 'mix'
+
+                # Memory
+                task.request_mem_mb += 2048
+                task.limit_mem_mb += 2548
+                task.memory_mb = max(int(task.request_mem_mb), int(task.limit_mem_mb))
+                if (task.limit_mem_mb > 3700 or task.memory_mb > 3700 or task.request_mem_mb > 3700):
+                    task.limit_mem_mb = 3700
+                    task.request_mem_mb = 3700
+                    task.memory_mb = 3700
+                task.task_type = 'memory'
 
             elif task.node_type == 'edge1':
                 # mix
-                task.task_type = 'mix'
+                #task.task_type = 'mix'
+
+                # Memory
+                task.request_mem_mb += 1024
+                task.limit_mem_mb += 1536
+                task.memory_mb = max(int(task.request_mem_mb), int(task.limit_mem_mb))
+                if (task.limit_mem_mb > 1700 or task.memory_mb > 1700 or task.request_mem_mb > 1700):
+                    task.limit_mem_mb = 1700
+                    task.request_mem_mb = 1700
+                    task.memory_mb = 1700
+                task.task_type = 'memory'
 
         tasks = self._build_dicts(tasks)
         return tasks

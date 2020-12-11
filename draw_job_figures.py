@@ -16,15 +16,15 @@ def main():
 
     os.makedirs('results/figures', exist_ok=True)
     draw_makespan(summary, algorithm_names,
-                  title='Edge-Cloud',
+                  title='Cloud-Edge',
                   save_filename='makespan.jpg',
                   x_label='Different scheduling algorithms')
     draw_jct_box(summary, algorithm_names,
-                 title='Edge-Cloud',
+                 title='Cloud-Edge',
                  save_filename='jct_box.jpg',
                  x_label='Different scheduling algorithms')
     draw_cdf(jobs, algorithm_names,
-             title='Edge-Cloud',
+             title='Cloud-Edge',
              save_filename='CDF.jpg',
              x_label='Job complete time(s)')
 
