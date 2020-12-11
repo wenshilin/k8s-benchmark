@@ -15,7 +15,7 @@ def main():
     print(summary)
     #print(jobs)
 
-    writer = pd.ExcelWriter('C:\\Users\\wenshilin\\Desktop\\jobs-4.xlsx')
+    writer = pd.ExcelWriter('C:\\Users\\24397\\Desktop\\job_analysize\\job_JCT_5.xlsx')
     summary.to_excel(writer,index=False)
     writer.save()
     print('Save .xlsx succeed!')

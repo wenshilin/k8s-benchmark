@@ -18,16 +18,16 @@ class WorkloadGenerator(object):
         self.tracetimeid = 0
 
         # job_number: 17,35 -> 0-6h; 11,23 -> 6-24h
-        self.job_number = 5
+        self.job_number = 17
 
         # jobconsist_tasknumber: 6 -> 0-6h; 9 ->6-24h
-        self.jobconsist_tasknumber = 27
+        self.jobconsist_tasknumber = 12
 
         # default:0, cloud node:1, edge node:2, cloud and edge node:3
-        self.nodenumberid = 0
+        self.nodenumberid = 3
 
         # cpu and memory type: 1 -> low cpu, low memory; 2 -> low cpu, high memory; 3 -> high cpu, low memory; 4 -> high cpu, high memory
-        self.workloadtypeid = 4
+        self.workloadtypeid = 1
 
         # alibabatrace: job_tasknum
         self.job_tasknum = 10000
@@ -98,14 +98,32 @@ class WorkloadGenerator(object):
                 break
 
             task = self._get_task_parameters(task)
-            if i % 3 == 0:
-                task_type = 'edge1'
-            elif i % 3 == 1:
-                task_type = 'cloud'
-            elif i % 3 == 2 and len(self.task_types) == 3:
-                task_type = 'edge1'
-            #else:
-            #    task_type = self._task_type()
+
+            if self.nodenumberid == 0 or self.nodenumberid == 3:
+                if i % 3 == 0:
+                    task_type = 'edge1'
+                elif i % 3 == 1:
+                    task_type = 'cloud'
+                elif i % 3 == 2 and len(self.task_types) == 3:
+                    task_type = 'edge1'
+
+            if self.nodenumberid == 1:
+                if i % 4 == 0:
+                    task_type = 'edge1'
+                elif i % 4 == 1 or i % 4 == 2:
+                    task_type = 'cloud'
+                elif i % 4 == 3 and len(self.task_types) == 3:
+                    task_type = 'edge1'
+
+            if self.nodenumberid == 2:
+                if i % 5 == 0 or i % 5 == 1:
+                    task_type = 'edge1'
+                elif i % 5 ==2:
+                    task_type = 'cloud'
+                elif (i % 5 ==3 or i % 5 == 4) and len(self.task_types) == 3:
+                    task_type = 'edge1'
+
+            # task_type = self._task_type()
             task.node_type = task_type
 
             task.job_name = 'job-' + str(self.job_count)
@@ -126,14 +144,14 @@ class WorkloadGenerator(object):
             task.request_mem_mb = task.request_mem_mb
 
             #CPU process --- edge-cloud-edge
-            #if task.node_type == 'cloud':
-            #    task.limit_cpu = min(4,task.limit_cpu)
-            #    task.request_cpu = min(4,task.request_cpu)
-            #    task.cpu_count = max(1,math.ceil(task.limit_cpu))
-            #elif task.node_type == 'edge1':
-            #    task.limit_cpu = min(0.5,task.limit_cpu)
-            #    task.request_cpu = min(0.5,task.request_cpu)
-            #    task.cpu_count = max(1,math.ceil(task.limit_cpu))
+            if task.node_type == 'cloud':
+                task.limit_cpu = min(4,task.limit_cpu)
+                task.request_cpu = min(4,task.request_cpu)
+                task.cpu_count = max(1,math.ceil(task.limit_cpu))
+            elif task.node_type == 'edge1':
+                task.limit_cpu = min(0.5,task.limit_cpu)
+                task.request_cpu = min(0.5,task.request_cpu)
+                task.cpu_count = max(1,math.ceil(task.limit_cpu))
 
             # Reduces working time
             if task.limit_cpu > 1:
