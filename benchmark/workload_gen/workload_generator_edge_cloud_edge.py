@@ -15,7 +15,7 @@ class WorkloadGenerator(object):
         # ***** set some parameters of generating workloads *****
 
         # trace time period: 0 -> 0-6h ; 1 -> 6-24h
-        self.tracetimeid = 0
+        self.tracetimeid = 1
 
         # job_number: 17,35 -> 0-6h; 11,23 -> 6-24h
         self.job_number = 17
@@ -30,11 +30,12 @@ class WorkloadGenerator(object):
         self.workloadtypeid = 1
 
         # alibabatrace: job_tasknum
-        self.job_tasknum = 10000
+        self.job_tasknum = 0
 
-        self.trace_data = read_sql_file(self.tracetimeid, self.workloadtypeid, self.jobconsist_tasknumber,self.job_tasknum)
-        #print('job cnt:', len(self.trace_data))
-        #print('job tasks:', [len(job['job.tasks']) for job in self.trace_data])
+        self.trace_data = read_sql_file(self.tracetimeid, self.workloadtypeid, self.jobconsist_tasknumber, self.job_tasknum, self.job_number)
+        print('job cnt:', len(self.trace_data))
+        print('job tasks:', [len(job['job.tasks']) for job in self.trace_data])
+        print("-----------------------------")
         self.job_count = 0
         self.task_count = 0
         self.task_types = task_types
@@ -47,12 +48,12 @@ class WorkloadGenerator(object):
         return random.choice(self.task_types)
 
     def _get_task_parameters(self, task: dict):
-        start_ms = task[5]
-        end_ms = task[6]
-        cpu = task[10]
-        max_cpu = task[11]
-        ram = task[12]
-        max_ram = task[13]
+        start_ms = task[1]
+        end_ms = task[2]
+        cpu = task[3]
+        max_cpu = task[4]
+        ram = task[5]
+        max_ram = task[6]
         return self._process_task_parameters(start_ms, end_ms, cpu, max_cpu, ram, max_ram)
 
     @staticmethod
