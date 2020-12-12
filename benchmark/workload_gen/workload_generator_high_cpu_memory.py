@@ -20,10 +20,10 @@ class WorkloadGenerator(object):
         # job_number: 17,35 -> 0-6h; 11,23 -> 6-24h
         self.job_number = 17
 
-        # jobconsist_tasknumber: 6 -> 0-6h; 9 ->6-24h
+        # jobconsist_tasknumber: 6 -> 0-6h; 9 ->6-24h (set: cloud nodes number + edge nodes number)
         self.jobconsist_tasknumber = 12
 
-        # default:0, cloud node:1, edge node:2, cloud and edge node:3
+        # default:0(6,9), cloud node:1(10,15), edge node:2(8,12), cloud and edge node:3(12,18)
         self.nodenumberid = 3
 
         # cpu and memory type: 1 -> low cpu, low memory; 2 -> low cpu, high memory; 3 -> high cpu, low memory; 4 -> high cpu, high memory
@@ -48,12 +48,12 @@ class WorkloadGenerator(object):
         return random.choice(self.task_types)
 
     def _get_task_parameters(self, task: dict):
-        start_ms = task[5]
-        end_ms = task[6]
-        cpu = task[10]
-        max_cpu = task[11]
-        ram = task[12]
-        max_ram = task[13]
+        start_ms = task[1]
+        end_ms = task[2]
+        cpu = task[3]
+        max_cpu = task[4]
+        ram = task[5]
+        max_ram = task[6]
 
         return self._process_task_parameters(start_ms, end_ms, cpu, max_cpu, ram, max_ram)
 

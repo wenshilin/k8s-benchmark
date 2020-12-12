@@ -15,16 +15,16 @@ class WorkloadGenerator(object):
         # ***** set some parameters of generating workloads *****
 
         # trace time period: 0 -> 0-6h ; 1 -> 6-24h
-        self.tracetimeid = 1
+        self.tracetimeid = 0
 
         # job_number: 17,35 -> 0-6h; 11,23 -> 6-24h
         self.job_number = 17
 
-        # jobconsist_tasknumber: 6 -> 0-6h; 9 ->6-24h
-        self.jobconsist_tasknumber = 12
+        # jobconsist_tasknumber: 4 -> 0-6h; 6 ->6-24h (set: cloud nodes number + edge nodes number)
+        self.jobconsist_tasknumber = 4
 
-        # default:0, cloud node:1, edge node:2, cloud and edge node:3
-        self.nodenumberid = 3
+        # default:0(4,6), cloud node:1(6,9), edge node:2(6,9), cloud and edge node:3(8,12)
+        self.nodenumberid = 0
 
         # cpu and memory type: 1 -> low cpu, low memory; 2 -> low cpu, high memory; 3 -> high cpu, low memory; 4 -> high cpu, high memory
         self.workloadtypeid = 1
@@ -48,12 +48,12 @@ class WorkloadGenerator(object):
         return random.choice(self.task_types)
 
     def _get_task_parameters(self, task: dict):
-        start_ms = task[5]
-        end_ms = task[6]
-        cpu = task[10]
-        max_cpu = task[11]
-        ram = task[12]
-        max_ram = task[13]
+        start_ms = task[1]
+        end_ms = task[2]
+        cpu = task[3]
+        max_cpu = task[4]
+        ram = task[5]
+        max_ram = task[6]
         return self._process_task_parameters(start_ms, end_ms, cpu, max_cpu, ram, max_ram)
 
     @staticmethod
@@ -97,11 +97,26 @@ class WorkloadGenerator(object):
                 break
 
             task = self._get_task_parameters(task)
-            if i % 2 == 0:
-                task_type = 'edge1'
-            else:
-                task_type = 'cloud'
 
+            if self.nodenumberid == 0 or self.nodenumberid == 3:
+                if i % 2 == 0:
+                    task_type = 'edge1'
+                elif i % 2 == 1:
+                    task_type = 'cloud'
+
+            if self.nodenumberid == 1:
+                if i % 3 == 0:
+                    task_type = 'edge1'
+                elif i % 3 == 1 or i % 3 == 2:
+                    task_type = 'cloud'
+
+            if self.nodenumberid == 2:
+                if i % 3 == 0 or i % 3 == 1:
+                    task_type = 'edge1'
+                elif i % 3 == 2:
+                    task_type = 'cloud'
+
+            # task_type = self._task_type()
             task.node_type = task_type
 
             task.job_name = 'job-' + str(self.job_count)
