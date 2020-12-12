@@ -17,7 +17,7 @@ class WorkloadGenerator(object):
         # trace time period: 0 -> 0-6h ; 1 -> 6-24h
         self.tracetimeid = 1
 
-        # job_number: 17,35 -> 0-6h; 11,23 -> 6-24h
+        # job_number: 17 -> 0-6h; 11 -> 6-24h
         self.job_number = 17
 
         # jobconsist_tasknumber: 6 -> 0-6h; 9 ->6-24h

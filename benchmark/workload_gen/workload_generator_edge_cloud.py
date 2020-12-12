@@ -17,20 +17,25 @@ class WorkloadGenerator(object):
         # trace time period: 0 -> 0-6h ; 1 -> 6-24h
         self.tracetimeid = 1
 
-        # job_number: 14 -> 0-6h; 9 -> 6-24h
-        self.job_number = 9
+        # job_number: 17,35 -> 0-6h; 11,23 -> 6-24h
+        self.job_number = 17
 
-        # jobconsist_tasknumber: 4 -> 0-6h; 6 ->6-24h
-        self.jobconsist_tasknumber = 6
+        # jobconsist_tasknumber: 6 -> 0-6h; 9 ->6-24h
+        self.jobconsist_tasknumber = 12
+
+        # default:0, cloud node:1, edge node:2, cloud and edge node:3
+        self.nodenumberid = 3
 
         # cpu and memory type: 1 -> low cpu, low memory; 2 -> low cpu, high memory; 3 -> high cpu, low memory; 4 -> high cpu, high memory
-        self.workloadtypeid = 3
+        self.workloadtypeid = 1
 
         # alibabatrace: job_tasknum
-        self.job_tasknum = 10000
+        self.job_tasknum = 0
 
-        self.trace_data = read_sql_file(self.tracetimeid, self.workloadtypeid, self.jobconsist_tasknumber,
-                                        self.job_tasknum)
+        self.trace_data = read_sql_file(self.tracetimeid, self.workloadtypeid, self.jobconsist_tasknumber,self.job_tasknum, self.job_number)
+        print('job cnt:', len(self.trace_data))
+        print('job tasks:', [len(job['job.tasks']) for job in self.trace_data])
+        print("-----------------------------")
         self.job_count = 0
         self.task_count = 0
         self.task_types = task_types
@@ -112,7 +117,7 @@ class WorkloadGenerator(object):
     def _build_dicts(self, tasks: typing.List[Task]) -> typing.List[dict]:
         for i, task in enumerate(tasks):
             # To solve OOMKilled
-            task.memory_mb = task.memory_mb
+            task.memory_mb = task.memory_mb + 10
             task.limit_mem_mb = task.limit_mem_mb + 50
             task.request_mem_mb = task.request_mem_mb
 

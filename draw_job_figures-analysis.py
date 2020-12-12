@@ -7,7 +7,7 @@ from benchmark.job_data_reading import read_data_from_directories
 
 def main():
     # 数据的根目录
-    root_dir = 'results/jobs'
+    root_dir = 'results/20-11-21/jobs'
 
     dirs = list_dir(root_dir)
     summary, jobs = read_data_from_directories(dirs)
