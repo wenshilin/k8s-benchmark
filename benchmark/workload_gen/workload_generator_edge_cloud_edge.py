@@ -27,7 +27,7 @@ class WorkloadGenerator(object):
         self.nodenumberid = 3
 
         # cpu and memory type: 1 -> low cpu, low memory; 2 -> low cpu, high memory; 3 -> high cpu, low memory; 4 -> high cpu, high memory
-        self.workloadtypeid = 1
+        self.workloadtypeid = 3
 
         # alibabatrace: job_tasknum
         self.job_tasknum = 0
