@@ -17,13 +17,13 @@ class WorkloadGenerator(object):
         # trace time period: 0 -> 0-6h ; 1 -> 6-24h
         self.tracetimeid = 1
 
-        # job_number: 17,35 -> 0-6h; 11,23 -> 6-24h
+        # job_number: 17 -> 0-6h; 11 -> 6-24h
         self.job_number = 17
 
-        # jobconsist_tasknumber: 6 -> 0-6h; 9 ->6-24h
+        # jobconsist_tasknumber: 6 -> 0-6h; 9 ->6-24h (set: cloud nodes number + edge nodes number)
         self.jobconsist_tasknumber = 12
 
-        # default:0, cloud node:1, edge node:2, cloud and edge node:3
+        # default:0(6,9), cloud node:1(10,15), edge node:2(8,12), cloud and edge node:3(12,18)
         self.nodenumberid = 3
 
         # cpu and memory type: 1 -> low cpu, low memory; 2 -> low cpu, high memory; 3 -> high cpu, low memory; 4 -> high cpu, high memory
