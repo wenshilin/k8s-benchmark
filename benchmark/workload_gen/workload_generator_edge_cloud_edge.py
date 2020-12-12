@@ -15,24 +15,24 @@ class WorkloadGenerator(object):
         # ***** set some parameters of generating workloads *****
 
         # trace time period: 0 -> 0-6h ; 1 -> 6-24h
-        self.tracetimeid = 1
+        self.tracetimeid = 0
 
-        # job_number: 17 -> 0-6h; 11 -> 6-24h
-        self.job_number = 17
+        # job_number: 14 -> 0-6h; 9 -> 6-24h
+        self.job_number = 14
 
         # jobconsist_tasknumber: 6 -> 0-6h; 9 ->6-24h (set: cloud nodes number + edge nodes number)
-        self.jobconsist_tasknumber = 12
+        self.jobconsist_tasknumber = 3
 
         # default:0(6,9), cloud node:1(10,15), edge node:2(8,12), cloud and edge node:3(12,18)
-        self.nodenumberid = 3
+        self.nodenumberid = 0
 
         # cpu and memory type: 1 -> low cpu, low memory; 2 -> low cpu, high memory; 3 -> high cpu, low memory; 4 -> high cpu, high memory
-        self.workloadtypeid = 3
+        self.workloadtypeid = 1
 
-        # alibabatrace: job_tasknum
-        self.job_tasknum = 0
+        # alibabatrace: job_jct
+        self.job_jct = 300
 
-        self.trace_data = read_sql_file(self.tracetimeid, self.workloadtypeid, self.jobconsist_tasknumber, self.job_tasknum, self.job_number)
+        self.trace_data = read_sql_file(self.tracetimeid, self.workloadtypeid, self.jobconsist_tasknumber, self.job_jct, self.job_number)
         print('job cnt:', len(self.trace_data))
         print('job tasks:', [len(job['job.tasks']) for job in self.trace_data])
         print("-----------------------------")

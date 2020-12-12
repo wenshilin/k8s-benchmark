@@ -15,13 +15,13 @@ class WorkloadGenerator(object):
         # ***** set some parameters of generating workloads *****
 
         # trace time period: 0 -> 0-6h ; 1 -> 6-24h
-        self.tracetimeid = 0
+        self.tracetimeid = 1
 
         # job_number: 17,35 -> 0-6h; 11,23 -> 6-24h
-        self.job_number = 17
+        self.job_number = 11
 
         # jobconsist_tasknumber: 4 -> 0-6h; 6 ->6-24h (set:(cloud tasks + edge tasks)*2)
-        self.jobconsist_tasknumber = 4
+        self.jobconsist_tasknumber = 6
 
         # default:0(4,6), cloud node:1(6,9), edge node:2(6,9), cloud and edge node:3(8,12)
         self.nodenumberid = 0
