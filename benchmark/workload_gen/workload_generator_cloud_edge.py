@@ -15,24 +15,24 @@ class WorkloadGenerator(object):
         # ***** set some parameters of generating workloads *****
 
         # trace time period: 0 -> 0-6h ; 1 -> 6-24h
-        self.tracetimeid = 1
+        self.tracetimeid = 0
 
-        # job_number: 17,35 -> 0-6h; 11,23 -> 6-24h
-        self.job_number = 11
+        # job_number: 14 -> 0-6h; 9 -> 6-24h
+        self.job_number = 17
 
-        # jobconsist_tasknumber: 4 -> 0-6h; 6 ->6-24h (set:(cloud tasks + edge tasks)*2)
-        self.jobconsist_tasknumber = 6
+        # jobconsist_tasknumber: 6 -> 0-6h; 9 ->6-24h (set: cloud nodes number + edge nodes number)
+        self.jobconsist_tasknumber = 2
 
-        # default:0(4,6), cloud node:1(6,9), edge node:2(6,9), cloud and edge node:3(8,12)
+        # default:0(6,9), cloud node:1(10,15), edge node:2(8,12), cloud and edge node:3(12,18)
         self.nodenumberid = 0
 
         # cpu and memory type: 1 -> low cpu, low memory; 2 -> low cpu, high memory; 3 -> high cpu, low memory; 4 -> high cpu, high memory
         self.workloadtypeid = 3
 
         # alibabatrace: job_tasknum
-        self.job_tasknum = 0
+        self.job_tasknum = 1
 
-        self.trace_data = read_sql_file(self.tracetimeid, self.workloadtypeid, self.jobconsist_tasknumber,self.job_tasknum, self.job_number)
+        self.trace_data = read_sql_file(self.tracetimeid, self.workloadtypeid, self.jobconsist_tasknumber, self.job_tasknum, self.job_number)
         print('job cnt:', len(self.trace_data))
         print('job tasks:', [len(job['job.tasks']) for job in self.trace_data])
         print("-----------------------------")
@@ -61,7 +61,7 @@ class WorkloadGenerator(object):
         params = {
             'start_ms': start_ms,
             'end_ms': end_ms,
-            'cpu_count': max(1, math.ceil(max_cpu/100)),
+            'cpu_count': max(1, math.ceil(cpu/100)),
             'memory_mb': int(ram * 1024),
             'time_ms': int((end_ms - start_ms) * 1000),
             'request_cpu': float(cpu/100),
@@ -139,10 +139,10 @@ class WorkloadGenerator(object):
             task.request_mem_mb = task.request_mem_mb
 
             # Reduces working time ---cloud-edge
-            if task.limit_cpu > 1:
-                task.time_ms = int(task.time_ms/task.limit_cpu)
-            else:
-                task.time_ms = int(task.time_ms/1)
+            #if task.limit_cpu > 1:
+            #    task.time_ms = int(task.time_ms/task.limit_cpu)
+            #else:
+            #    task.time_ms = int(task.time_ms/1)
 
             while task.time_ms >= 300000:
                 task.time_ms = int(task.time_ms / 2)

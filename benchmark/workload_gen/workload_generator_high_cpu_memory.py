@@ -15,22 +15,22 @@ class WorkloadGenerator(object):
         # ***** set some parameters of generating workloads *****
 
         # trace time period: 0 -> 0-6h ; 1 -> 6-24h
-        self.tracetimeid = 1
+        self.tracetimeid = 0
 
-        # job_number: 17,35 -> 0-6h; 11,23 -> 6-24h
-        self.job_number = 17
+        # job_number: 14 -> 0-6h; 9 -> 6-24h
+        self.job_number = 1
 
         # jobconsist_tasknumber: 6 -> 0-6h; 9 ->6-24h (set: cloud nodes number + edge nodes number)
-        self.jobconsist_tasknumber = 12
+        self.jobconsist_tasknumber = 16
 
         # default:0(6,9), cloud node:1(10,15), edge node:2(8,12), cloud and edge node:3(12,18)
-        self.nodenumberid = 3
+        self.nodenumberid = 0
 
         # cpu and memory type: 1 -> low cpu, low memory; 2 -> low cpu, high memory; 3 -> high cpu, low memory; 4 -> high cpu, high memory
-        self.workloadtypeid = 1
+        self.workloadtypeid = 4
 
         # alibabatrace: job_tasknum
-        self.job_tasknum = 0
+        self.job_tasknum = 1
 
         self.trace_data = read_sql_file(self.tracetimeid, self.workloadtypeid, self.jobconsist_tasknumber, self.job_tasknum, self.job_number)
         print('job cnt:', len(self.trace_data))
@@ -62,7 +62,7 @@ class WorkloadGenerator(object):
         params = {
             'start_ms': start_ms,
             'end_ms': end_ms,
-            'cpu_count': max(1, math.ceil(max_cpu/100)),
+            'cpu_count': max(1, math.ceil(cpu/100)),
             'memory_mb': int(ram * 1024),
             'time_ms': int((end_ms - start_ms) * 1000),
             'request_cpu': float(cpu/100),
@@ -100,10 +100,24 @@ class WorkloadGenerator(object):
                 break
 
             task = self._get_task_parameters(task)
-            if i % 2 == 0:
-                task_type = 'edge1'
-            else:
-                task_type = 'cloud'
+
+            if self.nodenumberid == 0 or self.nodenumberid == 3:
+                if i % 2 == 0:
+                    task_type = 'edge1'
+                elif i % 2 == 1:
+                    task_type = 'cloud'
+
+            if self.nodenumberid == 1:
+                if i % 3 == 0:
+                    task_type = 'edge1'
+                elif i % 3 == 1 or i % 3 == 2:
+                    task_type = 'cloud'
+
+            if self.nodenumberid == 2:
+                if i % 3 == 0 or i % 3 == 1:
+                    task_type = 'edge1'
+                elif i % 3 == 2:
+                    task_type = 'cloud'
 
             task.node_type = task_type
 
@@ -125,20 +139,20 @@ class WorkloadGenerator(object):
             task.request_mem_mb = task.request_mem_mb
 
             # CPU process --- high_cpu_memory
-            if task.node_type == 'cloud':
-                task.limit_cpu = min(4, task.limit_cpu)
-                task.request_cpu = min(4, task.request_cpu)
-                task.cpu_count = min(4,max(1, math.ceil(task.limit_cpu)))
-            elif task.node_type == 'edge1':
-                task.limit_cpu = min(2, task.limit_cpu)
-                task.request_cpu = min(2, task.request_cpu)
-                task.cpu_count = min(2,max(1, math.ceil(task.limit_cpu)))
+            #if task.node_type == 'cloud':
+            #    task.limit_cpu = min(4, task.limit_cpu)
+            #    task.request_cpu = min(4, task.request_cpu)
+            #    task.cpu_count = min(4,max(1, math.ceil(task.limit_cpu)))
+            #elif task.node_type == 'edge1':
+            #    task.limit_cpu = min(2, task.limit_cpu)
+            #    task.request_cpu = min(2, task.request_cpu)
+            #    task.cpu_count = min(2,max(1, math.ceil(task.limit_cpu)))
 
             # Reduces working time
-            if task.limit_cpu > 1:
-                task.time_ms = int(task.time_ms/task.limit_cpu/5)
-            else:
-                task.time_ms = int(task.time_ms/1/5)
+            #if task.limit_cpu > 1:
+            #    task.time_ms = int(task.time_ms/task.limit_cpu/5)
+            #else:
+            #    task.time_ms = int(task.time_ms/1/5)
 
             while task.time_ms >= 300000:
                 task.time_ms = int(task.time_ms/2)

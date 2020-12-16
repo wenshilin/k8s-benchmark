@@ -32,11 +32,8 @@ class Edge2CloudWorkloadGenerator(WorkloadGenerator):
         tasks.sort(key=lambda t: t['startTime'])
         min_start_time = min([t['startTime'] for t in tasks])
         for i,t in enumerate(tasks):
-            #t['startTime'] = t['startTime'] - min_start_time + self.prev_job_last_start_time
-            #if i == 0:
-            t['startTime'] = int((t['startTime'] - min_start_time) * 8 + self.prev_job_last_start_time)
-            #else:
-            #   t['startTime'] = int((t['startTime'] - min_start_time) * 8 + self.poisson_dist1[i] + self.prev_job_last_start_time)
+            #t['startTime'] = int((t['startTime'] - min_start_time) * 8 + self.prev_job_last_start_time)
+            t['startTime'] = int(self.prev_job_last_start_time)
 
         print('job name: ', ('job-' + str(self.job_count)))
         print('next job start time: ', self.prev_job_last_start_time)
