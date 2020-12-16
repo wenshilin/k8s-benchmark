@@ -7,7 +7,7 @@ from benchmark.job_data_reading import read_data_from_directories
 
 def main():
     # 数据的根目录
-    root_dir = 'results/jobs'
+    root_dir = 'results/20-11-21/jobs'
 
     dirs = list_dir(root_dir)
     summary, jobs = read_data_from_directories(dirs)
@@ -15,7 +15,7 @@ def main():
     print(summary)
     #print(jobs)
 
-    writer = pd.ExcelWriter('C:\\Users\\wenshilin\\Desktop\\jobs-4.xlsx')
+    writer = pd.ExcelWriter('C:\\Users\\24397\\Desktop\\job_analysize\\job_JCT_5.xlsx')
     summary.to_excel(writer,index=False)
     writer.save()
     print('Save .xlsx succeed!')

@@ -13,7 +13,7 @@ def read_data_from_directory(directory: str) -> Tuple[float, float, float, float
     job_complete_times = data['Job Completed Time(s)']
 
     markdown_filename = os.path.join(directory, 'coutJCT.md')
-    with open(markdown_filename,encoding='utf-8') as f:
+    with open(markdown_filename) as f:
         md = f.read()
     makespan = re.findall(r'\d+\.\d\d', md)[-1]
     return job_complete_times.mean(), job_complete_times.min(), job_complete_times.max(), float(makespan), data

@@ -17,19 +17,25 @@ class WorkloadGenerator(object):
         # trace time period: 0 -> 0-6h ; 1 -> 6-24h
         self.tracetimeid = 1
 
-        # job_number: 14 -> 0-6h; 9 -> 6-24h
-        self.job_number = 9
+        # job_number: 17,35 -> 0-6h; 11,23 -> 6-24h
+        self.job_number = 11
 
-        # jobconsist_tasknumber: 4 -> 0-6h; 6 ->6-24h
+        # jobconsist_tasknumber: 4 -> 0-6h; 6 ->6-24h (set:(cloud tasks + edge tasks)*2)
         self.jobconsist_tasknumber = 6
+
+        # default:0(4,6), cloud node:1(6,9), edge node:2(6,9), cloud and edge node:3(8,12)
+        self.nodenumberid = 0
 
         # cpu and memory type: 1 -> low cpu, low memory; 2 -> low cpu, high memory; 3 -> high cpu, low memory; 4 -> high cpu, high memory
         self.workloadtypeid = 3
 
         # alibabatrace: job_tasknum
-        self.job_tasknum = 10000
+        self.job_tasknum = 0
 
-        self.trace_data = read_sql_file(self.tracetimeid, self.workloadtypeid, self.jobconsist_tasknumber,self.job_tasknum)
+        self.trace_data = read_sql_file(self.tracetimeid, self.workloadtypeid, self.jobconsist_tasknumber,self.job_tasknum, self.job_number)
+        print('job cnt:', len(self.trace_data))
+        print('job tasks:', [len(job['job.tasks']) for job in self.trace_data])
+        print("-----------------------------")
         self.job_count = 0
         self.task_count = 0
         self.task_types = task_types
@@ -42,12 +48,12 @@ class WorkloadGenerator(object):
         return random.choice(self.task_types)
 
     def _get_task_parameters(self, task: dict):
-        start_ms = task[5]
-        end_ms = task[6]
-        cpu = task[10]
-        max_cpu = task[11]
-        ram = task[12]
-        max_ram = task[13]
+        start_ms = task[1]
+        end_ms = task[2]
+        cpu = task[3]
+        max_cpu = task[4]
+        ram = task[5]
+        max_ram = task[6]
         return self._process_task_parameters(start_ms, end_ms, cpu, max_cpu, ram, max_ram)
 
     @staticmethod
@@ -93,11 +99,26 @@ class WorkloadGenerator(object):
                 break
 
             task = self._get_task_parameters(task)
-            if i % 2 == 0:
-                task_type = 'cloud'
-            else:
-                task_type = 'edge1'
 
+            if self.nodenumberid == 0 or self.nodenumberid == 3:
+                if i % 2 == 0:
+                    task_type = 'cloud'
+                elif i % 2 == 1:
+                    task_type = 'edge1'
+
+            if self.nodenumberid == 1:
+                if i % 3 == 0 or i % 3 == 1:
+                    task_type = 'cloud'
+                elif i % 3 == 2:
+                    task_type = 'edge1'
+
+            if self.nodenumberid == 2:
+                if i % 3 == 0:
+                    task_type = 'cloud'
+                elif i % 3 == 1 or i % 3 == 2:
+                    task_type = 'edge1'
+
+            # task_type = self._task_type()
             task.node_type = task_type
 
             task.job_name = 'job-' + str(self.job_count)
@@ -113,16 +134,15 @@ class WorkloadGenerator(object):
     def _build_dicts(self, tasks: typing.List[Task]) -> typing.List[dict]:
         for i, task in enumerate(tasks):
             # To solve OOMKilled
-            need_mem_mb = task.memory_mb
-            task.memory_mb = need_mem_mb
-            task.limit_mem_mb = need_mem_mb + 50
-            task.request_mem_mb = need_mem_mb
+            task.memory_mb = task.memory_mb + 10
+            task.limit_mem_mb = task.limit_mem_mb + 50
+            task.request_mem_mb = task.request_mem_mb
 
             # Reduces working time ---cloud-edge
             if task.limit_cpu > 1:
-                task.time_ms = int(task.time_ms/task.limit_cpu*10)
+                task.time_ms = int(task.time_ms/task.limit_cpu)
             else:
-                task.time_ms = int(task.time_ms/1*10)
+                task.time_ms = int(task.time_ms/1)
 
             while task.time_ms >= 300000:
                 task.time_ms = int(task.time_ms / 2)

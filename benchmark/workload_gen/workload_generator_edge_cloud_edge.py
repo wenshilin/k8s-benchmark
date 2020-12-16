@@ -17,24 +17,25 @@ class WorkloadGenerator(object):
         # trace time period: 0 -> 0-6h ; 1 -> 6-24h
         self.tracetimeid = 0
 
-        # job_number: 17,35 -> 0-6h; 11,23 -> 6-24h
-        self.job_number = 5
+        # job_number: 14 -> 0-6h; 9 -> 6-24h
+        self.job_number = 14
 
-        # jobconsist_tasknumber: 6 -> 0-6h; 9 ->6-24h
-        self.jobconsist_tasknumber = 27
+        # jobconsist_tasknumber: 6 -> 0-6h; 9 ->6-24h (set: cloud nodes number + edge nodes number)
+        self.jobconsist_tasknumber = 3
 
-        # default:0, cloud node:1, edge node:2, cloud and edge node:3
+        # default:0(6,9), cloud node:1(10,15), edge node:2(8,12), cloud and edge node:3(12,18)
         self.nodenumberid = 0
 
         # cpu and memory type: 1 -> low cpu, low memory; 2 -> low cpu, high memory; 3 -> high cpu, low memory; 4 -> high cpu, high memory
-        self.workloadtypeid = 4
+        self.workloadtypeid = 1
 
-        # alibabatrace: job_tasknum
-        self.job_tasknum = 10000
+        # alibabatrace: job_jct
+        self.job_jct = 300
 
-        self.trace_data = read_sql_file(self.tracetimeid, self.workloadtypeid, self.jobconsist_tasknumber,self.job_tasknum)
-        #print('job cnt:', len(self.trace_data))
-        #print('job tasks:', [len(job['job.tasks']) for job in self.trace_data])
+        self.trace_data = read_sql_file(self.tracetimeid, self.workloadtypeid, self.jobconsist_tasknumber, self.job_jct, self.job_number)
+        print('job cnt:', len(self.trace_data))
+        print('job tasks:', [len(job['job.tasks']) for job in self.trace_data])
+        print("-----------------------------")
         self.job_count = 0
         self.task_count = 0
         self.task_types = task_types
@@ -47,12 +48,12 @@ class WorkloadGenerator(object):
         return random.choice(self.task_types)
 
     def _get_task_parameters(self, task: dict):
-        start_ms = task[5]
-        end_ms = task[6]
-        cpu = task[10]
-        max_cpu = task[11]
-        ram = task[12]
-        max_ram = task[13]
+        start_ms = task[1]
+        end_ms = task[2]
+        cpu = task[3]
+        max_cpu = task[4]
+        ram = task[5]
+        max_ram = task[6]
         return self._process_task_parameters(start_ms, end_ms, cpu, max_cpu, ram, max_ram)
 
     @staticmethod
@@ -98,14 +99,32 @@ class WorkloadGenerator(object):
                 break
 
             task = self._get_task_parameters(task)
-            if i % 3 == 0:
-                task_type = 'edge1'
-            elif i % 3 == 1:
-                task_type = 'cloud'
-            elif i % 3 == 2 and len(self.task_types) == 3:
-                task_type = 'edge1'
-            #else:
-            #    task_type = self._task_type()
+
+            if self.nodenumberid == 0 or self.nodenumberid == 3:
+                if i % 3 == 0:
+                    task_type = 'edge1'
+                elif i % 3 == 1:
+                    task_type = 'cloud'
+                elif i % 3 == 2 and len(self.task_types) == 3:
+                    task_type = 'edge1'
+
+            if self.nodenumberid == 1:
+                if i % 4 == 0:
+                    task_type = 'edge1'
+                elif i % 4 == 1 or i % 4 == 2:
+                    task_type = 'cloud'
+                elif i % 4 == 3 and len(self.task_types) == 3:
+                    task_type = 'edge1'
+
+            if self.nodenumberid == 2:
+                if i % 5 == 0 or i % 5 == 1:
+                    task_type = 'edge1'
+                elif i % 5 ==2:
+                    task_type = 'cloud'
+                elif (i % 5 ==3 or i % 5 == 4) and len(self.task_types) == 3:
+                    task_type = 'edge1'
+
+            # task_type = self._task_type()
             task.node_type = task_type
 
             task.job_name = 'job-' + str(self.job_count)
@@ -126,14 +145,14 @@ class WorkloadGenerator(object):
             task.request_mem_mb = task.request_mem_mb
 
             #CPU process --- edge-cloud-edge
-            #if task.node_type == 'cloud':
-            #    task.limit_cpu = min(4,task.limit_cpu)
-            #    task.request_cpu = min(4,task.request_cpu)
-            #    task.cpu_count = max(1,math.ceil(task.limit_cpu))
-            #elif task.node_type == 'edge1':
-            #    task.limit_cpu = min(0.5,task.limit_cpu)
-            #    task.request_cpu = min(0.5,task.request_cpu)
-            #    task.cpu_count = max(1,math.ceil(task.limit_cpu))
+            if task.node_type == 'cloud':
+                task.limit_cpu = min(4,task.limit_cpu)
+                task.request_cpu = min(4,task.request_cpu)
+                task.cpu_count = max(1,math.ceil(task.limit_cpu))
+            elif task.node_type == 'edge1':
+                task.limit_cpu = min(0.5,task.limit_cpu)
+                task.request_cpu = min(0.5,task.request_cpu)
+                task.cpu_count = max(1,math.ceil(task.limit_cpu))
 
             # Reduces working time
             if task.limit_cpu > 1:

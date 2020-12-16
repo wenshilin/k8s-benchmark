@@ -12,7 +12,30 @@ from .task import Task
 class WorkloadGenerator(object):
 
     def __init__(self, task_types: list):
-        self.trace_data = read_sql_file()
+        # ***** set some parameters of generating workloads *****
+
+        # trace time period: 0 -> 0-6h ; 1 -> 6-24h
+        self.tracetimeid = 0
+
+        # job_number: 17,35 -> 0-6h; 11,23 -> 6-24h
+        self.job_number = 17
+
+        # jobconsist_tasknumber: 4 -> 0-6h; 6 ->6-24h (set: cloud nodes number + edge nodes number)
+        self.jobconsist_tasknumber = 4
+
+        # default:0(4,6), cloud node:1(6,9), edge node:2(6,9), cloud and edge node:3(8,12)
+        self.nodenumberid = 0
+
+        # cpu and memory type: 1 -> low cpu, low memory; 2 -> low cpu, high memory; 3 -> high cpu, low memory; 4 -> high cpu, high memory
+        self.workloadtypeid = 1
+
+        # alibabatrace: job_tasknum
+        self.job_tasknum = 0
+
+        self.trace_data = read_sql_file(self.tracetimeid, self.workloadtypeid, self.jobconsist_tasknumber,self.job_tasknum, self.job_number)
+        print('job cnt:', len(self.trace_data))
+        print('job tasks:', [len(job['job.tasks']) for job in self.trace_data])
+        print("-----------------------------")
         self.job_count = 0
         self.task_count = 0
         self.task_types = task_types
@@ -25,12 +48,12 @@ class WorkloadGenerator(object):
         return random.choice(self.task_types)
 
     def _get_task_parameters(self, task: dict):
-        start_ms = task[5]
-        end_ms = task[6]
-        cpu = task[10]
-        max_cpu = task[11]
-        ram = task[12]
-        max_ram = task[13]
+        start_ms = task[1]
+        end_ms = task[2]
+        cpu = task[3]
+        max_cpu = task[4]
+        ram = task[5]
+        max_ram = task[6]
         return self._process_task_parameters(start_ms, end_ms, cpu, max_cpu, ram, max_ram)
 
     @staticmethod
@@ -58,14 +81,14 @@ class WorkloadGenerator(object):
         jobs = []
         job_num = self._job_num()
         for _ in range(job_num):
-            if self.job_count <= 14:
+            if self.job_count <= self.job_number:
                 print("job count: ", self.job_count)
                 job = self._generate_job()
                 jobs.append(job)
                 self.job_count += 1
         return jobs
 
-    def _generate_general_tasks(self, job_dict: dict, first_n: int = 10) -> list:
+    def _generate_general_tasks(self, job_dict: dict, first_n: int = 100) -> list:
         task_dict = job_dict['job.tasks']
         tasks = []
 
@@ -74,11 +97,26 @@ class WorkloadGenerator(object):
                 break
 
             task = self._get_task_parameters(task)
-            if i % 2 == 0:
-                task_type = 'edge1'
-            else:
-                task_type = 'cloud'
 
+            if self.nodenumberid == 0 or self.nodenumberid == 3:
+                if i % 2 == 0:
+                    task_type = 'edge1'
+                elif i % 2 == 1:
+                    task_type = 'cloud'
+
+            if self.nodenumberid == 1:
+                if i % 3 == 0:
+                    task_type = 'edge1'
+                elif i % 3 == 1 or i % 3 == 2:
+                    task_type = 'cloud'
+
+            if self.nodenumberid == 2:
+                if i % 3 == 0 or i % 3 == 1:
+                    task_type = 'edge1'
+                elif i % 3 == 2:
+                    task_type = 'cloud'
+
+            # task_type = self._task_type()
             task.node_type = task_type
 
             task.job_name = 'job-' + str(self.job_count)
@@ -94,7 +132,7 @@ class WorkloadGenerator(object):
     def _build_dicts(self, tasks: typing.List[Task]) -> typing.List[dict]:
         for i, task in enumerate(tasks):
             # To solve OOMKilled
-            task.memory_mb = task.memory_mb
+            task.memory_mb = task.memory_mb + 10
             task.limit_mem_mb = task.limit_mem_mb + 50
             task.request_mem_mb = task.request_mem_mb
 

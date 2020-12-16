@@ -4,9 +4,9 @@ import yaml
 import logging
 from benchmark import workload_gen
 
-dirpath = 'E:\\2K20\\k8s-benchmark\\results\\workloads\\2020-11-08 19-30-02'
-list1 = ['linc-scheduler-rlp', 'linc-scheduler-bra', 'default-scheduler', 'linc-scheduler-ep',
-         'linc-scheduler-lrp', 'linc-scheduler-mrp']
+#dirpath = 'E:\\2K20\\k8s-benchmark\\results\\workloads\\2020-11-08 19-30-02'
+dirpath = 'C:\\Users\\24397\\Desktop\\未命名文件夹'
+list1 = ['default-scheduler', 'linc-scheduler-ep','linc-scheduler-lrp', 'linc-scheduler-mrp']
 #workload_type = '边到云到边'
 
 for j, info in enumerate(os.listdir(dirpath)):
