@@ -10,6 +10,7 @@ except ImportError:
 from common import consts
 from common.kube_info.jct_caculation import calculate_job_complete_times
 from common.kube_info.reward_builder import RewardBuilder
+from common.kube_info.state_builder import StateBuilder
 from common.summarizing.kube_evaluation_summarizer import KubeEvaluationSummarizer
 from common.utils import kube as utils
 from common.utils import now_str
@@ -64,6 +65,7 @@ class SimEnvWorkloadTester(AbstractWorkloadTester):
         done = False
         self.stat.episode_reward = 0
         self.stat.timestep = 0
+        state_builder = StateBuilder(self.informer, summary_writer, 10, 10)
 
         while not done:
             data = self.client.get_json('/step', json={
@@ -76,6 +78,7 @@ class SimEnvWorkloadTester(AbstractWorkloadTester):
             current_clock = self.informer.clock
             logging.info(f'current clock {current_clock}')
 
+            state_builder.build()
             pods = self.informer.get_pods_objects()
             finished_pods = self.finished_pods(pods, self.last_clock, current_clock)
             reward = self._get_reward(finished_pods, pods)
