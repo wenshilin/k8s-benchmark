@@ -18,10 +18,10 @@ class WorkloadGenerator(object):
         self.tracetimeid = 0
 
         # job_number: 14 -> 0-6h; 9 -> 6-24h
-        self.job_number = 17
+        self.job_number = 24
 
         # jobconsist_tasknumber: 6 -> 0-6h; 9 ->6-24h (set: cloud nodes number + edge nodes number)
-        self.jobconsist_tasknumber = 2
+        self.jobconsist_tasknumber = 16
 
         # default:0(6,9), cloud node:1(10,15), edge node:2(8,12), cloud and edge node:3(12,18)
         self.nodenumberid = 0
@@ -61,7 +61,7 @@ class WorkloadGenerator(object):
         params = {
             'start_ms': start_ms,
             'end_ms': end_ms,
-            'cpu_count': max(1, math.ceil(cpu/100)),
+            'cpu_count': max(1, math.ceil(max_cpu/100)),
             'memory_mb': int(ram * 1024),
             'time_ms': int((end_ms - start_ms) * 1000),
             'request_cpu': float(cpu/100),
@@ -137,6 +137,8 @@ class WorkloadGenerator(object):
             task.memory_mb = task.memory_mb + 10
             task.limit_mem_mb = task.limit_mem_mb + 50
             task.request_mem_mb = task.request_mem_mb
+
+            task.time_ms = task.time_ms * 3
 
             # Reduces working time ---cloud-edge
             #if task.limit_cpu > 1:

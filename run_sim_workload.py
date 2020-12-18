@@ -20,11 +20,11 @@ if __name__ == '__main__':
         workload_type='云到边',
         workload_load_directory='workloads',
         # 负载生成时间/负载所在文件夹
-        workload_generated_time='2020-12-15 00-04-49',
+        workload_generated_time='2020-12-16 16-51-00',
         # 需要运行的算法名称
         scheduling_algorithms=['ep', 'lrp', 'mrp', 'bra'],
         # 重复运行的次数，当前为重复运行一种算法repeat_times之后再运行下一算法
-        repeat_times=1,
+        repeat_times=10,
         # 仿真环境服务端端口
         base_url='http://localhost:8001',
     )

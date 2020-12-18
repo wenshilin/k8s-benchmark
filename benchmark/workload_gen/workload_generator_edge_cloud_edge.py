@@ -61,7 +61,7 @@ class WorkloadGenerator(object):
         params = {
             'start_ms': start_ms,
             'end_ms': end_ms,
-            'cpu_count': max(1, math.ceil(cpu/100)),
+            'cpu_count': max(1, math.ceil(max_cpu/100)),
             'memory_mb': int(ram*1024),
             'time_ms': int((end_ms - start_ms) * 1000),
             'request_cpu': float(cpu/100),
@@ -148,11 +148,11 @@ class WorkloadGenerator(object):
             if task.node_type == 'cloud':
                 task.limit_cpu = min(4,task.limit_cpu)
                 task.request_cpu = min(2,task.request_cpu)
-                task.cpu_count = max(1,math.ceil(task.request_cpu))
+                task.cpu_count = max(1,math.ceil(task.limit_cpu))
             elif task.node_type == 'edge1':
                 task.limit_cpu = min(2,task.limit_cpu)
                 task.request_cpu = min(1,task.request_cpu)
-                task.cpu_count = max(1,math.ceil(task.request_cpu))
+                task.cpu_count = max(1,math.ceil(task.limit_cpu))
 
             # Reduces working time
             if task.limit_cpu > 1:

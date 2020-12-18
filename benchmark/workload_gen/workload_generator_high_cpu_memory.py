@@ -18,7 +18,7 @@ class WorkloadGenerator(object):
         self.tracetimeid = 0
 
         # job_number: 14 -> 0-6h; 9 -> 6-24h
-        self.job_number = 1
+        self.job_number = 0
 
         # jobconsist_tasknumber: 6 -> 0-6h; 9 ->6-24h (set: cloud nodes number + edge nodes number)
         self.jobconsist_tasknumber = 16
@@ -62,7 +62,7 @@ class WorkloadGenerator(object):
         params = {
             'start_ms': start_ms,
             'end_ms': end_ms,
-            'cpu_count': max(1, math.ceil(cpu/100)),
+            'cpu_count': max(1, math.ceil(max_cpu/100)),
             'memory_mb': int(ram * 1024),
             'time_ms': int((end_ms - start_ms) * 1000),
             'request_cpu': float(cpu/100),
@@ -137,6 +137,8 @@ class WorkloadGenerator(object):
             task.memory_mb = task.memory_mb + 10
             task.limit_mem_mb = task.limit_mem_mb + 50
             task.request_mem_mb = task.request_mem_mb
+
+            task.time_ms = task.time_ms * 3
 
             # CPU process --- high_cpu_memory
             #if task.node_type == 'cloud':
