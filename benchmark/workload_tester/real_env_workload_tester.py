@@ -38,7 +38,8 @@ class RealEnvWorkloadTester(AbstractWorkloadTester):
 
         client = kubernetes.client.CoreV1Api()
         metrics_server = MetricsServerClient(metrics_server_base_url)
-        cache = create_pod_cache_and_start_listening(client, lambda _: True)
+        cache = create_pod_cache_and_start_listening(client)
+        cache.append_global_filter(utils.is_workload)
         self.informer = RealKubeInformer(
             pod_cache=cache,
             kube_client=client,
