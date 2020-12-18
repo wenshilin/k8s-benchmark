@@ -14,6 +14,7 @@ from common.kube_info.cache.pod_cache import create_pod_cache_and_start_listenin
 from common.kube_info.jct_caculation import calculate_job_complete_times
 from common.kube_info.metrics_server_client import MetricsServerClient
 from common.kube_info.reward_builder import RewardBuilder
+from common.kube_info.state_builder import StateBuilder
 from common.summarizing.kube_evaluation_summarizer import KubeEvaluationSummarizer
 from common.utils import kube as utils
 from common.utils import now_str, load_from_file
@@ -69,12 +70,16 @@ class RealEnvWorkloadTester(AbstractWorkloadTester):
         self.stat.episode_reward = 0
         self.stat.timestep = 0
 
+        # 用于获得节点信息
+        state_builder = StateBuilder(self.informer, summary_writer, 10, 10)
+
         while not all_pod_finished or not self.workload_runner.has_done():
             self.stat.timestep += 1
             reward = self._get_reward()
             self.stat.episode_reward += reward
             summary_writer.add_scalar('reward', reward, self.stat.timestep)
             time.sleep(10)
+            state_builder.build()
             pods = self.informer.get_pods_objects()
             all_pod_finished = all(map(utils.pod_finished, pods))
 
