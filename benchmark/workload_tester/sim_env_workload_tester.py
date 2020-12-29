@@ -42,6 +42,10 @@ class SimEnvWorkloadTester(AbstractWorkloadTester):
     def run_tests(self, tests):
         workload_dir = os.path.join(self.workload_load_directory, self.workload_generated_time)
 
+        save_dir = f'results/tensorboard/{now_str()}-sim'
+        os.makedirs(save_dir, exist_ok=True)
+        summary_writer = SummaryWriter(save_dir)
+        state_builder = StateBuilder(self.informer, summary_writer, 10, 10)
         for idx, name in enumerate(tests):
             logging.info("-----------------------------------------------------------------")
             filename = os.path.join(workload_dir, '%s.yaml' % (name,))
@@ -49,23 +53,18 @@ class SimEnvWorkloadTester(AbstractWorkloadTester):
             with open(filename, 'r') as f:
                 jobs = f.read()
             logging.info('Running %s' % name)
-            save_dir = f'results/tensorboard/{now_str()}-sim'
 
-            os.makedirs(save_dir, exist_ok=True)
-            summary_writer = SummaryWriter(save_dir)
             self.action = algorithm_to_index(name) + 1
             logging.info(f'current action index {self.action}')
             self.start(jobs)
-            self.wait_until_all_job_done(summary_writer, idx)
+            self.wait_until_all_job_done(summary_writer, idx, state_builder)
 
             summarizer = KubeEvaluationSummarizer(self.informer, summary_writer, self.stat)
             summarizer.write_summary(name)
 
-    def wait_until_all_job_done(self, summary_writer, test_idx):
+    def wait_until_all_job_done(self, summary_writer, test_idx, state_builder):
         done = False
         self.stat.episode_reward = 0
-        self.stat.timestep = 0
-        state_builder = StateBuilder(self.informer, summary_writer, 10, 10)
 
         while not done:
             data = self.client.get_json('/step', json={
