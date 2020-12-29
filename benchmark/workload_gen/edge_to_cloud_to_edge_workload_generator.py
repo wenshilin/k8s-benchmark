@@ -13,7 +13,7 @@ class Edge2Cloud2EdgeWorkloadGenerator(WorkloadGenerator):
 
     def __init__(self):
         super().__init__(consts.TASK_TYPES[:3])
-        self.poisson_dist = stats.poisson.rvs(mu=5000, size=1000, random_state=1)
+        self.poisson_dist = stats.poisson.rvs(mu=10000, size=1000, random_state=1)
 
     def _generate_job(self):
         job_dict = self._random_choose_job()
@@ -32,8 +32,8 @@ class Edge2Cloud2EdgeWorkloadGenerator(WorkloadGenerator):
         min_start_time = min([t['startTime'] for t in tasks])
         for t in tasks:
             #t['startTime'] = t['startTime'] - min_start_time + self.prev_job_last_start_time
-            t['startTime'] = int((t['startTime'] - min_start_time) * 8 + self.prev_job_last_start_time)
-            #t['startTime'] = int(self.prev_job_last_start_time)
+            #t['startTime'] = int((t['startTime'] - min_start_time) * 8 + self.prev_job_last_start_time)
+            t['startTime'] = int(self.prev_job_last_start_time)
 
         print('job name: ', ('job-' + str(self.job_count)))
         print('next job start time: ', self.prev_job_last_start_time)
