@@ -11,7 +11,7 @@ from common.utils import kube as utils
 pyplt = py.offline.plot
 
 
-def draw_pod_gantt(pods: List[V1Pod], filename: str):
+def draw_pod_gantt(pods: List[V1Pod], filename: str, start_func, finish_func):
     pod_dicts = []
     colors = {}
     jobs = set()
@@ -19,8 +19,8 @@ def draw_pod_gantt(pods: List[V1Pod], filename: str):
         job_name = utils.get_pod_job_name(pod)
         pod_dicts.append({
             'Task': utils.get_obj_name(pod),
-            'Start': utils.get_pod_creation_timestamp(pod) + datetime.timedelta(hours=8),
-            'Finish': utils.get_pod_finish_time(pod) + datetime.timedelta(hours=8),
+            'Start': start_func(pod) + datetime.timedelta(hours=8),
+            'Finish': finish_func(pod) + datetime.timedelta(hours=8),
             'Type': job_name
         })
         jobs.add(job_name)

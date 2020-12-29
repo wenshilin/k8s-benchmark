@@ -12,10 +12,11 @@ def draw_jct_box(data_frame: pd.DataFrame,
     data = []
     for an in algorithm_names:
         df = data_frame[data_frame['name'] == an]
-        data.append([df['mean(jct)'].mean(), df['min(jct)'].mean(), df['max(jct)'].mean()])
+        data.append(df['Job Completed Time(s)'])
 
     plt.figure()
     plt.boxplot(data, notch=False, sym='o', vert=True, patch_artist=False, showmeans=True,
+                showfliers=False,
                 meanprops={'marker': 'o', 'markerfacecolor': 'magenta', 'markersize': 3},
                 medianprops={'color': 'red', 'linewidth': 3})
 
