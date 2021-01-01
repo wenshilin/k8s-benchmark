@@ -10,7 +10,8 @@ from scripts.read_pod_from_file import read_pod_from_file
 
 def main():
     pickle_filenames = [
-        '2020-11-01 10-14-18-边到云到边-ds.pk'
+        '2020-12-23-10-21-54-drl.pk',
+        '2020-12-21-11-25-17-云到边-lrp.pk'
     ]
     pickle_dir = 'results/pods'
     pickle_filenames = [os.path.join(pickle_dir, pf) for pf in pickle_filenames]
