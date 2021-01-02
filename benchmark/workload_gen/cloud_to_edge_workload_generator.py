@@ -14,7 +14,8 @@ class Cloud2EdgeWorkloadGenerator(WorkloadGenerator):
 
     def __init__(self):
         super().__init__(consts.TASK_TYPES[:2])
-        self.poisson_dist = stats.poisson.rvs(mu=20000, size=1000, random_state=1)
+        #self.poisson_dist = stats.poisson.rvs(mu=75000, size=1000, random_state=1)  #bra
+        self.poisson_dist = stats.poisson.rvs(mu=280000, size=1000, random_state=1)  #lrp
 
     def _generate_job(self):
         job_dict = self._random_choose_job()
@@ -46,33 +47,77 @@ class Cloud2EdgeWorkloadGenerator(WorkloadGenerator):
         return tasks
 
     def _post_process_tasks(self, tasks):
+        cloud_task_cnt = 0
+        edge_task_cnt = 0
         for i, task in enumerate(tasks):
             task.job_tasknum = 'n' + str(len(tasks))
             if task.node_type == 'cloud':
                 # CPU
-                task.request_cpu += 0.5
-                task.limit_cpu += 0.5
-                task.limit_cpu = min(4,task.limit_cpu)
-                task.cpu_count = max(1, math.ceil(task.limit_cpu))
-                if task.request_cpu > 4:
-                    task.cpu_count = 4
+                if cloud_task_cnt % 3 == 0:
+                    task.request_cpu = 2
                     task.limit_cpu = 4
-                    task.request_cpu = 3.5
+                    task.cpu_count = 4
+                    task.memory_mb = 10
+                    task.limit_mem_mb = 60
+                    task.request_mem_mb = 10
+                    task.time_ms = int(240000/task.cpu_count)
+                    task.task_type = 'cpu'
 
-                task.task_type = 'cpu'
+                elif cloud_task_cnt % 3 == 1:
+                    task.request_cpu = 3
+                    task.limit_cpu = 4
+                    task.cpu_count = 4
+                    task.memory_mb = 10
+                    task.limit_mem_mb = 60
+                    task.request_mem_mb = 10
+                    task.time_ms = int(480000/task.cpu_count)
+                    task.task_type = 'cpu'
+
+                elif cloud_task_cnt % 3 == 2:
+                    task.request_cpu = 3.7
+                    task.limit_cpu = 6
+                    task.cpu_count = 6
+                    task.memory_mb = 10
+                    task.limit_mem_mb = 60
+                    task.request_mem_mb = 10
+                    task.time_ms = int(360000/task.cpu_count)
+                    task.task_type = 'cpu'
+
+                cloud_task_cnt += 1
 
             elif task.node_type == 'edge1':
                 # CPU
-                #task.request_cpu += 1
-                #task.limit_cpu += 2
-                task.limit_cpu = min(2, task.limit_cpu)
-                task.cpu_count = max(1, math.ceil(task.limit_cpu))
-                if task.request_cpu > 2:
-                    task.cpu_count = 2
+                if edge_task_cnt % 3 == 0:
+                    task.request_cpu = 1
                     task.limit_cpu = 2
-                    task.request_cpu = 1.5
+                    task.cpu_count = 2
+                    task.memory_mb = 5
+                    task.limit_mem_mb = 55
+                    task.request_mem_mb = 5
+                    task.time_ms = int(120000/task.cpu_count)
+                    task.task_type = 'cpu'
 
-                task.task_type = 'cpu'
+                elif edge_task_cnt % 3 == 1:
+                    task.request_cpu = 1.5
+                    task.limit_cpu = 2
+                    task.cpu_count = 2
+                    task.memory_mb = 5
+                    task.limit_mem_mb = 55
+                    task.request_mem_mb = 5
+                    task.time_ms = int(240000/task.cpu_count)
+                    task.task_type = 'cpu'
+
+                elif edge_task_cnt % 3 == 2:
+                    task.request_cpu = 1.7
+                    task.limit_cpu = 3
+                    task.cpu_count = 3
+                    task.memory_mb = 5
+                    task.limit_mem_mb = 55
+                    task.request_mem_mb = 5
+                    task.time_ms = int(180000/task.cpu_count)
+                    task.task_type = 'cpu'
+
+                edge_task_cnt += 1
 
         tasks = self._build_dicts(tasks)
         return tasks

@@ -53,8 +53,9 @@ class Edge2Cloud2EdgeWorkloadGenerator(WorkloadGenerator):
                 # Mix
                 #task.request_mem_mb = task.request_mem_mb
                 #task.limit_mem_mb = task.limit_mem_mb
+
                 task.request_cpu += 1
-                task.limit_cpu += 1
+                task.limit_cpu += 2
                 task.task_type = 'mix'
 
                 #Memory
@@ -71,6 +72,9 @@ class Edge2Cloud2EdgeWorkloadGenerator(WorkloadGenerator):
                 # Mix
                 #task.request_mem_mb = task.request_mem_mb
                 #task.limit_mem_mb = task.limit_mem_mb
+
+                task.request_cpu = task.request_cpu
+                task.limit_cpu += 1
                 task.task_type = 'mix'
 
                 # Memory

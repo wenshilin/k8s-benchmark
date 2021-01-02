@@ -146,15 +146,16 @@ class WorkloadGenerator(object):
 
             #CPU process --- edge-cloud-edge
             if task.node_type == 'cloud':
+                task.limit_cpu = min(8,task.limit_cpu)
+                task.request_cpu = min(4,task.request_cpu)
+                task.cpu_count = max(1,math.ceil(task.limit_cpu))
+
+            elif task.node_type == 'edge1':
                 task.limit_cpu = min(4,task.limit_cpu)
                 task.request_cpu = min(2,task.request_cpu)
                 task.cpu_count = max(1,math.ceil(task.limit_cpu))
-            elif task.node_type == 'edge1':
-                task.limit_cpu = min(2,task.limit_cpu)
-                task.request_cpu = min(1,task.request_cpu)
-                task.cpu_count = max(1,math.ceil(task.limit_cpu))
 
-            task.time_ms = int(task.time_ms * 1.5)
+            task.time_ms = int(task.time_ms * 2)
 
             # Reduces working time ---cloud-edge
             # if task.limit_cpu > 1:

@@ -7,7 +7,7 @@ from benchmark.job_data_reading import read_data_from_directories
 def main():
     # 数据的根目录
     root_dir = 'results/jobs'
-    root_dir = '/Volumes/Data/实验数据/ece-morning-sim52_53-c4e2/used-jobs'
+    #root_dir = '/Volumes/Data/实验数据/ece-morning-sim52_53-c4e2/used-jobs'
     # root_dir = '/Users/xenon/Desktop/casco/results/jobs'
 
     dirs = list_dir(root_dir)

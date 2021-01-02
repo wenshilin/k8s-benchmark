@@ -10,7 +10,7 @@ from benchmark import workload_gen
 class WorkloadGenTest(TestCase):
 
     def setUp(self) -> None:
-        self.out_dir = 'workloads/'
+        self.out_dir = 'workloads-1/'
         os.makedirs(self.out_dir, exist_ok=True)
         logging.basicConfig(
             level=logging.INFO,
