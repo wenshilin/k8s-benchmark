@@ -7,11 +7,9 @@ import pandas as pd
 
 def draw_cdf(data_frame: pd.DataFrame,
              algorithm_names,
-             save_filename: str,
              title: str = None,
              x_label: str = None,
-             y_label: str = 'CDF',
-             dir_name: str = 'results/figures'):
+             y_label: str = 'CDF'):
     max_jct = data_frame['Job Completed Time(s)'].max()
     max_jct_int = math.ceil(max_jct) + 1
 
@@ -42,5 +40,3 @@ def draw_cdf(data_frame: pd.DataFrame,
 
         plt.plot(np.arange(max_jct_int), cdf_list, '-', linewidth=2)
         plt.legend(labels=algorithm_names, loc='best')
-
-    plt.show()

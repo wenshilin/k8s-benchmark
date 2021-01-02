@@ -11,11 +11,9 @@ def auto_label(rects):
 
 def draw_makespan(data_frame: pd.DataFrame,
                   algorithm_names,
-                  save_filename: str,
                   title: str = None,
                   x_label: str = None,
-                  y_label: str = 'Makespan(s)',
-                  dir_name: str = 'results/figures'):
+                  y_label: str = 'Makespan(s)'):
     means = []
     for an in algorithm_names:
         df = data_frame[data_frame['name'] == an]
@@ -34,4 +32,3 @@ def draw_makespan(data_frame: pd.DataFrame,
     plt.ylabel(y_label, fontsize=12)
 
     plt.grid(True)
-    plt.show()
