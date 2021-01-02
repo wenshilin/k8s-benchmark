@@ -1,0 +1,700 @@
+- pod:
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      labels:
+        app: linc-workload
+        job: job-0
+        jobTaskNumber: n20
+        taskType: mix
+      name: job-0-edge1-0
+      namespace: default
+    spec:
+      containers:
+      - args:
+        - --cpu-count
+        - '3'
+        - --memory-mb
+        - '81'
+        - --iter-factor
+        - '88000'
+        image: 10.1.114.59:5000/general-task:cpp
+        name: task
+        resources:
+          limits:
+            cpu: '2.7'
+            memory: 142Mi
+          requests:
+            cpu: '0.5'
+            memory: 71Mi
+      imagePullPolicy: IfNotPresent
+      nodeSelector:
+        linc/nodeType: edge1
+      restartPolicy: OnFailure
+      schedulerName: linc-scheduler-bra
+  startTime: 0
+- pod:
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      labels:
+        app: linc-workload
+        job: job-0
+        jobTaskNumber: n20
+        taskType: mix
+      name: job-0-cloud-1
+      namespace: default
+    spec:
+      containers:
+      - args:
+        - --cpu-count
+        - '4'
+        - --memory-mb
+        - '81'
+        - --iter-factor
+        - '80000'
+        image: 10.1.114.59:5000/general-task:cpp
+        name: task
+        resources:
+          limits:
+            cpu: '3.4'
+            memory: 142Mi
+          requests:
+            cpu: '2.01'
+            memory: 71Mi
+      imagePullPolicy: IfNotPresent
+      nodeSelector:
+        linc/nodeType: cloud
+      restartPolicy: OnFailure
+      schedulerName: linc-scheduler-bra
+  startTime: 0
+- pod:
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      labels:
+        app: linc-workload
+        job: job-0
+        jobTaskNumber: n20
+        taskType: mix
+      name: job-0-cloud-2
+      namespace: default
+    spec:
+      containers:
+      - args:
+        - --cpu-count
+        - '5'
+        - --memory-mb
+        - '91'
+        - --iter-factor
+        - '96000'
+        image: 10.1.114.59:5000/general-task:cpp
+        name: task
+        resources:
+          limits:
+            cpu: '4.39'
+            memory: 142Mi
+          requests:
+            cpu: '3.03'
+            memory: 81Mi
+      imagePullPolicy: IfNotPresent
+      nodeSelector:
+        linc/nodeType: cloud
+      restartPolicy: OnFailure
+      schedulerName: linc-scheduler-bra
+  startTime: 0
+- pod:
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      labels:
+        app: linc-workload
+        job: job-0
+        jobTaskNumber: n20
+        taskType: mix
+      name: job-0-edge1-3
+      namespace: default
+    spec:
+      containers:
+      - args:
+        - --cpu-count
+        - '4'
+        - --memory-mb
+        - '81'
+        - --iter-factor
+        - '88000'
+        image: 10.1.114.59:5000/general-task:cpp
+        name: task
+        resources:
+          limits:
+            cpu: '3.75'
+            memory: 142Mi
+          requests:
+            cpu: '1.01'
+            memory: 71Mi
+      imagePullPolicy: IfNotPresent
+      nodeSelector:
+        linc/nodeType: edge1
+      restartPolicy: OnFailure
+      schedulerName: linc-scheduler-bra
+  startTime: 0
+- pod:
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      labels:
+        app: linc-workload
+        job: job-0
+        jobTaskNumber: n20
+        taskType: mix
+      name: job-0-edge1-4
+      namespace: default
+    spec:
+      containers:
+      - args:
+        - --cpu-count
+        - '4'
+        - --memory-mb
+        - '81'
+        - --iter-factor
+        - '84000'
+        image: 10.1.114.59:5000/general-task:cpp
+        name: task
+        resources:
+          limits:
+            cpu: '3.48'
+            memory: 142Mi
+          requests:
+            cpu: '1.0'
+            memory: 71Mi
+      imagePullPolicy: IfNotPresent
+      nodeSelector:
+        linc/nodeType: edge1
+      restartPolicy: OnFailure
+      schedulerName: linc-scheduler-bra
+  startTime: 0
+- pod:
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      labels:
+        app: linc-workload
+        job: job-0
+        jobTaskNumber: n20
+        taskType: mix
+      name: job-0-cloud-5
+      namespace: default
+    spec:
+      containers:
+      - args:
+        - --cpu-count
+        - '6'
+        - --memory-mb
+        - '91'
+        - --iter-factor
+        - '112000'
+        image: 10.1.114.59:5000/general-task:cpp
+        name: task
+        resources:
+          limits:
+            cpu: '5.64'
+            memory: 152Mi
+          requests:
+            cpu: '4'
+            memory: 81Mi
+      imagePullPolicy: IfNotPresent
+      nodeSelector:
+        linc/nodeType: cloud
+      restartPolicy: OnFailure
+      schedulerName: linc-scheduler-bra
+  startTime: 0
+- pod:
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      labels:
+        app: linc-workload
+        job: job-0
+        jobTaskNumber: n20
+        taskType: mix
+      name: job-0-cloud-6
+      namespace: default
+    spec:
+      containers:
+      - args:
+        - --cpu-count
+        - '4'
+        - --memory-mb
+        - '81'
+        - --iter-factor
+        - '80000'
+        image: 10.1.114.59:5000/general-task:cpp
+        name: task
+        resources:
+          limits:
+            cpu: '3.51'
+            memory: 142Mi
+          requests:
+            cpu: '2.0'
+            memory: 71Mi
+      imagePullPolicy: IfNotPresent
+      nodeSelector:
+        linc/nodeType: cloud
+      restartPolicy: OnFailure
+      schedulerName: linc-scheduler-bra
+  startTime: 0
+- pod:
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      labels:
+        app: linc-workload
+        job: job-0
+        jobTaskNumber: n20
+        taskType: mix
+      name: job-0-edge1-7
+      namespace: default
+    spec:
+      containers:
+      - args:
+        - --cpu-count
+        - '3'
+        - --memory-mb
+        - '81'
+        - --iter-factor
+        - '84000'
+        image: 10.1.114.59:5000/general-task:cpp
+        name: task
+        resources:
+          limits:
+            cpu: '2.5'
+            memory: 142Mi
+          requests:
+            cpu: '0.5'
+            memory: 71Mi
+      imagePullPolicy: IfNotPresent
+      nodeSelector:
+        linc/nodeType: edge1
+      restartPolicy: OnFailure
+      schedulerName: linc-scheduler-bra
+  startTime: 0
+- pod:
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      labels:
+        app: linc-workload
+        job: job-0
+        jobTaskNumber: n20
+        taskType: mix
+      name: job-0-edge1-8
+      namespace: default
+    spec:
+      containers:
+      - args:
+        - --cpu-count
+        - '4'
+        - --memory-mb
+        - '81'
+        - --iter-factor
+        - '92000'
+        image: 10.1.114.59:5000/general-task:cpp
+        name: task
+        resources:
+          limits:
+            cpu: '3.55'
+            memory: 142Mi
+          requests:
+            cpu: '1.0'
+            memory: 71Mi
+      imagePullPolicy: IfNotPresent
+      nodeSelector:
+        linc/nodeType: edge1
+      restartPolicy: OnFailure
+      schedulerName: linc-scheduler-bra
+  startTime: 0
+- pod:
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      labels:
+        app: linc-workload
+        job: job-0
+        jobTaskNumber: n20
+        taskType: mix
+      name: job-0-cloud-9
+      namespace: default
+    spec:
+      containers:
+      - args:
+        - --cpu-count
+        - '5'
+        - --memory-mb
+        - '81'
+        - --iter-factor
+        - '84000'
+        image: 10.1.114.59:5000/general-task:cpp
+        name: task
+        resources:
+          limits:
+            cpu: '4.63'
+            memory: 142Mi
+          requests:
+            cpu: '3.04'
+            memory: 71Mi
+      imagePullPolicy: IfNotPresent
+      nodeSelector:
+        linc/nodeType: cloud
+      restartPolicy: OnFailure
+      schedulerName: linc-scheduler-bra
+  startTime: 0
+- pod:
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      labels:
+        app: linc-workload
+        job: job-0
+        jobTaskNumber: n20
+        taskType: mix
+      name: job-0-cloud-10
+      namespace: default
+    spec:
+      containers:
+      - args:
+        - --cpu-count
+        - '6'
+        - --memory-mb
+        - '81'
+        - --iter-factor
+        - '84000'
+        image: 10.1.114.59:5000/general-task:cpp
+        name: task
+        resources:
+          limits:
+            cpu: '5.25'
+            memory: 142Mi
+          requests:
+            cpu: '4'
+            memory: 71Mi
+      imagePullPolicy: IfNotPresent
+      nodeSelector:
+        linc/nodeType: cloud
+      restartPolicy: OnFailure
+      schedulerName: linc-scheduler-bra
+  startTime: 0
+- pod:
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      labels:
+        app: linc-workload
+        job: job-0
+        jobTaskNumber: n20
+        taskType: mix
+      name: job-0-edge1-12
+      namespace: default
+    spec:
+      containers:
+      - args:
+        - --cpu-count
+        - '3'
+        - --memory-mb
+        - '81'
+        - --iter-factor
+        - '88000'
+        image: 10.1.114.59:5000/general-task:cpp
+        name: task
+        resources:
+          limits:
+            cpu: '2.47'
+            memory: 142Mi
+          requests:
+            cpu: '0.515'
+            memory: 71Mi
+      imagePullPolicy: IfNotPresent
+      nodeSelector:
+        linc/nodeType: edge1
+      restartPolicy: OnFailure
+      schedulerName: linc-scheduler-bra
+  startTime: 0
+- pod:
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      labels:
+        app: linc-workload
+        job: job-0
+        jobTaskNumber: n20
+        taskType: mix
+      name: job-0-cloud-14
+      namespace: default
+    spec:
+      containers:
+      - args:
+        - --cpu-count
+        - '5'
+        - --memory-mb
+        - '81'
+        - --iter-factor
+        - '80000'
+        image: 10.1.114.59:5000/general-task:cpp
+        name: task
+        resources:
+          limits:
+            cpu: '4.62'
+            memory: 142Mi
+          requests:
+            cpu: '3.02'
+            memory: 71Mi
+      imagePullPolicy: IfNotPresent
+      nodeSelector:
+        linc/nodeType: cloud
+      restartPolicy: OnFailure
+      schedulerName: linc-scheduler-bra
+  startTime: 0
+- pod:
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      labels:
+        app: linc-workload
+        job: job-0
+        jobTaskNumber: n20
+        taskType: mix
+      name: job-0-edge1-15
+      namespace: default
+    spec:
+      containers:
+      - args:
+        - --cpu-count
+        - '4'
+        - --memory-mb
+        - '81'
+        - --iter-factor
+        - '84000'
+        image: 10.1.114.59:5000/general-task:cpp
+        name: task
+        resources:
+          limits:
+            cpu: '3.67'
+            memory: 142Mi
+          requests:
+            cpu: '1.0'
+            memory: 71Mi
+      imagePullPolicy: IfNotPresent
+      nodeSelector:
+        linc/nodeType: edge1
+      restartPolicy: OnFailure
+      schedulerName: linc-scheduler-bra
+  startTime: 0
+- pod:
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      labels:
+        app: linc-workload
+        job: job-0
+        jobTaskNumber: n20
+        taskType: mix
+      name: job-0-cloud-17
+      namespace: default
+    spec:
+      containers:
+      - args:
+        - --cpu-count
+        - '6'
+        - --memory-mb
+        - '91'
+        - --iter-factor
+        - '96000'
+        image: 10.1.114.59:5000/general-task:cpp
+        name: task
+        resources:
+          limits:
+            cpu: '5.7'
+            memory: 142Mi
+          requests:
+            cpu: '4'
+            memory: 81Mi
+      imagePullPolicy: IfNotPresent
+      nodeSelector:
+        linc/nodeType: cloud
+      restartPolicy: OnFailure
+      schedulerName: linc-scheduler-bra
+  startTime: 0
+- pod:
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      labels:
+        app: linc-workload
+        job: job-0
+        jobTaskNumber: n20
+        taskType: mix
+      name: job-0-cloud-18
+      namespace: default
+    spec:
+      containers:
+      - args:
+        - --cpu-count
+        - '4'
+        - --memory-mb
+        - '81'
+        - --iter-factor
+        - '84000'
+        image: 10.1.114.59:5000/general-task:cpp
+        name: task
+        resources:
+          limits:
+            cpu: '3.63'
+            memory: 142Mi
+          requests:
+            cpu: '2.04'
+            memory: 71Mi
+      imagePullPolicy: IfNotPresent
+      nodeSelector:
+        linc/nodeType: cloud
+      restartPolicy: OnFailure
+      schedulerName: linc-scheduler-bra
+  startTime: 0
+- pod:
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      labels:
+        app: linc-workload
+        job: job-0
+        jobTaskNumber: n20
+        taskType: mix
+      name: job-0-edge1-19
+      namespace: default
+    spec:
+      containers:
+      - args:
+        - --cpu-count
+        - '3'
+        - --memory-mb
+        - '81'
+        - --iter-factor
+        - '84000'
+        image: 10.1.114.59:5000/general-task:cpp
+        name: task
+        resources:
+          limits:
+            cpu: '2.36'
+            memory: 142Mi
+          requests:
+            cpu: '0.515'
+            memory: 71Mi
+      imagePullPolicy: IfNotPresent
+      nodeSelector:
+        linc/nodeType: edge1
+      restartPolicy: OnFailure
+      schedulerName: linc-scheduler-bra
+  startTime: 0
+- pod:
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      labels:
+        app: linc-workload
+        job: job-0
+        jobTaskNumber: n20
+        taskType: mix
+      name: job-0-edge1-11
+      namespace: default
+    spec:
+      containers:
+      - args:
+        - --cpu-count
+        - '4'
+        - --memory-mb
+        - '81'
+        - --iter-factor
+        - '80000'
+        image: 10.1.114.59:5000/general-task:cpp
+        name: task
+        resources:
+          limits:
+            cpu: '3.49'
+            memory: 142Mi
+          requests:
+            cpu: '1.0'
+            memory: 71Mi
+      imagePullPolicy: IfNotPresent
+      nodeSelector:
+        linc/nodeType: edge1
+      restartPolicy: OnFailure
+      schedulerName: linc-scheduler-bra
+  startTime: 0
+- pod:
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      labels:
+        app: linc-workload
+        job: job-0
+        jobTaskNumber: n20
+        taskType: mix
+      name: job-0-edge1-16
+      namespace: default
+    spec:
+      containers:
+      - args:
+        - --cpu-count
+        - '4'
+        - --memory-mb
+        - '81'
+        - --iter-factor
+        - '80000'
+        image: 10.1.114.59:5000/general-task:cpp
+        name: task
+        resources:
+          limits:
+            cpu: '3.45'
+            memory: 142Mi
+          requests:
+            cpu: '1.0'
+            memory: 71Mi
+      imagePullPolicy: IfNotPresent
+      nodeSelector:
+        linc/nodeType: edge1
+      restartPolicy: OnFailure
+      schedulerName: linc-scheduler-bra
+  startTime: 0
+- pod:
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      labels:
+        app: linc-workload
+        job: job-0
+        jobTaskNumber: n20
+        taskType: mix
+      name: job-0-cloud-13
+      namespace: default
+    spec:
+      containers:
+      - args:
+        - --cpu-count
+        - '4'
+        - --memory-mb
+        - '102'
+        - --iter-factor
+        - '80000'
+        image: 10.1.114.59:5000/general-task:cpp
+        name: task
+        resources:
+          limits:
+            cpu: '3.72'
+            memory: 142Mi
+          requests:
+            cpu: '2.02'
+            memory: 92Mi
+      imagePullPolicy: IfNotPresent
+      nodeSelector:
+        linc/nodeType: cloud
+      restartPolicy: OnFailure
+      schedulerName: linc-scheduler-bra
+  startTime: 0

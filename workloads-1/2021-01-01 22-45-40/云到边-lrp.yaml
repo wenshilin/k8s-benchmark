@@ -1,0 +1,105 @@
+- pod:
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      labels:
+        app: linc-workload
+        job: job-0
+        jobTaskNumber: n3
+        taskType: cpu
+      name: job-0-edge1-0
+      namespace: default
+    spec:
+      containers:
+      - args:
+        - --cpu-count
+        - '2'
+        - --memory-mb
+        - '5'
+        - --iter-factor
+        - '60000'
+        image: 10.1.114.59:5000/general-task:cpp
+        name: task
+        resources:
+          limits:
+            cpu: '2'
+            memory: 55Mi
+          requests:
+            cpu: '1'
+            memory: 5Mi
+      imagePullPolicy: IfNotPresent
+      nodeSelector:
+        linc/nodeType: edge1
+      restartPolicy: OnFailure
+      schedulerName: linc-scheduler-lrp
+  startTime: 0
+- pod:
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      labels:
+        app: linc-workload
+        job: job-0
+        jobTaskNumber: n3
+        taskType: cpu
+      name: job-0-edge1-1
+      namespace: default
+    spec:
+      containers:
+      - args:
+        - --cpu-count
+        - '2'
+        - --memory-mb
+        - '5'
+        - --iter-factor
+        - '120000'
+        image: 10.1.114.59:5000/general-task:cpp
+        name: task
+        resources:
+          limits:
+            cpu: '2'
+            memory: 55Mi
+          requests:
+            cpu: '1.5'
+            memory: 5Mi
+      imagePullPolicy: IfNotPresent
+      nodeSelector:
+        linc/nodeType: edge1
+      restartPolicy: OnFailure
+      schedulerName: linc-scheduler-lrp
+  startTime: 0
+- pod:
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      labels:
+        app: linc-workload
+        job: job-0
+        jobTaskNumber: n3
+        taskType: cpu
+      name: job-0-edge1-2
+      namespace: default
+    spec:
+      containers:
+      - args:
+        - --cpu-count
+        - '3'
+        - --memory-mb
+        - '5'
+        - --iter-factor
+        - '60000'
+        image: 10.1.114.59:5000/general-task:cpp
+        name: task
+        resources:
+          limits:
+            cpu: '3'
+            memory: 55Mi
+          requests:
+            cpu: '1.7'
+            memory: 5Mi
+      imagePullPolicy: IfNotPresent
+      nodeSelector:
+        linc/nodeType: edge1
+      restartPolicy: OnFailure
+      schedulerName: linc-scheduler-lrp
+  startTime: 0

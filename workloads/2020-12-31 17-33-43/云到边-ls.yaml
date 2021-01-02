@@ -1,0 +1,210 @@
+- pod:
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      labels:
+        app: linc-workload
+        job: job-0
+        jobTaskNumber: n6
+        taskType: cpu
+      name: job-0-cloud-0
+      namespace: default
+    spec:
+      containers:
+      - args:
+        - --cpu-count
+        - '4'
+        - --memory-mb
+        - '0'
+        - --iter-factor
+        - '240000'
+        image: 10.1.114.59:5000/general-task:cpp
+        name: task
+        resources:
+          limits:
+            cpu: '4'
+            memory: 0Mi
+          requests:
+            cpu: '2'
+            memory: 0Mi
+      imagePullPolicy: IfNotPresent
+      nodeSelector:
+        linc/nodeType: cloud
+      restartPolicy: OnFailure
+      schedulerName: linc-scheduler
+  startTime: 0
+- pod:
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      labels:
+        app: linc-workload
+        job: job-0
+        jobTaskNumber: n6
+        taskType: cpu
+      name: job-0-edge1-1
+      namespace: default
+    spec:
+      containers:
+      - args:
+        - --cpu-count
+        - '2'
+        - --memory-mb
+        - '0'
+        - --iter-factor
+        - '120000'
+        image: 10.1.114.59:5000/general-task:cpp
+        name: task
+        resources:
+          limits:
+            cpu: '2'
+            memory: 0Mi
+          requests:
+            cpu: '1'
+            memory: 0Mi
+      imagePullPolicy: IfNotPresent
+      nodeSelector:
+        linc/nodeType: edge1
+      restartPolicy: OnFailure
+      schedulerName: linc-scheduler
+  startTime: 0
+- pod:
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      labels:
+        app: linc-workload
+        job: job-0
+        jobTaskNumber: n6
+        taskType: cpu
+      name: job-0-cloud-2
+      namespace: default
+    spec:
+      containers:
+      - args:
+        - --cpu-count
+        - '4'
+        - --memory-mb
+        - '0'
+        - --iter-factor
+        - '240000'
+        image: 10.1.114.59:5000/general-task:cpp
+        name: task
+        resources:
+          limits:
+            cpu: '4'
+            memory: 0Mi
+          requests:
+            cpu: '3'
+            memory: 0Mi
+      imagePullPolicy: IfNotPresent
+      nodeSelector:
+        linc/nodeType: cloud
+      restartPolicy: OnFailure
+      schedulerName: linc-scheduler
+  startTime: 0
+- pod:
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      labels:
+        app: linc-workload
+        job: job-0
+        jobTaskNumber: n6
+        taskType: cpu
+      name: job-0-edge1-3
+      namespace: default
+    spec:
+      containers:
+      - args:
+        - --cpu-count
+        - '2'
+        - --memory-mb
+        - '0'
+        - --iter-factor
+        - '120000'
+        image: 10.1.114.59:5000/general-task:cpp
+        name: task
+        resources:
+          limits:
+            cpu: '2'
+            memory: 0Mi
+          requests:
+            cpu: '1.5'
+            memory: 0Mi
+      imagePullPolicy: IfNotPresent
+      nodeSelector:
+        linc/nodeType: edge1
+      restartPolicy: OnFailure
+      schedulerName: linc-scheduler
+  startTime: 0
+- pod:
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      labels:
+        app: linc-workload
+        job: job-0
+        jobTaskNumber: n6
+        taskType: cpu
+      name: job-0-cloud-4
+      namespace: default
+    spec:
+      containers:
+      - args:
+        - --cpu-count
+        - '6'
+        - --memory-mb
+        - '0'
+        - --iter-factor
+        - '120000'
+        image: 10.1.114.59:5000/general-task:cpp
+        name: task
+        resources:
+          limits:
+            cpu: '6'
+            memory: 0Mi
+          requests:
+            cpu: '4'
+            memory: 0Mi
+      imagePullPolicy: IfNotPresent
+      nodeSelector:
+        linc/nodeType: cloud
+      restartPolicy: OnFailure
+      schedulerName: linc-scheduler
+  startTime: 0
+- pod:
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      labels:
+        app: linc-workload
+        job: job-0
+        jobTaskNumber: n6
+        taskType: cpu
+      name: job-0-edge1-5
+      namespace: default
+    spec:
+      containers:
+      - args:
+        - --cpu-count
+        - '3'
+        - --memory-mb
+        - '0'
+        - --iter-factor
+        - '60000'
+        image: 10.1.114.59:5000/general-task:cpp
+        name: task
+        resources:
+          limits:
+            cpu: '3'
+            memory: 0Mi
+          requests:
+            cpu: '2'
+            memory: 0Mi
+      imagePullPolicy: IfNotPresent
+      nodeSelector:
+        linc/nodeType: edge1
+      restartPolicy: OnFailure
+      schedulerName: linc-scheduler
+  startTime: 0
