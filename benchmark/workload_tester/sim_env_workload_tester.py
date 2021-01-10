@@ -54,7 +54,10 @@ class SimEnvWorkloadTester(AbstractWorkloadTester):
                 jobs = f.read()
             logging.info('Running %s' % name)
 
-            self.action = algorithm_to_index(name) + 1
+            if name == 'as_basic':
+                self.action = -1
+            else:
+                self.action = algorithm_to_index(name) + 1
             logging.info(f'current action index {self.action}')
             self.start(jobs)
             self.wait_until_all_job_done(summary_writer, idx, state_builder)
