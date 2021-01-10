@@ -18,14 +18,14 @@ if __name__ == '__main__':
     workload_tester = SimEnvWorkloadTester(
         # 负载类型
         workload_type='云到边',
-        workload_load_directory='workloads-6',
+        workload_load_directory='workloads',
         # 负载生成时间/负载所在文件夹
-        workload_generated_time='2021-01-08 19-32-43',
+        workload_generated_time='2021-01-06 18-37-03 mix',
         # 需要运行的算法名称
         scheduling_algorithms=['as_basic', 'ep', 'lrp', 'mrp', 'bra'],
         # 重复运行的次数，当前为重复运行一种算法repeat_times之后再运行下一算法
         repeat_times=20,
         # 仿真环境服务端端口
-        base_url='http://localhost:8002',
+        base_url='http://localhost:8001',
     )
     workload_tester.run()
