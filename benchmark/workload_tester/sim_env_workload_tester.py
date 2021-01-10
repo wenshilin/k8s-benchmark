@@ -54,7 +54,7 @@ class SimEnvWorkloadTester(AbstractWorkloadTester):
                 jobs = f.read()
             logging.info('Running %s' % name)
 
-            if name == 'as_basic':
+            if 'as_basic' in name:
                 self.action = -1
             else:
                 self.action = algorithm_to_index(name) + 1
