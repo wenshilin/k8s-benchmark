@@ -21,7 +21,7 @@ class WorkloadGenerator(object):
         self.job_number = 0
 
         # jobconsist_tasknumber: 6 -> 0-6h; 9 ->6-24h (set: cloud nodes number + edge nodes number)
-        self.jobconsist_tasknumber = 3
+        self.jobconsist_tasknumber = 8
 
         # default:0(6,9), cloud node:1(10,15), edge node:2(8,12), cloud and edge node:3(12,18)
         self.nodenumberid = 0
@@ -86,6 +86,8 @@ class WorkloadGenerator(object):
                 job = self._generate_job()
                 jobs.append(job)
                 self.job_count += 1
+            else:
+                break
         return jobs
 
     def _generate_general_tasks(self, job_dict: dict, first_n: int = 100) -> list:
@@ -132,27 +134,27 @@ class WorkloadGenerator(object):
     def _build_dicts(self, tasks: typing.List[Task]) -> typing.List[dict]:
         for i, task in enumerate(tasks):
             # To solve OOMKilled
-            task.memory_mb = task.memory_mb + 10
-            task.limit_mem_mb = task.limit_mem_mb + 50
-            task.request_mem_mb = task.request_mem_mb
+            #task.memory_mb = task.memory_mb + 10
+            #task.limit_mem_mb = task.limit_mem_mb + 50
+            #task.request_mem_mb = task.request_mem_mb
 
             # CPU process --- edge-cloud-edge
-            if task.node_type == 'cloud':
-                task.limit_cpu = min(4, task.limit_cpu)
-                task.request_cpu = min(4, task.request_cpu)
-                task.cpu_count = max(1, math.ceil(task.limit_cpu))
-            elif task.node_type == 'edge1':
-                task.limit_cpu = min(0.5, task.limit_cpu)
-                task.request_cpu = min(0.5, task.request_cpu)
-                task.cpu_count = max(1, math.ceil(task.limit_cpu))
+            #if task.node_type == 'cloud':
+            #    task.limit_cpu = min(4, task.limit_cpu)
+            #    task.request_cpu = min(4, task.request_cpu)
+            #    task.cpu_count = max(1, math.ceil(task.limit_cpu))
+            #elif task.node_type == 'edge1':
+            #    task.limit_cpu = min(0.5, task.limit_cpu)
+            #    task.request_cpu = min(0.5, task.request_cpu)
+            #    task.cpu_count = max(1, math.ceil(task.limit_cpu))
 
             # Reduces working time
-            if task.limit_cpu > 1:
-                task.time_ms = int(task.time_ms / task.limit_cpu / 50)
-            else:
-                task.time_ms = int(task.time_ms / 1 / 50)
+            #if task.limit_cpu > 1:
+            #    task.time_ms = int(task.time_ms / task.limit_cpu / 50)
+            #else:
+            #    task.time_ms = int(task.time_ms / 1 / 50)
 
-            while task.time_ms >= 300000:
+            while task.time_ms >= 30000000:
                 task.time_ms = int(task.time_ms / 2)
 
             # Build dictionary
