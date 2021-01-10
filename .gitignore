@@ -126,6 +126,7 @@ dmypy.json
 .idea/
 
 results/
+old-results/
 kube-config
 !results/README.md
 !workloads/README.md
