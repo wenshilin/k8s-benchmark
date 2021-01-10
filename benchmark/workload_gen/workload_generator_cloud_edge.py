@@ -4,6 +4,8 @@ import math
 
 import yaml
 
+from scipy import stats
+
 from common import consts
 from common.utils.json import read_sql_file
 from .task import Task
@@ -18,10 +20,10 @@ class WorkloadGenerator(object):
         self.tracetimeid = 0
 
         # job_number: 14 -> 0-6h; 9 -> 6-24h
-        self.job_number = 2
+        self.job_number = 0
 
         # jobconsist_tasknumber: 6 -> 0-6h; 9 ->6-24h (set: cloud nodes number + edge nodes number)
-        self.jobconsist_tasknumber = 6
+        self.jobconsist_tasknumber = 3
 
         # default:0(6,9), cloud node:1(10,15), edge node:2(8,12), cloud and edge node:3(12,18)
         self.nodenumberid = 0
@@ -104,7 +106,7 @@ class WorkloadGenerator(object):
                 if i % 2 == 0:
                     task_type = 'cloud'
                 elif i % 2 == 1:
-                    task_type = 'edge1'
+                    task_type = 'cloud'
 
             if self.nodenumberid == 1:
                 if i % 3 == 0 or i % 3 == 1:

@@ -29,8 +29,8 @@ class HighCpuAndMemoryWorkloadGenerator(WorkloadGenerator):
             tasks = self._generate_general_tasks(job_dict,self.jobconsist_tasknumber)
 
         tasks = self._post_process_tasks(tasks)
-        tasks.sort(key=lambda t: t['startTime'])
-        min_start_time = min([t['startTime'] for t in tasks])
+        #tasks.sort(key=lambda t: t['startTime'])
+        #min_start_time = min([t['startTime'] for t in tasks])
 
         for t in tasks:
             #t['startTime'] = int((t['startTime'] - min_start_time) * 8 + self.prev_job_last_start_time)
