@@ -26,6 +26,7 @@ class SimEnvWorkloadTester(AbstractWorkloadTester):
                  base_url: str,
                  workload_type: str,
                  workload_generated_time: str,
+                 node_conf: str,
                  scheduling_algorithms: List[str],
                  repeat_times: int = 1,
                  workload_load_directory: str = 'workloads'):
@@ -37,6 +38,8 @@ class SimEnvWorkloadTester(AbstractWorkloadTester):
         self.informer = SimKubeInformer()
         self.stat = RunStatus()
         self.reward_builder = RewardBuilder()
+        with open(node_conf) as f:
+            self.node_conf = f.read()
         self.last_clock = None
 
     def run_tests(self, tests):
@@ -107,7 +110,8 @@ class SimEnvWorkloadTester(AbstractWorkloadTester):
 
     def start(self, workload):
         data = self.client.get_json('/reset', json={
-            'workload': workload
+            'workload': workload,
+            'nodes': self.node_conf,
         })
         logging.debug(data)
         self.informer.load_data(data)

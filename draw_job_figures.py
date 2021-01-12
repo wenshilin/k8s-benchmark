@@ -6,9 +6,9 @@ from benchmark.figures.figures import draw_job_figures, list_dir
 
 def draw_one_dir():
     # 数据的根目录
-    #root_dir = '/Volumes/Data/实验数据/transfer/lrp1-54-directly_transfered-undone/used-jobs'
+    root_dir = '/Volumes/Data/实验数据/final/edge-cloud/MIX'
     # root_dir = '/Users/xenon/Desktop/casco/results/jobs'
-    root_dir = 'results/jobs'
+    # root_dir = 'results/jobs'
     # root_dir = "/Users/xenon/Desktop/lrp/used-jobs"
     save_dir = 'results/figures'
     draw_job_figures(root_dir, save_dir)
