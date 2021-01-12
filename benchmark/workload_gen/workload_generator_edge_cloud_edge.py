@@ -18,13 +18,13 @@ class WorkloadGenerator(object):
         self.tracetimeid = 0
 
         # job_number: 14 -> 0-6h; 9 -> 6-24h
-        self.job_number = 14
+        self.job_number = 4
 
         # jobconsist_tasknumber: 6 -> 0-6h; 9 ->6-24h (set: cloud nodes number + edge nodes number)
-        self.jobconsist_tasknumber = 4
+        self.jobconsist_tasknumber = 5
 
         # default:0(6,9), cloud node:1(10,15), edge node:2(8,12), cloud and edge node:3(12,18)
-        self.nodenumberid = 1
+        self.nodenumberid = 2
 
         # cpu and memory type: 1 -> low cpu, low memory; 2 -> low cpu, high memory; 3 -> high cpu, low memory; 4 -> high cpu, high memory
         self.workloadtypeid = 1
@@ -111,15 +111,15 @@ class WorkloadGenerator(object):
             if self.nodenumberid == 1:
                 if i % 4 == 0:
                     task_type = 'edge1'
-                elif i % 4 == 1 or i % 4 == 2:
+                elif i % 4 == 1:
                     task_type = 'cloud'
-                elif i % 4 == 3 and len(self.task_types) == 3:
+                elif (i % 4 == 2 or i % 4 == 3) and len(self.task_types) == 3:
                     task_type = 'edge1'
 
             if self.nodenumberid == 2:
-                if i % 5 == 0 or i % 5 == 1:
+                if i % 5 == 0:
                     task_type = 'edge1'
-                elif i % 5 ==2:
+                elif i % 5 == 1 or i % 5 ==2:
                     task_type = 'cloud'
                 elif (i % 5 ==3 or i % 5 == 4) and len(self.task_types) == 3:
                     task_type = 'edge1'
@@ -140,22 +140,22 @@ class WorkloadGenerator(object):
     def _build_dicts(self, tasks: typing.List[Task]) -> typing.List[dict]:
         for i, task in enumerate(tasks):
             # To solve OOMKilled
-            task.memory_mb = task.memory_mb + 10
-            task.limit_mem_mb = task.limit_mem_mb + 50
-            task.request_mem_mb = task.request_mem_mb
+            #task.memory_mb = task.memory_mb + 10
+            #task.limit_mem_mb = task.limit_mem_mb + 50
+            #task.request_mem_mb = task.request_mem_mb
 
             #CPU process --- edge-cloud-edge
-            if task.node_type == 'cloud':
-                task.limit_cpu = min(8,task.limit_cpu)
-                task.request_cpu = min(4,task.request_cpu)
-                task.cpu_count = max(1,math.ceil(task.limit_cpu))
+            #if task.node_type == 'cloud':
+            #    task.limit_cpu = min(8,task.limit_cpu)
+            #    task.request_cpu = min(4,task.request_cpu)
+            #    task.cpu_count = max(1,math.ceil(task.limit_cpu))
 
-            elif task.node_type == 'edge1':
-                task.limit_cpu = min(4,task.limit_cpu)
-                task.request_cpu = min(2,task.request_cpu)
-                task.cpu_count = max(1,math.ceil(task.limit_cpu))
+            #elif task.node_type == 'edge1':
+            #    task.limit_cpu = min(4,task.limit_cpu)
+            #    task.request_cpu = min(2,task.request_cpu)
+            #    task.cpu_count = max(1,math.ceil(task.limit_cpu))
 
-            task.time_ms = int(task.time_ms * 2)
+            #task.time_ms = int(task.time_ms * 2)
 
             # Reduces working time ---cloud-edge
             # if task.limit_cpu > 1:
@@ -163,7 +163,7 @@ class WorkloadGenerator(object):
             # else:
             #    task.time_ms = int(task.time_ms/1)
 
-            while task.time_ms >= 300000:
+            while task.time_ms >= 30000000:
                 task.time_ms = int(task.time_ms / 2)
 
             # Build dictionary
