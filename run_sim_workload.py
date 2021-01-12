@@ -1,6 +1,7 @@
 import logging
 import warnings
 
+from benchmark.figures.figures import draw_job_figures
 from benchmark.workload_tester import SimEnvWorkloadTester
 from common import global_arguments
 
@@ -18,14 +19,18 @@ if __name__ == '__main__':
     workload_tester = SimEnvWorkloadTester(
         # 负载类型
         workload_type='云到边',
-        workload_load_directory='workloads',
+        workload_load_directory='common/workloads',
         # 负载生成时间/负载所在文件夹
-        workload_generated_time='2021-01-06 18-37-03 mix',
+        workload_generated_time='ce-lrp-daytime-2021-01-11-21-10-58',
         # 需要运行的算法名称
-        scheduling_algorithms=['as_basic', 'ep', 'lrp', 'mrp', 'bra'],
+        scheduling_algorithms=['ep', 'lrp', 'mrp', 'bra'],
         # 重复运行的次数，当前为重复运行一种算法repeat_times之后再运行下一算法
-        repeat_times=20,
+        repeat_times=10,
         # 仿真环境服务端端口
         base_url='http://localhost:8001',
+        # 节点配置文件
+        node_conf='common/nodes/c2e2_down50.yaml',
     )
     workload_tester.run()
+
+    draw_job_figures('results/jobs', 'results/figures')
