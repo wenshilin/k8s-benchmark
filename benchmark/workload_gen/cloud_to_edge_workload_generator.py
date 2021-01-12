@@ -17,7 +17,7 @@ class Cloud2EdgeWorkloadGenerator(WorkloadGenerator):
         self.poisson_dist_bra = stats.poisson.rvs(mu=250000, size=1000, random_state=1) #bra
         self.poisson_dist_mrp = stats.poisson.rvs(mu=250000, size=1000, random_state=1) #mrp
         self.poisson_dist_lrp = stats.poisson.rvs(mu=170000, size=1000, random_state=1) #lrp
-        self.poisson_dist = stats.poisson.rvs(mu=160000, size=1000, random_state=1)
+        self.poisson_dist = stats.poisson.rvs(mu=280000, size=1000, random_state=1)
 
     def _generate_job(self):
         job_dict = self._random_choose_job()
@@ -84,9 +84,9 @@ class Cloud2EdgeWorkloadGenerator(WorkloadGenerator):
                     task.request_cpu = 2.75
                     task.limit_cpu = 4
                     task.cpu_count = 4
-                    task.memory_mb = 4096
-                    task.limit_mem_mb = 4096 + 50
-                    task.request_mem_mb = 4096
+                    task.memory_mb = 10
+                    task.limit_mem_mb = 10 + 50
+                    task.request_mem_mb = 10
                     task.time_ms = int(240000 / task.cpu_count)
                     task.task_type = 'cpu'
 
@@ -128,9 +128,9 @@ class Cloud2EdgeWorkloadGenerator(WorkloadGenerator):
                     task.request_cpu = 1.5
                     task.limit_cpu = 2
                     task.cpu_count = 2
-                    task.memory_mb = 2048
-                    task.limit_mem_mb = 2048 + 50
-                    task.request_mem_mb = 2048
+                    task.memory_mb = 5
+                    task.limit_mem_mb = 5 + 50
+                    task.request_mem_mb = 5
                     task.time_ms = int(240000 / task.cpu_count)
                     task.task_type = 'cpu'
 
