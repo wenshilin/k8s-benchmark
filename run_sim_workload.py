@@ -18,10 +18,10 @@ if __name__ == '__main__':
 
     workload_tester = SimEnvWorkloadTester(
         # 负载类型
-        workload_type='云到边',
+        workload_type='边到云到边',
         workload_load_directory='common/workloads',
         # 负载生成时间/负载所在文件夹
-        workload_generated_time='ce-lrp-daytime-2021-01-11-21-10-58',
+        workload_generated_time='ece-bra-daytime-2021-01-10-20-31-20',
         # 需要运行的算法名称
         scheduling_algorithms=['ep', 'lrp', 'mrp', 'bra'],
         # 重复运行的次数，当前为重复运行一种算法repeat_times之后再运行下一算法
@@ -29,7 +29,9 @@ if __name__ == '__main__':
         # 仿真环境服务端端口
         base_url='http://localhost:8001',
         # 节点配置文件
-        node_conf='common/nodes/c2e2_down50.yaml',
+        node_conf='common/nodes/c2e2.yaml',
+        # 总结的保存位置
+        result_dir='/Volumes/Data/实验数据/final/edge-cloud-edge/BRA/0-6h',
     )
     workload_tester.run()
 

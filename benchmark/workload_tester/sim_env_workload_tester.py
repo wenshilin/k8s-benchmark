@@ -23,6 +23,7 @@ from .abstract_workload_tester import AbstractWorkloadTester
 class SimEnvWorkloadTester(AbstractWorkloadTester):
 
     def __init__(self,
+                 result_dir: str,
                  base_url: str,
                  workload_type: str,
                  workload_generated_time: str,
@@ -30,7 +31,7 @@ class SimEnvWorkloadTester(AbstractWorkloadTester):
                  scheduling_algorithms: List[str],
                  repeat_times: int = 1,
                  workload_load_directory: str = 'workloads'):
-        super().__init__(workload_type, workload_generated_time,
+        super().__init__(result_dir, workload_type, workload_generated_time,
                          scheduling_algorithms, repeat_times, workload_load_directory)
 
         self.action = 0
@@ -65,7 +66,7 @@ class SimEnvWorkloadTester(AbstractWorkloadTester):
             self.start(jobs)
             self.wait_until_all_job_done(summary_writer, idx, state_builder)
 
-            summarizer = KubeEvaluationSummarizer(self.informer, summary_writer, self.stat)
+            summarizer = KubeEvaluationSummarizer(self.result_dir, self.informer, summary_writer, self.stat)
             summarizer.write_summary(name)
 
     def wait_until_all_job_done(self, summary_writer, test_idx, state_builder):

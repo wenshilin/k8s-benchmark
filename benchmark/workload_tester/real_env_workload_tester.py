@@ -27,13 +27,14 @@ from .abstract_workload_tester import AbstractWorkloadTester
 class RealEnvWorkloadTester(AbstractWorkloadTester):
 
     def __init__(self,
+                 result_dir: str,
                  metrics_server_base_url: str,
                  workload_type: str,
                  workload_generated_time: str,
                  scheduling_algorithms: List[str],
                  repeat_times: int = 1,
                  workload_load_directory: str = 'workloads'):
-        super().__init__(workload_type, workload_generated_time,
+        super().__init__(result_dir, workload_type, workload_generated_time,
                          scheduling_algorithms, repeat_times, workload_load_directory)
 
         client = kubernetes.client.CoreV1Api()
@@ -63,7 +64,7 @@ class RealEnvWorkloadTester(AbstractWorkloadTester):
             summary_writer = SummaryWriter(save_dir)
             self.start(jobs)
             self.wait_until_all_job_done(summary_writer)
-            summarizer = KubeEvaluationSummarizer(self.informer, summary_writer, self.stat)
+            summarizer = KubeEvaluationSummarizer(self.result_dir, self.informer, summary_writer, self.stat)
             summarizer.write_summary(name)
 
     def wait_until_all_job_done(self, summary_writer):

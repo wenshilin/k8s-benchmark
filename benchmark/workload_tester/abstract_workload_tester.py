@@ -1,17 +1,18 @@
 import abc
 import logging
 from typing import List
-import time
 
 
 class AbstractWorkloadTester(object):
 
     def __init__(self,
+                 result_dir: str,
                  workload_type: str,
                  workload_generated_time: str,
                  scheduling_algorithms: List[str],
                  repeat_times: int,
                  workload_directory: str):
+        self.result_dir = result_dir
         self.workload_type = workload_type
         self.workload_generated_time = workload_generated_time
         self.scheduling_algorithms = scheduling_algorithms

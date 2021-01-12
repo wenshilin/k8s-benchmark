@@ -2,6 +2,7 @@ import logging
 import time
 import warnings
 
+from benchmark.figures.figures import draw_job_figures
 from benchmark.workload_tester import RealEnvWorkloadTester
 from common import global_arguments
 from common.utils import kube_config
@@ -29,8 +30,12 @@ if __name__ == '__main__':
         # 重复运行的次数，当前为重复运行一种算法repeat_times之后再运行下一算法
         repeat_times=5,
         metrics_server_base_url='http://localhost:8001/apis/metrics.k8s.io/v1beta1',
+        # 总结的保存位置
+        result_dir='results',
     )
     start = time.time()
     workload_tester.run()
     end = time.time()
     print("Total running time: %s seconds" % (end - start))
+
+    draw_job_figures('results/jobs', 'results/figures', show_figure=False)
