@@ -22,6 +22,10 @@ def draw_job_figures(
     dirs = list_dir(root_dir)
     summary, jobs = read_data_from_directories(dirs)
     algorithm_names = summary['name'].unique()
+    if 'drl' in algorithm_names:
+        algorithm_names = list(algorithm_names)
+        algorithm_names.remove('drl')
+        algorithm_names.insert(0, 'drl')
     print(summary)
     print(jobs)
 
