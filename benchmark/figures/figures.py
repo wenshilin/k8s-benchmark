@@ -14,6 +14,7 @@ def draw_job_figures(
         root_dir: str,
         save_dir: str,
         save_filename: str = None,
+        show_figure: bool = True,
 ):
     now = datetime.datetime.now().strftime('%Y-%m-%d %H-%M-%S')
     save_filename = save_filename or root_dir.replace('/', '_') + now + ".png"
@@ -42,7 +43,8 @@ def draw_job_figures(
              title='JCT CDF',
              x_label='Job complete time(s)')
     plt.savefig(os.path.join(save_dir, save_filename))
-    plt.show()
+    if show_figure:
+        plt.show()
 
 
 def list_dir(root_dir: str):
