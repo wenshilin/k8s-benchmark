@@ -14,7 +14,7 @@ class Edge2CloudWorkloadGenerator(WorkloadGenerator):
 
     def __init__(self):
         super().__init__(consts.TASK_TYPES[:2])
-        self.poisson_dist = stats.poisson.rvs(mu=250000, size=1000, random_state=1)
+        self.poisson_dist = stats.poisson.rvs(mu=280000, size=1000, random_state=1)
 
     def _generate_job(self):
         job_dict = self._random_choose_job()
@@ -53,23 +53,23 @@ class Edge2CloudWorkloadGenerator(WorkloadGenerator):
             if task.node_type == 'cloud':
                 # CPU
                 if cloud_task_cnt % 3 == 0:
-                    task.request_cpu = 2
+                    task.request_cpu = 1.65
                     task.limit_cpu = 4
                     task.cpu_count = 4
                     task.memory_mb = 10
                     task.limit_mem_mb = 10 + 50
                     task.request_mem_mb = 10
-                    task.time_ms = int(80000/task.cpu_count)
+                    task.time_ms = int(400000/task.cpu_count)
                     task.task_type = 'cpu'
 
                 elif cloud_task_cnt % 3 == 1:
-                    task.request_cpu = 3
+                    task.request_cpu = 2.75
                     task.limit_cpu = 4
                     task.cpu_count = 4
-                    task.memory_mb = 4096
-                    task.limit_mem_mb = 4096 + 50
-                    task.request_mem_mb = 4096
-                    task.time_ms = int(240000/task.cpu_count)
+                    task.memory_mb = 10
+                    task.limit_mem_mb = 10 + 50
+                    task.request_mem_mb = 10
+                    task.time_ms = int(1200000/task.cpu_count)
                     task.task_type = 'cpu'
 
                 elif cloud_task_cnt % 3 == 2:
@@ -79,7 +79,7 @@ class Edge2CloudWorkloadGenerator(WorkloadGenerator):
                     task.memory_mb = 10
                     task.limit_mem_mb = 10 + 50
                     task.request_mem_mb = 10
-                    task.time_ms = int(480000/task.cpu_count)
+                    task.time_ms = int(2400000/task.cpu_count)
                     task.task_type = 'cpu'
 
                 #elif cloud_task_cnt % 4 == 3:
@@ -103,7 +103,7 @@ class Edge2CloudWorkloadGenerator(WorkloadGenerator):
                     task.memory_mb = 5
                     task.limit_mem_mb = 5 + 50
                     task.request_mem_mb = 5
-                    task.time_ms = int(40000/task.cpu_count)
+                    task.time_ms = int(200000/task.cpu_count)
                     task.task_type = 'cpu'
 
                 elif edge_task_cnt % 3 == 1:
@@ -113,7 +113,7 @@ class Edge2CloudWorkloadGenerator(WorkloadGenerator):
                     task.memory_mb = 2048
                     task.limit_mem_mb = 2048 + 50
                     task.request_mem_mb = 2048
-                    task.time_ms = int(120000/task.cpu_count)
+                    task.time_ms = int(600000/task.cpu_count)
                     task.task_type = 'cpu'
 
                 elif edge_task_cnt % 3 == 2:
@@ -123,7 +123,7 @@ class Edge2CloudWorkloadGenerator(WorkloadGenerator):
                     task.memory_mb = 5
                     task.limit_mem_mb = 5 + 50
                     task.request_mem_mb = 5
-                    task.time_ms = int(240000/task.cpu_count)
+                    task.time_ms = int(1200000/task.cpu_count)
                     task.task_type = 'cpu'
 
                 #elif edge_task_cnt % 4 == 3:

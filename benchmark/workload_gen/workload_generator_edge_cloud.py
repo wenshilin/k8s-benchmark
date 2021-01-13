@@ -18,7 +18,7 @@ class WorkloadGenerator(object):
         self.tracetimeid = 0
 
         # job_number: 14 -> 0-6h; 9 -> 6-24h
-        self.job_number = 0
+        self.job_number = 3
 
         # jobconsist_tasknumber: 6 -> 0-6h; 9 ->6-24h (set: cloud nodes number + edge nodes number)
         self.jobconsist_tasknumber = 6

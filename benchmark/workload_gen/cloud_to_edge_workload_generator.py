@@ -14,10 +14,10 @@ class Cloud2EdgeWorkloadGenerator(WorkloadGenerator):
 
     def __init__(self):
         super().__init__(consts.TASK_TYPES[:2])
-        self.poisson_dist_bra = stats.poisson.rvs(mu=250000, size=1000, random_state=1) #bra
-        self.poisson_dist_mrp = stats.poisson.rvs(mu=250000, size=1000, random_state=1) #mrp
+        self.poisson_dist_bra = stats.poisson.rvs(mu=280000, size=1000, random_state=1) #bra
+        self.poisson_dist_mrp = stats.poisson.rvs(mu=280000, size=1000, random_state=1) #mrp
         self.poisson_dist_lrp = stats.poisson.rvs(mu=170000, size=1000, random_state=1) #lrp
-        self.poisson_dist = stats.poisson.rvs(mu=280000, size=1000, random_state=1)
+        self.poisson_dist = stats.poisson.rvs(mu=170000, size=1000, random_state=1)
 
     def _generate_job(self):
         job_dict = self._random_choose_job()
@@ -70,18 +70,8 @@ class Cloud2EdgeWorkloadGenerator(WorkloadGenerator):
             task.job_tasknum = 'n' + str(len(tasks))
             if task.node_type == 'cloud':
                 # CPU
-                if cloud_task_cnt % 3 == 0:
-                    task.request_cpu = 1.65
-                    task.limit_cpu = 4
-                    task.cpu_count = 4
-                    task.memory_mb = 10
-                    task.limit_mem_mb = 10 + 50
-                    task.request_mem_mb = 10
-                    task.time_ms = int(80000 / task.cpu_count)
-                    task.task_type = 'cpu'
-
-                elif cloud_task_cnt % 3 == 1:
-                    task.request_cpu = 2.75
+                if cloud_task_cnt % 4 == 0:
+                    task.request_cpu = 3.4
                     task.limit_cpu = 4
                     task.cpu_count = 4
                     task.memory_mb = 10
@@ -90,69 +80,79 @@ class Cloud2EdgeWorkloadGenerator(WorkloadGenerator):
                     task.time_ms = int(240000 / task.cpu_count)
                     task.task_type = 'cpu'
 
-                elif cloud_task_cnt % 3 == 2:
-                    task.request_cpu = 3.7
-                    task.limit_cpu = 6
-                    task.cpu_count = 6
+                elif cloud_task_cnt % 4 == 1:
+                    task.request_cpu = 3.45
+                    task.limit_cpu = 4
+                    task.cpu_count = 4
                     task.memory_mb = 10
                     task.limit_mem_mb = 10 + 50
                     task.request_mem_mb = 10
-                    task.time_ms = int(480000 / task.cpu_count)
+                    task.time_ms = int(240000 / task.cpu_count)
                     task.task_type = 'cpu'
 
-                #elif cloud_task_cnt % 4 == 3:
-                #    task.request_cpu = 3.7
-                #    task.limit_cpu = 6
-                #    task.cpu_count = 6
-                #    task.memory_mb = 10
-                #    task.limit_mem_mb = 10 + 50
-                #    task.request_mem_mb = 10
-                #    task.time_ms = int(300000/task.cpu_count)
-                #    task.task_type = 'cpu'
+                elif cloud_task_cnt % 4 == 2:
+                    task.request_cpu = 3.55
+                    task.limit_cpu = 4
+                    task.cpu_count = 4
+                    task.memory_mb = 4096
+                    task.limit_mem_mb = 4096 + 50
+                    task.request_mem_mb = 4096
+                    task.time_ms = int(40000 / task.cpu_count)
+                    task.task_type = 'cpu'
+
+                elif cloud_task_cnt % 4 == 3:
+                    task.request_cpu = 3.6
+                    task.limit_cpu = 6
+                    task.cpu_count = 6
+                    task.memory_mb = 4096
+                    task.limit_mem_mb = 4096 + 50
+                    task.request_mem_mb = 4096
+                    task.time_ms = int(480000/task.cpu_count)
+                    task.task_type = 'cpu'
 
                 cloud_task_cnt += 1
 
             elif task.node_type == 'edge1':
                 # CPU
-                if edge_task_cnt % 3 == 0:
-                    task.request_cpu = 1
-                    task.limit_cpu = 2
-                    task.cpu_count = 2
+                if edge_task_cnt % 4 == 0:
+                    task.request_cpu = 0.5
+                    task.limit_cpu = 1
+                    task.cpu_count = 1
                     task.memory_mb = 5
                     task.limit_mem_mb = 5 + 50
                     task.request_mem_mb = 5
-                    task.time_ms = int(80000 / task.cpu_count)
+                    task.time_ms = int(100000 / task.cpu_count)
                     task.task_type = 'cpu'
 
-                elif edge_task_cnt % 3 == 1:
+                elif edge_task_cnt % 4 == 1:
+                    task.request_cpu = 0.7
+                    task.limit_cpu = 1
+                    task.cpu_count = 1
+                    task.memory_mb = 5
+                    task.limit_mem_mb = 5 + 50
+                    task.request_mem_mb = 5
+                    task.time_ms = int(100000 / task.cpu_count)
+                    task.task_type = 'cpu'
+
+                elif edge_task_cnt % 4 == 2:
                     task.request_cpu = 1.5
                     task.limit_cpu = 2
                     task.cpu_count = 2
-                    task.memory_mb = 5
-                    task.limit_mem_mb = 5 + 50
-                    task.request_mem_mb = 5
-                    task.time_ms = int(240000 / task.cpu_count)
+                    task.memory_mb = 2048
+                    task.limit_mem_mb = 2048 + 50
+                    task.request_mem_mb = 2048
+                    task.time_ms = int(162000 / task.cpu_count)
                     task.task_type = 'cpu'
 
-                elif edge_task_cnt % 3 == 2:
+                elif edge_task_cnt % 4 == 3:
                     task.request_cpu = 1.7
                     task.limit_cpu = 3
                     task.cpu_count = 3
                     task.memory_mb = 5
-                    task.limit_mem_mb = 5 + 50
+                    task.limit_mem_mb = 5+50
                     task.request_mem_mb = 5
-                    task.time_ms = int(480000 / task.cpu_count)
+                    task.time_ms = int(240000/task.cpu_count)
                     task.task_type = 'cpu'
-
-                #elif edge_task_cnt % 4 == 3:
-                #    task.request_cpu = 1.7
-                #    task.limit_cpu = 3
-                #    task.cpu_count = 3
-                #    task.memory_mb = 5
-                #    task.limit_mem_mb = 5+50
-                #    task.request_mem_mb = 5
-                #    task.time_ms = int(150000/task.cpu_count)
-                #    task.task_type = 'cpu'
 
                 edge_task_cnt += 1
 
