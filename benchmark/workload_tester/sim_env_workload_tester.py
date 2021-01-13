@@ -39,7 +39,7 @@ class SimEnvWorkloadTester(AbstractWorkloadTester):
         self.informer = SimKubeInformer()
         self.stat = RunStatus()
         self.reward_builder = RewardBuilder()
-        with open(node_conf) as f:
+        with open(node_conf,encoding='utf-8') as f:
             self.node_conf = f.read()
         self.last_clock = None
 

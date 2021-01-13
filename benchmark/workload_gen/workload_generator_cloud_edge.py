@@ -23,13 +23,13 @@ class WorkloadGenerator(object):
         self.job_number = 0
 
         # jobconsist_tasknumber: 6 -> 0-6h; 9 ->6-24h (set: cloud nodes number + edge nodes number)
-        self.jobconsist_tasknumber = 3
+        self.jobconsist_tasknumber = 4
 
         # default:0(6,9), cloud node:1(10,15), edge node:2(8,12), cloud and edge node:3(12,18)
         self.nodenumberid = 0
 
         # cpu and memory type: 1 -> low cpu, low memory; 2 -> low cpu, high memory; 3 -> high cpu, low memory; 4 -> high cpu, high memory
-        self.workloadtypeid = 3
+        self.workloadtypeid = 1
 
         # alibabatrace: job_tasknum
         self.job_tasknum = 1
@@ -106,7 +106,7 @@ class WorkloadGenerator(object):
                 if i % 2 == 0:
                     task_type = 'cloud'
                 elif i % 2 == 1:
-                    task_type = 'cloud'
+                    task_type = 'edge1'
 
             if self.nodenumberid == 1:
                 if i % 3 == 0 or i % 3 == 1:

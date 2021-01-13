@@ -47,90 +47,106 @@ class HighCpuAndMemoryWorkloadGenerator(WorkloadGenerator):
 
     def _post_process_tasks(self, tasks):
         cloud_task_cnt = 0
-        edge1_task_cnt = 0
+        edge_task_cnt = 0
         for i, task in enumerate(tasks):
             task.job_tasknum = 'n' + str(len(tasks))
             if task.node_type == 'cloud':
-                if cloud_task_cnt % 2 == 0:
-                   # Memory
-                   task.request_mem_mb += 2048
-                   task.limit_mem_mb += 2548
-                   task.memory_mb = min(int(task.request_mem_mb), int(task.limit_mem_mb))
-                   if (task.limit_mem_mb > 3700 or task.memory_mb > 3700 or task.request_mem_mb > 3700):
-                       task.limit_mem_mb = 3700
-                       task.request_mem_mb = 3700
-                       task.memory_mb = 3700
+                # CPU
+                if cloud_task_cnt % 3 == 0:
+                    task.request_cpu = 2
+                    task.limit_cpu = 4
+                    task.cpu_count = 4
+                    task.memory_mb = 10
+                    task.limit_mem_mb = 10+50
+                    task.request_mem_mb = 10
+                    task.time_ms = int(480000/task.cpu_count)
+                    task.task_type = 'cpu'
 
-                    # CPU
-                   task.request_cpu /= 2
-                   task.limit_cpu /= 2
-                   task.request_cpu = min(2, task.request_cpu)
-                   task.limit_cpu = min(2, task.limit_cpu)
-                   task.cpu_count = max(1, math.ceil(task.limit_cpu))
-                   task.time_ms = int(task.time_ms / 50)
+                elif cloud_task_cnt % 3 == 1:
+                    task.request_cpu = 3
+                    task.limit_cpu = 4
+                    task.cpu_count = 4
+                    task.memory_mb = 4096
+                    task.limit_mem_mb = 4096+50
+                    task.request_mem_mb = 4096
+                    task.time_ms = int(480000/task.cpu_count)
+                    task.task_type = 'cpu'
 
-                   task.task_type = 'memory'
-
-                else:
-                    # Memory
-                    task.request_mem_mb -= 650
-                    task.limit_mem_mb -= 650
-                    task.memory_mb = min(int(task.request_mem_mb), int(task.limit_mem_mb))
-
-                    # CPU
-                    task.request_cpu *= 2
-                    task.limit_cpu *= 2
-                    task.limit_cpu = min(4, task.limit_cpu)
-                    task.cpu_count = max(1, math.ceil(task.limit_cpu))
-                    if task.request_cpu > 4:
-                        task.cpu_count = 4
-                        task.limit_cpu = 4
-                        task.request_cpu = 4
-
+                elif cloud_task_cnt % 3 == 2:
+                    task.request_cpu = 3.7
+                    task.limit_cpu = 6
+                    task.cpu_count = 6
+                    task.memory_mb = 10
+                    task.limit_mem_mb = 10+50
+                    task.request_mem_mb = 10
+                    task.time_ms = int(480000/task.cpu_count)
                     task.task_type = 'cpu'
 
                 cloud_task_cnt += 1
 
             elif task.node_type == 'edge1':
-                if edge1_task_cnt % 2 == 0:
-                    # Memory
-                    task.request_mem_mb += 1024
-                    task.limit_mem_mb += 1536
-                    task.memory_mb = min(int(task.request_mem_mb), int(task.limit_mem_mb))
-                    if (task.limit_mem_mb > 1700 or task.memory_mb > 1700 or task.request_mem_mb > 1700):
-                         task.limit_mem_mb = 1700
-                         task.request_mem_mb = 1700
-                         task.memory_mb = 1700
-
-                    # CPU
-                    task.request_cpu /= 4
-                    task.limit_cpu /= 4
-                    task.request_cpu = min(1, task.request_cpu)
-                    task.limit_cpu = min(1, task.limit_cpu)
-                    task.cpu_count = max(1, math.ceil(task.limit_cpu))
-                    task.time_ms = int(task.time_ms / 100)
-
-                    task.task_type = 'memory'
-
-                else:
-                    # Memory
-                    task.request_mem_mb -= 650
-                    task.limit_mem_mb -= 650
-                    task.memory_mb = min(int(task.request_mem_mb), int(task.limit_mem_mb))
-
-                    # CPU
-                    # task.request_cpu += 1
-                    # task.limit_cpu += 2
-                    task.limit_cpu = min(2, task.limit_cpu)
-                    task.cpu_count = max(1, math.ceil(task.limit_cpu))
-                    if task.request_cpu > 2:
-                        task.cpu_count = 2
-                        task.limit_cpu = 2
-                        task.request_cpu = 2
-
+                # CPU
+                if edge_task_cnt % 6 == 0:
+                    task.request_cpu = 0.45
+                    task.limit_cpu = 1
+                    task.cpu_count = 1
+                    task.memory_mb = 5
+                    task.limit_mem_mb = 5 + 50
+                    task.request_mem_mb = 5
+                    task.time_ms = int(120000/task.cpu_count)
                     task.task_type = 'cpu'
 
-                edge1_task_cnt += 1
+                elif edge_task_cnt % 6 == 1:
+                    task.request_cpu = 0.55
+                    task.limit_cpu = 1
+                    task.cpu_count = 1
+                    task.memory_mb = 5
+                    task.limit_mem_mb = 5 + 50
+                    task.request_mem_mb = 5
+                    task.time_ms = int(120000/task.cpu_count)
+                    task.task_type = 'cpu'
+
+                elif edge_task_cnt % 6 == 2:
+                    task.request_cpu = 0.74
+                    task.limit_cpu = 1
+                    task.cpu_count = 1
+                    task.memory_mb = 1024
+                    task.limit_mem_mb = 1024 + 50
+                    task.request_mem_mb = 1024
+                    task.time_ms = int(120000/task.cpu_count)
+                    task.task_type = 'cpu'
+
+                elif edge_task_cnt % 6 == 3:
+                    task.request_cpu = 0.76
+                    task.limit_cpu = 1
+                    task.cpu_count = 1
+                    task.memory_mb = 1024
+                    task.limit_mem_mb = 1024 + 50
+                    task.request_mem_mb = 1024
+                    task.time_ms = int(120000/task.cpu_count)
+                    task.task_type = 'cpu'
+
+                elif edge_task_cnt % 6 == 4:
+                    task.request_cpu = 0.83
+                    task.limit_cpu = 2
+                    task.cpu_count = 2
+                    task.memory_mb = 5
+                    task.limit_mem_mb = 5 + 50
+                    task.request_mem_mb = 5
+                    task.time_ms = int(120000/task.cpu_count)
+                    task.task_type = 'cpu'
+
+                elif edge_task_cnt % 6 == 5:
+                    task.request_cpu = 0.87
+                    task.limit_cpu = 1
+                    task.cpu_count = 1
+                    task.memory_mb = 5
+                    task.limit_mem_mb = 5 + 50
+                    task.request_mem_mb = 5
+                    task.time_ms = int(120000/task.cpu_count)
+                    task.task_type = 'cpu'
+
+                edge_task_cnt += 1
 
         tasks = self._build_dicts(tasks)
         return tasks
