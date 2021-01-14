@@ -3,7 +3,7 @@ import os
 
 from matplotlib import pyplot as plt
 
-from .cdf import draw_cdf
+from .jct_avg import draw_jct_avg
 from .jct_box import draw_jct_box
 from .makespan import draw_makespan
 from ..job_data_reading import read_data_from_directories
@@ -43,9 +43,12 @@ def draw_job_figures(
                  x_label='Different scheduling algorithms')
 
     plt.subplot(133)
-    draw_cdf(jobs, algorithm_names,
-             title='JCT CDF',
-             x_label='Job complete time(s)')
+    draw_jct_avg(summary, algorithm_names,
+                 title='JCT on average',
+                 x_label='Different scheduling algorithms')
+    # draw_cdf(jobs, algorithm_names,
+    #          title='JCT CDF',
+    #          x_label='Job complete time(s)')
     plt.savefig(os.path.join(save_dir, save_filename))
     if show_figure:
         plt.show()
