@@ -5,7 +5,7 @@ import warnings
 from benchmark.figures.figures import draw_job_figures
 from benchmark.workload_tester import RealEnvWorkloadTester
 from common import global_arguments
-from common.utils import kube_config
+from common.utils import kube_config, makeup_results_dir
 
 if __name__ == '__main__':
     """
@@ -18,6 +18,8 @@ if __name__ == '__main__':
         format='%(asctime)s %(levelname)s %(funcName)s: %(message)s'
     )
     global_arguments.init_empty_arguments()
+
+    makeup_results_dir()
 
     workload_tester = RealEnvWorkloadTester(
         # 负载类型
