@@ -24,22 +24,22 @@ class SimEnvWorkloadTester(AbstractWorkloadTester):
 
     def __init__(self,
                  result_dir: str,
-                 base_url: str,
+                 sim_base_url: str,
                  workload_type: str,
-                 workload_generated_time: str,
-                 node_conf: str,
-                 scheduling_algorithms: List[str],
+                 workload_dir: str,
+                 sim_node_conf: str,
+                 schedulers: List[str],
                  repeat_times: int = 1,
-                 workload_load_directory: str = 'workloads'):
-        super().__init__(result_dir, workload_type, workload_generated_time,
-                         scheduling_algorithms, repeat_times, workload_load_directory)
+                 workload_base_dir: str = 'workloads'):
+        super().__init__(result_dir, workload_type, workload_dir,
+                         schedulers, repeat_times, workload_base_dir)
 
         self.action = 0
-        self.client = JsonHttpClient(base_url)
+        self.client = JsonHttpClient(sim_base_url)
         self.informer = SimKubeInformer()
         self.stat = RunStatus()
         self.reward_builder = RewardBuilder()
-        with open(node_conf,encoding='utf-8') as f:
+        with open(sim_node_conf, encoding='utf-8') as f:
             self.node_conf = f.read()
         self.last_clock = None
 

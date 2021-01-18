@@ -9,10 +9,20 @@ from .makespan import draw_makespan
 from ..job_data_reading import read_data_from_directories
 
 
+def convert_name(name):
+    return 'drl' if name.isdigit() else name
+
+
+def rename_model_as_drl(summary, jobs):
+    jobs['name'] = jobs['name'].map(convert_name)
+    summary['name'] = summary['name'].map(convert_name)
+
+
 # 绘制makespan柱状图，JCT盒图，以及JCT的CDF
 def draw_job_figures(
         root_dir: str,
         save_dir: str,
+        treat_model_as_drl: bool = False,
         save_filename: str = None,
         show_figure: bool = True,
 ):
@@ -21,6 +31,10 @@ def draw_job_figures(
 
     dirs = list_dir(root_dir)
     summary, jobs = read_data_from_directories(dirs)
+
+    if treat_model_as_drl:
+        rename_model_as_drl(summary, jobs)
+
     algorithm_names = summary['name'].unique()
     if 'drl' in algorithm_names:
         algorithm_names = list(algorithm_names)

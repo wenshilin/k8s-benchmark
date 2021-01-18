@@ -30,12 +30,12 @@ class RealEnvWorkloadTester(AbstractWorkloadTester):
                  result_dir: str,
                  metrics_server_base_url: str,
                  workload_type: str,
-                 workload_generated_time: str,
-                 scheduling_algorithms: List[str],
+                 workload_dir: str,
+                 schedulers: List[str],
                  repeat_times: int = 1,
-                 workload_load_directory: str = 'workloads'):
-        super().__init__(result_dir, workload_type, workload_generated_time,
-                         scheduling_algorithms, repeat_times, workload_load_directory)
+                 workload_base_dir: str = 'workloads'):
+        super().__init__(result_dir, workload_type, workload_dir,
+                         schedulers, repeat_times, workload_base_dir)
 
         client = kubernetes.client.CoreV1Api()
         metrics_server = MetricsServerClient(metrics_server_base_url)

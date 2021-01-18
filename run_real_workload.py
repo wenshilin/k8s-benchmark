@@ -24,13 +24,13 @@ if __name__ == '__main__':
     workload_tester = RealEnvWorkloadTester(
         # 负载类型
         workload_type='云到边',
-        workload_load_directory='workloads',
+        workload_base_dir='common/workloads',
         # 负载生成时间/负载所在文件夹
-        workload_generated_time='2021-01-06 18-37-03 mix',
+        workload_dir='ce-06-mrp',
         # 需要运行的算法名称
-        scheduling_algorithms=['ep', 'lrp', 'mrp', 'bra'],
+        schedulers=['ep', 'lrp', 'mrp', 'bra'],
         # 重复运行的次数，当前为重复运行一种算法repeat_times之后再运行下一算法
-        repeat_times=5,
+        repeat_times=2,
         metrics_server_base_url='http://localhost:8001/apis/metrics.k8s.io/v1beta1',
         # 总结的保存位置
         result_dir='results',
