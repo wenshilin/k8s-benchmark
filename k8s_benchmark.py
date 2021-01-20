@@ -25,6 +25,7 @@ def main():
     draw_job_figures(
         root_dir=os.path.join(args.result_dir, 'jobs'),
         save_dir=os.path.join(args.result_dir, 'figures'),
+        show_figure=False
     )
 
 

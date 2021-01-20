@@ -7,12 +7,12 @@ from benchmark.figures.figures import draw_job_figures, list_dir
 
 def draw_one_dir():
     # 数据的根目录
-    root_dir = '/Volumes/Data/实验数据/final/cloud-edge-0_6h/MRP/-50-dt/jobs'
-    root_dir = '/Users/xenon/Desktop/lrp-jobs'
+    root_dir = '/Volumes/Data/实验数据/final/cloud-edge-0_6h/MIX/-50-dt/jobs'
+    # root_dir = '/Users/xenon/Desktop/lrp-jobs'
     # root_dir = 'results/jobs'
     # root_dir = "/Users/xenon/Desktop/test/jobs"
-    # save_dir = '/Volumes/Data/实验数据/final/cloud-edge-0_6h/MRP/-50-dt'
-    save_dir = 'results'
+    save_dir = '/Volumes/Data/实验数据/final/cloud-edge-0_6h/MIX/-50-dt'
+    # save_dir = 'results'
     draw_job_figures(root_dir, save_dir, treat_model_as_drl=True)
 
 
