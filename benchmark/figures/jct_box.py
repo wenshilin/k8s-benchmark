@@ -23,4 +23,5 @@ def draw_jct_box(data_frame: pd.DataFrame,
     plt.xlabel(x_label, fontsize=12)
     plt.ylabel(y_label, fontsize=12)
 
+    plt.ylim(ymin=0)
     plt.grid(True)

@@ -58,5 +58,11 @@ def return_args():
         nargs='+',
         type=str
     )
+    parser.add_argument(
+        '--kube-config-file',
+        type=str,
+        default='~/.kube/config',
+        help='Kubernetes config file'
+    )
 
     return parser.parse_args()
