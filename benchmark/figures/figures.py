@@ -3,14 +3,15 @@ import os
 
 from matplotlib import pyplot as plt
 
-from .jct_avg import draw_jct_avg
 from .jct_box import draw_jct_box
-from .makespan import draw_makespan
 from ..job_data_reading import read_data_from_directories
+
+algorithms = ['BRA', 'LRP', 'MRP', 'EP']
+drl_name = 'EdgeTuner'
 
 
 def convert_name(name):
-    return 'drl' if name.isdigit() else name
+    return drl_name if name not in algorithms else name
 
 
 def rename_model_as_drl(summary, jobs):
@@ -36,30 +37,30 @@ def draw_job_figures(
         rename_model_as_drl(summary, jobs)
 
     algorithm_names = summary['name'].unique()
-    if 'drl' in algorithm_names:
+    if drl_name in algorithm_names:
         algorithm_names = list(algorithm_names)
-        algorithm_names.remove('drl')
-        algorithm_names.insert(0, 'drl')
+        algorithm_names.remove(drl_name)
+        algorithm_names.insert(0, drl_name)
     print(summary)
     print(jobs)
 
     os.makedirs(save_dir, exist_ok=True)
 
-    plt.figure(figsize=(18, 6))
-    plt.subplot(131)
-    draw_makespan(summary, algorithm_names,
-                  title='Makespan',
-                  x_label='Different scheduling algorithms')
+    # plt.figure(figsize=(18, 6))
+    # plt.subplot(131)
+    # draw_makespan(summary, algorithm_names,
+    #               title='Makespan',
+    #               x_label='Different scheduling algorithms')
 
-    plt.subplot(132)
+    # plt.subplot(132)
     draw_jct_box(jobs, algorithm_names,
                  title='JCT box',
                  x_label='Different scheduling algorithms')
 
-    plt.subplot(133)
-    draw_jct_avg(summary, algorithm_names,
-                 title='JCT on average',
-                 x_label='Different scheduling algorithms')
+    # plt.subplot(133)
+    # draw_jct_avg(summary, algorithm_names,
+    #              title='JCT on average',
+    #              x_label='Different scheduling algorithms')
     # draw_cdf(jobs, algorithm_names,
     #          title='JCT CDF',
     #          x_label='Job complete time(s)')

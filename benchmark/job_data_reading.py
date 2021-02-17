@@ -25,7 +25,7 @@ def read_data_from_directories(directories: List[str]):
     df = None
     for directory in directories:
         mean_jct, min_jct, max_jct, makespan, data = read_data_from_directory(directory)
-        name = directory.split('-')[-1]
+        name = directory.split('-')[-1].upper()
         mean_jct_list.append(mean_jct)
         min_jct_list.append(min_jct)
         max_jct_list.append(max_jct)
